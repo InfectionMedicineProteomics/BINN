@@ -1,21 +1,14 @@
 import pandas as pd
 
-
-"""
-ReactomePathwaysReltion.txt - the relationships between all reactome idxs
-UniProt2Reactome_All_Levels.txt - Mapping between a UniProt ID to ALL levels of the reactome reaction
-UniProt2Reactome.txt - Mapping to just the lowest level
-"""
-
 class ReactomeData():
     """ 
     A class to subset and get reactome data.
     """
     
     def __init__(self,
-                 hierarchy_file_path : str = 'data/reactome/ReactomePathwaysRelation.txt', 
-                 ms_data_file_path : str = 'data/ms/QuantMatrix.csv', 
-                 reactome_all_data_file_path : str = "data/reactome/UniProt2Reactome.txt"):
+                 hierarchy_file_path : str, 
+                 ms_data_file_path : str , 
+                 reactome_all_data_file_path : str ):
           
         self.ms_df = pd.read_csv(ms_data_file_path, sep='\t')
         self.reactome_df = pd.read_csv(reactome_all_data_file_path, index_col=False,

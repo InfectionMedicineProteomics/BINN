@@ -3,14 +3,16 @@
 Generating neural network from graph files and MS data
 
 ```py
-from dpks.quant_matrix import QuantMatrix
 from binn.NN import BINN
 
-qm = QuantMatrix(...)
+model = BINN(proteins = proteins,
+             pathways = pathways,
+             activation = 'tanh',
+             learning_rate  = 1e-4,
+             sparse = True,
+             n_layers  = 4,
+             scheduler = 'plateau',
+             validate  = True,
+             n_outputs = 2)
 
-model = BINN(
-    qm,  #dpks.QuantMatrix (alternatively QuantMatrix.csv)
-    PathwaysFile, #(All connections in pathway database)
-    TranslationFile,  #Translate the input QuantMatrix proteins to PathwayFile. In case of Reactome: UniProt ID --> Reactome ID.
-    )
 ```
