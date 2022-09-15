@@ -1,7 +1,5 @@
 # BINN
 
-Generating neural network from graph files and MS data
-
 ```py
 from binn.NN import BINN
 
@@ -16,3 +14,7 @@ model = BINN(proteins = proteins,
              n_outputs = 2)
 
 ```
+
+---
+
+### Contact: Erik Hartman - erik.hartman@hotmail.com

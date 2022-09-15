@@ -79,7 +79,11 @@ def get_layers_from_net(net, n_levels):
 
 class ReactomeNetwork():
 
-    def __init__(self,  filter = True, proteins = [], pathways = pd.DataFrame(),  protein_mapping = "data/UniProt2Reactome_All_Levels.txt"):
+    def __init__(self,  
+                 filter = True,
+                 proteins = [], 
+                 pathways = pd.DataFrame(),  
+                 protein_mapping = "data/UniProt2Reactome_All_Levels.txt"):
         self.protein_mapping = pd.read_csv(protein_mapping, names = ['UniProt_id', 'Reactome_id', 'URL', 'Description','Evidence Code','Species'], sep="\t")
         self.filter = filter # If filter is true, the network will be created with only proteins in proteins
         self.ms_hierarchy = pathways

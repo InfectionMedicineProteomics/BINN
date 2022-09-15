@@ -1,5 +1,7 @@
 import pandas as pd
 
+#TODO: Make it so that one method spits out:
+################################ proteins, connection, protein TO ALL connection
 class ReactomeData():
     """ 
     A class to subset and get reactome data.
