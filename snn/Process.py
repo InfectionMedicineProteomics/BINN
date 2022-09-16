@@ -1,18 +1,15 @@
 import pandas as pd
 import networkx as nx
 
-#TODO: Make it so that one method spits out:
-################################ proteins, connection, protein TO ALL connection
 class ProcessData():
-    """ 
-    A class to subset and get reactome data.
-    """
-    
     def __init__(self,
                  pathways : str, 
                  input_data : str , 
                  translation_mapping : str,
-                 verbose=False):
+                 verbose=False ):
+        """   
+        A class to generate the DataFrames needed to create the network. 
+        """
         self.verbose=verbose
         self.input_df = pd.read_csv(input_data, sep='\t')
         self.translation_df = pd.read_csv(translation_mapping, index_col=False,
@@ -83,12 +80,12 @@ def generate_pathway_file(
 
     Args:
         species (str): e.g. Homo sapiens. If none won't subset.
-        pathways (str): _description_. Defaults to 'data/reactome/ReactomePathwaysRelation.txt'.
-        input_data (str, optional): _description_. Defaults to 'data/ms/inner.tsv'.
-        translation_mapping (str, optional): _description_. Defaults to "data/reactome/UniProt2Reactome.txt".
+        pathways (str): Path to edge list (*.tsv)
+        input_data (str): Path to input data (*.tsv)
+        translation_mapping (str): Translation mapping between input names and edge list names. This might be necessary
 
     Returns:
-        pd.DataFrame : DataFrame containing the subsettet paths
+        (pathways, input, mapping) 
     """
     RD = ProcessData(pathways, input_data, translation_mapping)
     if species is not None: 

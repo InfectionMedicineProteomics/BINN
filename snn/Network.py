@@ -77,7 +77,7 @@ def get_layers_from_net(net, n_levels):
     return layers
 
 
-class ReactomeNetwork():
+class Network():
 
     def __init__(self,  
                  filter = True,
