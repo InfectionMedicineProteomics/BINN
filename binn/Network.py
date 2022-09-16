@@ -83,8 +83,8 @@ class ReactomeNetwork():
                  filter = True,
                  proteins = [], 
                  pathways = pd.DataFrame(),  
-                 protein_mapping = "data/UniProt2Reactome_All_Levels.txt"):
-        self.protein_mapping = pd.read_csv(protein_mapping, names = ['UniProt_id', 'Reactome_id', 'URL', 'Description','Evidence Code','Species'], sep="\t")
+                 protein_mapping = pd.DataFrame()):
+        self.protein_mapping = protein_mapping
         self.filter = filter # If filter is true, the network will be created with only proteins in proteins
         self.ms_hierarchy = pathways
         self.proteins = proteins
@@ -140,13 +140,13 @@ class ReactomeNetwork():
         # we need to find proteins belonging to these pathways
         protein_df = self.protein_mapping
         if self.filter:
-            protein_df = protein_df[protein_df['UniProt_id'].isin(self.proteins)]
+            protein_df = protein_df[protein_df['input'].isin(self.proteins)]
         # this attaches proteins to the terminal nodes (i.e. last layer after we've counted from root)
         dict = {}
         missing_pathways = []
         for p in terminal_nodes:
             pathway_name = re.sub('_copy.*', '', p)
-            proteins = protein_df[protein_df['Reactome_id'] == pathway_name]['UniProt_id'].unique()
+            proteins = protein_df[protein_df['connections'] == pathway_name]['input'].unique()
             if len(proteins) == 0:
                 missing_pathways.append(pathway_name)
             dict[pathway_name] = proteins

@@ -17,4 +17,4 @@ model = BINN(proteins = proteins,
 
 ---
 
-### Contact: Erik Hartman - erik.hartman@hotmail.com
+#### Contact: Erik Hartman - erik.hartman@hotmail.com

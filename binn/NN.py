@@ -4,13 +4,14 @@ from binn.Network import ReactomeNetwork
 from pytorch_lightning import LightningModule
 import torch
 import pandas as pd
-from NNUtils import generate_sequential
+from binn.NNUtils import generate_sequential
 
 
 class BINN(LightningModule):
     def __init__(self, 
                  proteins : list = [], 
                  pathways : pd.DataFrame = pd.DataFrame(),
+                 connections_to_all_layers  : pd.DataFrame() = pd.DataFrame(),
                  activation : str = 'tanh', 
                  weight = torch.Tensor([1,1]),
                  learning_rate : float = 1e-4, 
@@ -20,10 +21,7 @@ class BINN(LightningModule):
                  validate : bool =True,
                  n_outputs : int = 2):
         super().__init__()
-        if sparse:
-            self.RN = ReactomeNetwork(proteins = proteins, pathways=pathways,  filter=True)
-        else:
-            self.RN = ReactomeNetwork(proteins = proteins, pathways = pathways, filter=False)
+        self.RN = ReactomeNetwork(proteins = proteins, pathways=pathways, protein_mapping=connections_to_all_layers,  filter=True)
         print("Network: ", self.RN.info())
         self.n_layers = n_layers
         connectivity_matrices = self.RN.get_connectivity_matrices(n_layers)

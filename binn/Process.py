@@ -1,97 +1,103 @@
 import pandas as pd
+import networkx as nx
 
 #TODO: Make it so that one method spits out:
 ################################ proteins, connection, protein TO ALL connection
-class ReactomeData():
+class ProcessData():
     """ 
     A class to subset and get reactome data.
     """
     
     def __init__(self,
-                 hierarchy_file_path : str, 
-                 ms_data_file_path : str , 
-                 reactome_all_data_file_path : str ):
-          
-        self.ms_df = pd.read_csv(ms_data_file_path, sep='\t')
-        self.reactome_df = pd.read_csv(reactome_all_data_file_path, index_col=False,
+                 pathways : str, 
+                 input_data : str , 
+                 translation_mapping : str,
+                 verbose=False):
+        self.verbose=verbose
+        self.input_df = pd.read_csv(input_data, sep='\t')
+        self.translation_df = pd.read_csv(translation_mapping, index_col=False,
                         names = ['UniProt_id', 'Reactome_id', 'URL', 'Description','Evidence Code','Species'], sep="\t")
-        self.path_df = pd.read_csv(hierarchy_file_path, names=['parent','child'], sep="\t", index_col=False)
+        self.path_df = pd.read_csv(pathways, names=['parent','child'], sep="\t", index_col=False)
         
-    def subset_species_reactome_data(self, species = 'Homo sapiens'):
-        df_species = self.reactome_df[self.reactome_df['Species'] == species]
-        print(f"Number of rows of {species}: {len(df_species.index)}")
-        self.reactome_df = df_species
-        return self.reactome_df
+    def subset_species(self, species = 'Homo sapiens'):
+        self.translation_df = self.translation_df[self.translation_df['Species'] == species]
+        return self.translation_df
         
     def subset_on_proteins_in_ms_data(self):
-        proteins_in_ms_data = self.ms_df['Protein'].unique()
-        print(f'Number of reactome ids before subsetting: {len(self.reactome_df.index)}')
-        self.reactome_df = self.reactome_df[self.reactome_df['UniProt_id'].isin(proteins_in_ms_data)]
-        print(f"Number of reactome ids after subsetting: {len(self.reactome_df.index)}")
-        print(f"Unique proteins in reactome df: {len(list(self.reactome_df['UniProt_id'].unique()))}")
-        return self.reactome_df
+        proteins_in_ms_data = self.input_df['Protein'].unique()
+       
+        self.translation_df = self.translation_df[self.translation_df['UniProt_id'].isin(proteins_in_ms_data)]
+        if self.verbose:
+            print(f'Number of reactome ids before subsetting: {len(self.translation_df.index)}')
+            print(f"Unique proteins in reactome df: {len(list(self.translation_df['UniProt_id'].unique()))}")
+        return self.translation_df
         
-    def subset_pathways_on_reactome_idx(self):
+    def subset_pathways_on_idx(self):
         """
-        Recursive method to add parents and children to pathway_df based on filtered reactome_df.
+        Recursive method to add parents and children to pathway_df based on filtered translation_df.
         """
-        def add_pathways(counter, reactome_idx_list, parent):
+        def add_pathways(counter, idx_list, parent):
             counter += 1
-            print(f"Function called {counter} times.")
-            print(f'Values in reactome_idx_list: {len(reactome_idx_list)}')
+            if self.verbose:
+                print(f"Function called {counter} times.")
+                print(f'Values in idx_list: {len(idx_list)}')
             if len(parent) == 0:
                 print('Base case reached')
-                return reactome_idx_list
+                return idx_list
             else:
-                reactome_idx_list = reactome_idx_list + parent
+                idx_list = idx_list + parent
                 subsetted_pathway = self.path_df[self.path_df['child'].isin(parent)]
+
                 new_parent = list(subsetted_pathway['parent'].unique())
-                print(f"Values in new_parent: {len(new_parent)}")
-                return add_pathways(counter, reactome_idx_list, new_parent)
+                return add_pathways(counter, idx_list, new_parent)
                 
         counter = 0    
-        original_parent = list(self.reactome_df['Reactome_id'].unique()) 
-        print(f"Length of original parent: {len(original_parent)}")
-        reactome_idx_list = []
-        reactome_idx_list = add_pathways(counter, reactome_idx_list, original_parent)
-        print(f"Final number of values in reactome list: {len(reactome_idx_list)}")
-        print(f"Number of unique values in list: {len(list(dict.fromkeys(reactome_idx_list)))}")
-        # the reactome_idx_list now contains all reactome idx which we want to subset the path_df on.
-        self.path_df = self.path_df[self.path_df['parent'].isin(reactome_idx_list)]
+        original_parent = list(self.translation_df['Reactome_id'].unique()) 
+        idx_list = []
+        idx_list = add_pathways(counter, idx_list, original_parent)
+        self.path_df = self.path_df[self.path_df['parent'].isin(idx_list)]
         print("Final number of unique connections in pathway: ", len(self.path_df.index))
         return self.path_df
-        
- 
-    def save_df(self, df_id, save_path):
-        if df_id == 'reactome':
-            self.reactome_df.to_csv(save_path, index=False)
-        if df_id == 'path':
-            self.path_df.to_csv(save_path, index=False)
-            
+
+def get_mapping_to_all_layers(path_df, translation_df):
+    G = nx.from_pandas_edgelist(path_df,source='child',target='parent',create_using=nx.DiGraph())
+    components = {"input":[],"connections":[]}
+    for protein in translation_df['UniProt_id']:
+        ids = translation_df[translation_df['UniProt_id'] == protein]['Reactome_id']
+        for id in ids:
+            connections = G.subgraph(nx.single_source_shortest_path(G,id).keys()).nodes
+            for connection in connections:
+                components["input"].append(protein)
+                components["connections"].append(connection)
+    components = pd.DataFrame(components)
+    components.drop_duplicates(inplace=True)
+    return components
   
         
 def generate_pathway_file(
                           species = 'Homo sapiens',
-                          hierarchy_file_path = 'data/ReactomePathwaysRelation.txt',
-                          ms_data_file_path = 'data/TestQM.tsv' ,
-                          reactome_all_data_file_path = "data/UniProt2Reactome.txt"):
+                          pathways = 'data/ReactomePathwaysRelation.txt',
+                          input_data = 'data/TestQM.tsv' ,
+                          translation_mapping = "data/UniProt2Reactome.txt"):
     """_summary_
 
     Args:
         species (str): e.g. Homo sapiens. If none won't subset.
-        hierarchy_file_path (str): _description_. Defaults to 'data/reactome/ReactomePathwaysRelation.txt'.
-        ms_data_file_path (str, optional): _description_. Defaults to 'data/ms/inner.tsv'.
-        reactome_all_data_file_path (str, optional): _description_. Defaults to "data/reactome/UniProt2Reactome.txt".
+        pathways (str): _description_. Defaults to 'data/reactome/ReactomePathwaysRelation.txt'.
+        input_data (str, optional): _description_. Defaults to 'data/ms/inner.tsv'.
+        translation_mapping (str, optional): _description_. Defaults to "data/reactome/UniProt2Reactome.txt".
 
     Returns:
         pd.DataFrame : DataFrame containing the subsettet paths
     """
-    RD = ReactomeData(hierarchy_file_path, ms_data_file_path, reactome_all_data_file_path)
+    RD = ProcessData(pathways, input_data, translation_mapping)
     if species is not None: 
-        RD.subset_species_reactome_data(species)
+        RD.subset_species(species)
     RD.subset_on_proteins_in_ms_data()
-    RD.subset_pathways_on_reactome_idx()
-    proteins = RD.reactome_df['UniProt_id'].unique()
-    return RD.path_df, proteins
+    RD.subset_pathways_on_idx()
+    mapping_to_all_layers = get_mapping_to_all_layers(RD.path_df, RD.translation_df)
+    proteins = RD.translation_df['UniProt_id'].unique()
+    
+    return RD.path_df, proteins, mapping_to_all_layers
     
     
