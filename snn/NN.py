@@ -3,25 +3,30 @@ import torch.nn as nn
 from snn.Network import Network
 from pytorch_lightning import LightningModule
 import torch
-import pandas as pd
 from snn.NNUtils import generate_sequential
+from snn.Process import generate_pathway_file
 
 
 class SparseNN(LightningModule):
     def __init__(self, 
-                 proteins : list = [], 
-                 pathways : pd.DataFrame = pd.DataFrame(),
-                 connections_to_all_layers  : pd.DataFrame() = pd.DataFrame(),
+                 input_data : str = 'data/TestQM.tsv', 
+                 pathways : str = 'data/pathways.tsv',
+                 translation_mapping : str = None,
+                 input_data_column :str = 'Protein',
                  activation : str = 'tanh', 
                  weight = torch.Tensor([1,1]),
                  learning_rate : float = 1e-4, 
-                 sparse : bool = False, 
                  n_layers : int = 4, 
                  scheduler : str = 'plateau',
                  validate : bool =True,
-                 n_outputs : int = 2):
+                 n_outputs : int = 2, 
+                 dropout : float = 0):
         super().__init__()
-        self.RN = Network(proteins = proteins, pathways=pathways, protein_mapping=connections_to_all_layers,  filter=True)
+        pathways, inputs, mapping_to_all_layers = generate_pathway_file(pathways = pathways,
+                          input_data = input_data ,
+                          translation_mapping = translation_mapping,
+                          input_data_column = input_data_column)
+        self.RN = Network(inputs = inputs, pathways=pathways, mapping=mapping_to_all_layers)
         print("Network: ", self.RN.info())
         self.n_layers = n_layers
         connectivity_matrices = self.RN.get_connectivity_matrices(n_layers)
@@ -31,10 +36,13 @@ class SparseNN(LightningModule):
             i,_ = matrix.shape
             layer_sizes.append(i)
             self.column_names.append(matrix.index)
-        if sparse:
-            self.layers = generate_sequential(layer_sizes, connectivity_matrices = connectivity_matrices, activation=activation, bias=True, n_outputs=n_outputs)
-        else:
-            self.layers = generate_sequential(layer_sizes, activation=activation, bias=True, n_outputs=n_outputs)    
+
+        self.layers = generate_sequential(layer_sizes, 
+                                        connectivity_matrices = connectivity_matrices, 
+                                        activation=activation, 
+                                        bias=True, 
+                                        n_outputs=n_outputs,
+                                        dropout=dropout)
         init_weights(self.layers)   
         self.loss = nn.CrossEntropyLoss(weight=weight) 
         self.learning_rate = learning_rate 
@@ -75,7 +83,6 @@ class SparseNN(LightningModule):
         self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
         
     def report_layer_structure(self, verbose=False):
-        parameters = {'nz weights':[], 'weights':[], 'biases':[]}
         for i, l in enumerate(self.layers):
             if isinstance(l,nn.Linear):
                 nz_weights = torch.count_nonzero(l.weight)
@@ -86,10 +93,6 @@ class SparseNN(LightningModule):
                     print(f"Number of nonzero weights: {nz_weights} ")
                     print(f"Number biases: {nz_weights} ")
                     print(f"Total number of elements: {weights+biases} ")
-                parameters['nz weights'].append(nz_weights)
-                parameters['weights'].append(weights)
-                parameters['biases'].append(biases)
-        return parameters
                 
     def configure_optimizers(self):
         if self.validate==True:

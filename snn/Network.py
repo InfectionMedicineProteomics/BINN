@@ -14,9 +14,9 @@ Modified to fit our repo.
 
 def get_map_from_layer(layer_dict):
     pathways = layer_dict.keys()
-    proteins = list(itertools.chain.from_iterable(layer_dict.values()))
-    proteins = list(np.unique(proteins))
-    df = pd.DataFrame(index=pathways, columns=proteins)
+    inputs = list(itertools.chain.from_iterable(layer_dict.values()))
+    inputs = list(np.unique(inputs))
+    df = pd.DataFrame(index=pathways, columns=inputs)
     for k, v in layer_dict.items():
         df.loc[k, v] = 1
     df = df.fillna(0)
@@ -80,14 +80,12 @@ def get_layers_from_net(net, n_levels):
 class Network():
 
     def __init__(self,  
-                 filter = True,
-                 proteins = [], 
+                 inputs = [], 
                  pathways = pd.DataFrame(),  
-                 protein_mapping = pd.DataFrame()):
-        self.protein_mapping = protein_mapping
-        self.filter = filter # If filter is true, the network will be created with only proteins in proteins
+                 mapping = pd.DataFrame()):
+        self.mapping = mapping
         self.ms_hierarchy = pathways
-        self.proteins = proteins
+        self.inputs = inputs
         self.netx = self.get_reactome_networkx()
         
     
@@ -130,26 +128,19 @@ class Network():
         if direction == 'root_to_leaf':
             net = self.get_completed_network(n_levels)
             layers = get_layers_from_net(net, n_levels)
-        else:
-            net = self.get_completed_network(5)
-            layers = get_layers_from_net(net, 5)
-            layers = layers[5 - n_levels:5]
 
 
         terminal_nodes = [n for n, d in net.out_degree() if d == 0]  # set of terminal pathways
-        # we need to find proteins belonging to these pathways
-        protein_df = self.protein_mapping
-        if self.filter:
-            protein_df = protein_df[protein_df['input'].isin(self.proteins)]
-        # this attaches proteins to the terminal nodes (i.e. last layer after we've counted from root)
+        # we need to find inputs belonging to these pathways
+        mapping_df = self.mapping
         dict = {}
         missing_pathways = []
         for p in terminal_nodes:
             pathway_name = re.sub('_copy.*', '', p)
-            proteins = protein_df[protein_df['connections'] == pathway_name]['input'].unique()
-            if len(proteins) == 0:
+            inputs = mapping_df[mapping_df['connections'] == pathway_name]['input'].unique()
+            if len(inputs) == 0:
                 missing_pathways.append(pathway_name)
-            dict[pathway_name] = proteins
+            dict[pathway_name] = inputs
         layers.append(dict)
         return layers
     
@@ -159,10 +150,10 @@ class Network():
         for i, layer in enumerate(layers[::-1]):
             mapp = get_map_from_layer(layer)
             if i == 0:
-                proteins = list(mapp.index)
-                self.proteins = proteins
-            filter_df = pd.DataFrame(index=proteins)
+                inputs = list(mapp.index)
+                self.inputs = inputs
+            filter_df = pd.DataFrame(index=inputs)
             all = filter_df.merge(mapp, right_index=True, left_index=True, how='inner')
-            proteins = list(mapp.columns)
+            inputs = list(mapp.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices

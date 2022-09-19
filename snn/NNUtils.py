@@ -5,6 +5,7 @@ import torch.nn.utils.prune as prune
 import torch
 
 
+
 def append_activation(layers, activation, n):
     if activation == 'tanh':
         layers.append((f'Tanh {n}', nn.Tanh()))
@@ -18,7 +19,7 @@ def append_activation(layers, activation, n):
 def generate_sequential(layer_sizes, 
                         connectivity_matrices = None, 
                         activation='tanh', bias=True,
-                        n_outputs=2, dropout=0.2):
+                        n_outputs=2, dropout=0):
     """
     Generates a sequential model from layer sizes.
     """
@@ -38,4 +39,3 @@ def generate_sequential(layer_sizes,
     layers.append(("Output layer", nn.Linear(layer_sizes[-1],n_outputs, bias=bias))) # Output layer
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
-
