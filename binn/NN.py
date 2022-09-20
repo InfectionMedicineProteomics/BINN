@@ -1,13 +1,13 @@
 
 import torch.nn as nn
-from snn.Network import Network
+from binn.Network import Network
 from pytorch_lightning import LightningModule
 import torch
-from snn.NNUtils import generate_sequential
-from snn.Process import generate_pathway_file
+from binn.NNUtils import generate_sequential
+from binn.Process import generate_pathway_file
 
 
-class SparseNN(LightningModule):
+class BINN(LightningModule):
     def __init__(self, 
                  input_data : str = 'data/TestQM.tsv', 
                  pathways : str = 'data/pathways.tsv',

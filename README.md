@@ -1,9 +1,11 @@
-# SparseNN
+# Biologically Informed Neural Network (BINN)
+
+Generates a sparse network and translates it into a pytorch lightning architecture.
 
 ```py
-from snn.NN import SparseNN
+from binn.NN import BINN
 
-model = SparseNN(
+model = BINN(
             input_data  = 'data/TestQM.tsv', # the data containing the input column
             input_data_column = 'Protein', # specify input column
             pathways = 'data/pathways.tsv', # datafile containing the pathways
