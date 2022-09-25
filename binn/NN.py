@@ -11,16 +11,18 @@ class BINN(LightningModule):
     def __init__(self, 
                  input_data : str = 'data/TestQM.tsv', 
                  pathways : str = 'data/pathways.tsv',
-                 translation_mapping : str = None,
-                 input_data_column :str = 'Protein',
+                 translation_mapping : str = 'data/translation.tsv',
+                 input_data_column : str = 'Protein',
                  activation : str = 'tanh', 
-                 weight = torch.Tensor([1,1]),
+                 weight : torch.Tensor = torch.Tensor([1,1]),
                  learning_rate : float = 1e-4, 
                  n_layers : int = 4, 
-                 scheduler : str = 'plateau',
-                 validate : bool =True,
+                 scheduler = 'plateau',
+                 optimizer = 'adam',
+                 validate : bool = True,
                  n_outputs : int = 2, 
                  dropout : float = 0):
+
         super().__init__()
         pathways, inputs, mapping_to_all_layers = generate_pathway_file(pathways = pathways,
                           input_data = input_data ,
@@ -31,11 +33,11 @@ class BINN(LightningModule):
         self.n_layers = n_layers
         connectivity_matrices = self.RN.get_connectivity_matrices(n_layers)
         layer_sizes = []
-        self.column_names = []
+        self.layer_names = []
         for matrix in connectivity_matrices:
             i,_ = matrix.shape
             layer_sizes.append(i)
-            self.column_names.append(matrix.index)
+            self.layer_names.append(matrix.index)
 
         self.layers = generate_sequential(layer_sizes, 
                                         connectivity_matrices = connectivity_matrices, 
@@ -47,6 +49,7 @@ class BINN(LightningModule):
         self.loss = nn.CrossEntropyLoss(weight=weight) 
         self.learning_rate = learning_rate 
         self.scheduler = scheduler
+        self.optimizer = optimizer
         self.validate=validate
         self.save_hyperparameters()
     
@@ -82,34 +85,45 @@ class BINN(LightningModule):
         self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
         
-    def report_layer_structure(self, verbose=False):
+    def report_layer_structure(self):
         for i, l in enumerate(self.layers):
             if isinstance(l,nn.Linear):
                 nz_weights = torch.count_nonzero(l.weight)
                 weights = torch.numel(l.weight)
                 biases = torch.numel(l.bias)
-                if verbose:
-                    print(f"Layer {i}")
-                    print(f"Number of nonzero weights: {nz_weights} ")
-                    print(f"Number biases: {nz_weights} ")
-                    print(f"Total number of elements: {weights+biases} ")
+                print(f"Layer {i}")
+                print(f"Number of nonzero weights: {nz_weights} ")
+                print(f"Number biases: {nz_weights} ")
+                print(f"Total number of elements: {weights+biases} ")
+                
                 
     def configure_optimizers(self):
         if self.validate==True:
             monitor='val_loss'
         else:
             monitor = 'train_loss'
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=1e-3)
-        if self.scheduler == 'plateau':
-            scheduler = {"scheduler": 
-                        torch.optim.lr_scheduler.ReduceLROnPlateau(
-                            optimizer, patience=5, 
-                            threshold = 0.00001, 
-                            mode='min', verbose=True),
-                        "interval": "epoch",
-                        "monitor": monitor}
-        elif self.scheduler == 'step':
-            scheduler = {"scheduler": torch.optim.lr_scheduler.StepLR(optimizer, step_size=25, gamma=0.1, verbose=True)}
+        
+        if isinstance(self.optimizer, str): 
+            if self.optimizer == 'adam':
+                optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=1e-3)
+        else:
+            optimizer = self.optimizer
+            
+        if isinstance(self.scheduler, str):
+            if self.scheduler == 'plateau':
+                scheduler = {"scheduler": 
+                            torch.optim.lr_scheduler.ReduceLROnPlateau(
+                                optimizer, 
+                                patience=5, 
+                                threshold = 0.00001, 
+                                mode='min', 
+                                verbose=True),
+                            "interval": "epoch",
+                            "monitor": monitor}
+            elif self.scheduler == 'step':
+                scheduler = {"scheduler": torch.optim.lr_scheduler.StepLR(optimizer, step_size=25, gamma=0.1, verbose=True)}
+        else:
+            self.scheduler = {"scheduler": scheduler}
         return [optimizer], [scheduler]
     
     def calculate_accuracy(self, y, prediction):

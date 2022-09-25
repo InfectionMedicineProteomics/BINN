@@ -13,6 +13,12 @@ def append_activation(layers, activation, n):
         layers.append((f'ReLU {n}', nn.ReLU()))
     elif activation == "leaky relu":
         layers.append((f'LeakyReLU {n}', nn.LeakyReLU()))
+    elif activation == "sigmoid":
+        layers.append((f'Sigmoid {n}', nn.Sigmoid()))
+    elif activation == 'elu':
+        layers.append((f'Elu {n}', nn.ELU()))
+    elif activation == 'hardsigmoid':
+        layers.append((f'HardSigmoid', nn.Hardsigmoid()))
     return layers
     
 
@@ -31,11 +37,14 @@ def generate_sequential(layer_sizes,
         if connectivity_matrices is not None:
             # Masking matrix
             prune.custom_from_mask(linear_layer, name='weight', mask=torch.tensor(connectivity_matrices[n].T.values))
-            layers.append((f"Dropout_{n}", nn.Dropout(dropout)))
+        if isinstance(dropout, list):
+            layers.append((f"Dropout_{n}", nn.Dropout(dropout[n])))
         else:
-            # If not pruning do dropout instead.
             layers.append((f"Dropout_{n}", nn.Dropout(dropout)))
-        append_activation(layers, activation, n)
+        if isinstance(activation, list):
+            layers.append((f'Activation_{n}', activation[n]))
+        else:
+            append_activation(layers, activation, n)
     layers.append(("Output layer", nn.Linear(layer_sizes[-1],n_outputs, bias=bias))) # Output layer
     model = nn.Sequential(collections.OrderedDict(layers))
     return model

@@ -11,11 +11,11 @@ requirements = [
 setup(
     author="Erik Hartman",
     author_email="erik.hartman@hotmail.com",
-    name='SparseNN',
+    name='BINN',
     version='0.1dev',
-    packages=['snn',],
+    packages=['binn',],
     license='MIT',
     long_description=open('README.md').read(),
     install_requires=requirements,
-    url="https://github.com/InfectionMedicineProteomics/SparseNN"
+    url="https://github.com/InfectionMedicineProteomics/BINN"
 )
