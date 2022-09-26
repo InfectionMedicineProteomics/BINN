@@ -1,6 +1,19 @@
 import pandas as pd
 import networkx as nx
 
+
+def get_separation(pathways, input_data, translation_mapping):
+    sep_path = ','
+    sep_input = ','
+    sep_transl = ','
+    if pathways.endswith('tsv'):
+        sep_path = '\t'
+    if input_data.endswith('tsv'):
+        sep_input = '\t'
+    if translation_mapping.endswith('tsv'):
+        sep_transl = '\t'
+    return sep_path, sep_input, sep_transl
+
 class ProcessData():
     def __init__(self,
                  pathways : str, 
@@ -13,12 +26,13 @@ class ProcessData():
         """
         self.verbose=verbose
         self.input_data_column=input_data_column
-        self.input_df = pd.read_csv(input_data, sep='\t')
+        sep_path, sep_input, sep_transl = get_separation(pathways, input_data, translation_mapping)
+        self.input_df = pd.read_csv(input_data, sep=sep_input)
         if isinstance(translation_mapping, str):
-            self.translation_df = pd.read_csv(translation_mapping, index_col=False,sep="\t")
+            self.translation_df = pd.read_csv(translation_mapping, index_col=False, sep=sep_transl)
         elif isinstance(translation_mapping,pd.DataFrame):
             self.translation_df = translation_mapping
-        self.path_df = pd.read_csv(pathways, sep="\t", index_col=False)
+        self.path_df = pd.read_csv(pathways, sep=sep_path, index_col=False)
         
     def subset_on_proteins_in_ms_data(self):
         proteins_in_ms_data = self.input_df[self.input_data_column].unique()

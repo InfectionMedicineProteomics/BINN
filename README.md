@@ -1,6 +1,6 @@
 # Biologically Informed Neural Network (BINN)
 
-Generates a sparse network and translates it into a pytorch lightning architecture sequential neural network. See /test.ipynb for code examples.
+Generates a sparse network and translates it into a pytorch lightning architecture sequential neural network. Read more [here](test.ipynb) for code examples.
 
 ```py
 from binn.NN import BINN
@@ -16,10 +16,10 @@ model = BINN(
             scheduler = 'plateau', # can pass own scheduler
             optimizer = 'adam', # can pass own optimizer
             n_outputs = 2, # 2 for binary classification
-            dropout = 0.2 # dropout rate. After every hidden layer.
+            dropout = 0.2, # dropout rate. After every hidden layer.
             validate  = True
             )
-model.report_layer_structure()
+
 
 import torch.nn as nn
 # we can also pass a list of activations
@@ -87,20 +87,20 @@ Total number of elements: 58
 # 4                     VDVIPVNLPGEHGQR  P02751
 ...
 #Pathways file
-#     Unnamed: 0        parent          child
-# 0           0  R-BTA-109581   R-BTA-109606
-# 1           1  R-BTA-109581   R-BTA-169911
-# 2           2  R-BTA-109581  R-BTA-5357769
-# 3           3  R-BTA-109581    R-BTA-75153
-# 4           4  R-BTA-109582   R-BTA-140877
+#           parent          child
+# 0    R-BTA-109581   R-BTA-109606
+# 1    R-BTA-109581   R-BTA-169911
+# 2    R-BTA-109581  R-BTA-5357769
+# 3    R-BTA-109581    R-BTA-75153
+# 4    R-BTA-109582   R-BTA-140877
 ...
 #Translation file
-#     Unnamed: 0       input    translation
-# 0        1323  A0A075B6P5   R-HSA-166663
-# 1        1324  A0A075B6P5   R-HSA-173623
-# 2        1325  A0A075B6P5   R-HSA-198933
-# 3        1326  A0A075B6P5   R-HSA-202733
-# 4        1327  A0A075B6P5  R-HSA-2029481
+#           input    translation
+# 0    A0A075B6P5   R-HSA-166663
+# 1    A0A075B6P5   R-HSA-173623
+# 2    A0A075B6P5   R-HSA-198933
+# 3    A0A075B6P5   R-HSA-202733
+# 4    A0A075B6P5  R-HSA-2029481
 ...
 ```
 
