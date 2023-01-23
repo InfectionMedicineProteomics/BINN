@@ -64,7 +64,7 @@ class ProcessData():
         original_parent = list(self.translation_df['translation'].unique()) 
         idx_list = []
         idx_list = add_pathways(counter, idx_list, original_parent)
-        self.path_df = self.path_df[self.path_df['parent'].isin(idx_list)]
+        self.path_df = self.path_df[self.path_df['child'].isin(idx_list)]
         print("Final number of unique connections in pathway: ", len(self.path_df.index))
         return self.path_df
 

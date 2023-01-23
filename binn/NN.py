@@ -3,7 +3,7 @@ import torch.nn as nn
 from binn.Network import Network
 from pytorch_lightning import LightningModule
 import torch
-from binn.NNUtils import generate_sequential
+from binn.NNUtils import generate_sequential, forward_residual
 from binn.Process import generate_pathway_file
 
 
@@ -21,7 +21,8 @@ class BINN(LightningModule):
                  optimizer = 'adam',
                  validate : bool = True,
                  n_outputs : int = 2, 
-                 dropout : float = 0):
+                 dropout : float = 0,
+                 residual : bool = False):
 
         super().__init__()
         pathways, inputs, mapping_to_all_layers = generate_pathway_file(pathways = pathways,
@@ -52,9 +53,13 @@ class BINN(LightningModule):
         self.optimizer = optimizer
         self.validate=validate
         self.save_hyperparameters()
+        self.residual = residual
     
     def forward(self, x):
-        return self.layers(x) 
+        if self.residual:
+            return forward_residual(x)
+        else:
+            return self.layers(x) 
         
         
     def training_step(self, batch, batch_nb):
