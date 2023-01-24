@@ -1,6 +1,7 @@
 # Biologically Informed Neural Network (BINN)
 
-Generates a sparse network and translates it into a pytorch lightning architecture sequential neural network. Read more [here](test.ipynb) for code examples.
+Generates a sparse network and translates it into a pytorch lightning architecture sequential neural network. Read
+more [here](test.ipynb) for code examples.
 
 ```py
 from binn.NN import BINN
