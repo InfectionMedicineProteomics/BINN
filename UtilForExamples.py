@@ -7,7 +7,7 @@ import numpy as np
 def fit_protein_matrix_to_network_input(QM: pd.DataFrame, features) -> pd.DataFrame:
     nr_proteins_in_matrix = len(QM.index)
     if len(features) > nr_proteins_in_matrix:
-        RN_df = pd.DataFrame(inputs, columns=['Protein'])
+        RN_df = pd.DataFrame(features, columns=['Protein'])
         QM = QM.merge(RN_df, how='right', on='Protein')
     if len(features) > 0:
         QM.set_index('Protein', inplace=True)
