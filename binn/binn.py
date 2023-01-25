@@ -103,7 +103,6 @@ class BINN(LightningModule):
                 parameters['biases'].append(biases)
         return parameters
 
-    # TODO: clarify this function is working correctly
     def configure_optimizers(self):
         if self.validate == True:
             monitor = 'val_loss'
@@ -116,22 +115,20 @@ class BINN(LightningModule):
         else:
             optimizer = self.optimizer
 
-        if isinstance(self.scheduler, str):
-            if self.scheduler == 'plateau':
-                scheduler = {"scheduler":
-                    torch.optim.lr_scheduler.ReduceLROnPlateau(
-                        optimizer,
-                        patience=5,
-                        threshold=0.00001,
-                        mode='min',
-                        verbose=True),
-                    "interval": "epoch",
-                    "monitor": monitor}
-            elif self.scheduler == 'step':
-                scheduler = {
-                    "scheduler": torch.optim.lr_scheduler.StepLR(optimizer, step_size=25, gamma=0.1, verbose=True)}
-        else:
-            self.scheduler = {"scheduler": scheduler}
+        if self.scheduler == 'plateau':
+            scheduler = {"scheduler":
+                torch.optim.lr_scheduler.ReduceLROnPlateau(
+                    optimizer,
+                    patience=5,
+                    threshold=0.00001,
+                    mode='min',
+                    verbose=True),
+                "interval": "epoch",
+                "monitor": monitor}
+        elif self.scheduler == 'step':
+            scheduler = {
+                "scheduler": torch.optim.lr_scheduler.StepLR(optimizer, step_size=25, gamma=0.1, verbose=True)}
+
         return [optimizer], [scheduler]
 
     def calculate_accuracy(self, y, prediction):
