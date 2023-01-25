@@ -1,9 +1,9 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 import plotly.graph_objects as go
+import shap
 
 
 def encode_features(features):
@@ -38,9 +38,10 @@ def shap_sankey(df: pd.DataFrame, final_node: str = "root", val_col="value", cma
             layer_df = df.loc[df['source layer'] == layer]
             layer_total = layer_df[val_col].sum()
             layer_df['normalized value'] = total_value_sum * \
-                layer_df[val_col] / layer_total
+                                           layer_df[val_col] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
+
     df = remove_loops(df)
     df = normalize_layer_values(df)
 
@@ -69,10 +70,10 @@ def shap_sankey(df: pd.DataFrame, final_node: str = "root", val_col="value", cma
                 xmin = min(w)
                 xmax = max(w)
                 if xmax == xmin:
-                    w = [1]*len(n)
+                    w = [1] * len(n)
                 else:
                     w = np.array(w)
-                    X_std = (w - xmin) / (xmax-xmin)
+                    X_std = (w - xmin) / (xmax - xmin)
                     X_scaled = X_std
                     w = X_scaled.tolist()
 
@@ -82,7 +83,7 @@ def shap_sankey(df: pd.DataFrame, final_node: str = "root", val_col="value", cma
                 print(n, w)
                 r, g, b, a = cmap.to_rgba(w, alpha=0.5)
                 weight_dict[n] = w
-                node_dict[n] = f"rgba({r*255}, {g*255}, {b*255}, {a})"
+                node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
         node_dict[final_node] = f"rgba(0,0,0,1)"
         weight_dict[final_node] = 1
         colors = [node_dict[n] for n in sources]
@@ -145,7 +146,7 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
         s = row[source_or_target]
         layer = row['source layer']
         if source_or_target == 'target':
-            layer = layer+1
+            layer = layer + 1
         for t in top_n.values():
             if s in t:
                 return s
@@ -160,6 +161,7 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
             elif ('Other' in x['source_w_other']) and ('root' in x['target_w_other']):
                 return False  # can change to True if want to remove Other to root
             return False
+
         df['is_other_to_other'] = df.apply(lambda x: contains_other(x), axis=1)
         df = df[df['is_other_to_other'] == False]
         return df
@@ -181,13 +183,13 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
             layer_df = df.loc[df['source layer'] == layer]
             layer_total = layer_df['value'].sum()
             layer_df['normalized value'] = 1 * \
-                layer_df['value'] / layer_total
+                                           layer_df['value'] / layer_total
             new_df = pd.concat([new_df, layer_df])
         for layer in other_df['source layer'].unique():
             layer_df = other_df.loc[df['source layer'] == layer]
             layer_total = layer_df['value'].sum()
             layer_df['normalized value'] = 0.1 * \
-                layer_df['value'] / layer_total
+                                           layer_df['value'] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
@@ -205,7 +207,7 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
         target_code = [get_code(s, code_map) for s in conn['target_w_other']]
         values = [v for v in conn['normalized value']]
         link_colors = conn['node_color'].apply(lambda x: x.split(', 0.75)')[
-                                               0] + ', 0.3)').values.tolist()  # change alpha
+                                                             0] + ', 0.3)').values.tolist()  # change alpha
         return source_code, target_code, values, link_colors
 
     def get_node_colors(sources, df):
@@ -217,7 +219,7 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
             max_value = c_df.groupby('source_w_other').mean()[
                 'normalized value'].max()
             min_value = c_df.groupby('source_w_other').mean()[
-                'normalized value'].min()*0.8
+                            'normalized value'].min() * 0.8
             cmap = plt.cm.ScalarMappable(norm=matplotlib.colors.Normalize(
                 vmin=min_value, vmax=max_value), cmap=cmap_name)
             cmaps[layer] = cmap
@@ -237,8 +239,8 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
                     'normalized value'].values[0]
                 cmap = cmaps[source_df['source layer'].unique()[0]]
                 r, g, b, a = cmap.to_rgba(intensity, alpha=0.75)
-                colors.append(f"rgba({r*255}, {g*255}, {b*255}, {a})")
-                source_df['node_color'] = f"rgba({r*255}, {g*255}, {b*255}, {a})"
+                colors.append(f"rgba({r * 255}, {g * 255}, {b * 255}, {a})")
+                source_df['node_color'] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
             new_df = pd.concat([new_df, source_df])
         return new_df, colors
 
@@ -259,11 +261,11 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
                 'Other')]
             layer_df['rank'] = range(len(layer_df.index))
             layer_df['value'] = layer_df['value'] / layer_df['value'].sum()
-            layer_df['y'] = 0.8*(0.01+max(layer_df['rank']) -
-                                 layer_df['rank']) / (max(layer_df['rank']))-0.05
-            layer_df['x'] = (0.01+layer)/(len(layers)+1)
-            other_df = pd.DataFrame([[f"Other connections {layer}", layer, other_value, 10, 0.9, (0.01+layer)/(
-                len(layers)+1)]], columns=['source_w_other', 'source layer', 'value', 'rank', 'y', 'x'])
+            layer_df['y'] = 0.8 * (0.01 + max(layer_df['rank']) -
+                                   layer_df['rank']) / (max(layer_df['rank'])) - 0.05
+            layer_df['x'] = (0.01 + layer) / (len(layers) + 1)
+            other_df = pd.DataFrame([[f"Other connections {layer}", layer, other_value, 10, 0.9, (0.01 + layer) / (
+                    len(layers) + 1)]], columns=['source_w_other', 'source layer', 'value', 'rank', 'y', 'x'])
             print(layer_df)
             final_df = pd.concat([final_df, layer_df, other_df])
 
@@ -313,3 +315,10 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
 
     )
     fig.write_image(f'{savename}', width=1900, scale=2, height=800)
+
+
+def plot_shap_summary(shap_values, test_data, feature_names, output_path):
+    shap.summary_plot(shap_values, test_data,
+                      feature_names=feature_names, max_display=30, plot_size=[15, 6])
+    plt.savefig(
+        output_path, dpi=200)
