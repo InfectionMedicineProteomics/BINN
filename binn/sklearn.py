@@ -9,23 +9,23 @@ from binn import BINN, Network, SuperLogger
 
 
 class BINNClassifier(BaseEstimator, ClassifierMixin):
-
-    def __init__(self,
-                 pathways: Network = None,
-                 activation: str = 'tanh',
-                 weight: torch.Tensor = torch.Tensor([1, 1]),
-                 learning_rate: float = 1e-4,
-                 n_layers: int = 4,
-                 scheduler='plateau',
-                 optimizer='adam',
-                 validate: bool = True,
-                 n_outputs: int = 2,
-                 dropout: float = 0,
-                 residual: bool = False,
-                 threads: int = 1,
-                 epochs: int = 100,
-                 logger: Union[SuperLogger, None] = None
-                 ):
+    def __init__(
+        self,
+        pathways: Network = None,
+        activation: str = "tanh",
+        weight: torch.Tensor = torch.Tensor([1, 1]),
+        learning_rate: float = 1e-4,
+        n_layers: int = 4,
+        scheduler="plateau",
+        optimizer="adam",
+        validate: bool = True,
+        n_outputs: int = 2,
+        dropout: float = 0,
+        residual: bool = False,
+        threads: int = 1,
+        epochs: int = 100,
+        logger: Union[SuperLogger, None] = None,
+    ):
         self.clf = BINN(
             pathways=pathways,
             activation=activation,
@@ -37,7 +37,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
             validate=validate,
             n_outputs=n_outputs,
             dropout=dropout,
-            residual=residual
+            residual=residual,
         )
 
         self.threads = threads
@@ -49,12 +49,20 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
             dataset=TensorDataset(torch.Tensor(X), torch.LongTensor(y)),
             batch_size=8,
             num_workers=self.threads,
-            shuffle=True
+            shuffle=True,
         )
 
-        trainer = Trainer(callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs)
+        trainer = Trainer(
+            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs
+        )
 
         trainer.fit(self.clf, dataloader)
 
     def predict(self, X):
-        pass
+
+        return NotImplemented
+
+    @property
+    def feature_importances_(self):
+
+        return NotImplemented
