@@ -122,7 +122,7 @@ def shap_sankey(df: pd.DataFrame, final_node: str = "root", val_col="value", cma
     return fig
 
 
-def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", val_col='value', cmap_name="Reds"):
+def complete_shap_sankey(df, show_top_n=10, savename="complete_sankey", val_col='value', cmap_name="Reds"):
     df['source layer'] = df['source layer'].astype(int)
     df['target layer'] = df['target layer'].astype(int)
     df = remove_loops(df)
@@ -264,7 +264,7 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
             layer_df['x'] = (0.01+layer)/(len(layers)+1)
             other_df = pd.DataFrame([[f"Other connections {layer}", layer, other_value, 10, 0.9, (0.01+layer)/(
                 len(layers)+1)]], columns=['source_w_other', 'source layer', 'value', 'rank', 'y', 'x'])
-            print(layer_df)
+
             final_df = pd.concat([final_df, layer_df, other_df])
 
         for f in feature_labels:
@@ -272,7 +272,6 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
                 x.append(0.85)
                 y.append(0.5)
             else:
-                print(f)
                 x.append(
                     final_df[final_df['source_w_other'] == f]['x'].values[0])
                 y.append(
@@ -312,4 +311,4 @@ def complete_shap_sankey(df, show_top_n=10, savename="sepsis_complete_sankey", v
         ],
 
     )
-    fig.write_image(f'{savename}', width=1900, scale=2, height=800)
+    fig.write_image(f'{savename}.png', width=1900, scale=2, height=800)

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import shap
 import numpy as np
 import torch
-from NN import BINN
+from binn.NN import BINN
 import pandas as pd
 
 
@@ -12,10 +12,10 @@ def shap_for_layers(model: BINN, background_data: torch.Tensor, test_data: torch
     shap_dict = {'features': [], 'shap_values': []}
     for name, layer in model.layers.named_children():
         if isinstance(layer, torch.nn.Linear) and (not "Residual" in name or "final" in name):
-            feature_names = model.column_names[feature_index]
+            feature_names = model.layer_names[feature_index]
             explainer = shap.DeepExplainer((model, layer), background_data)
             shap_values = explainer.shap_values(test_data)
-            shap_dict['features'].append(model.column_names[feature_index])
+            shap_dict['features'].append(model.layer_names[feature_index])
             shap_dict['shap_values'].append(shap_values)
             if plot:
                 shap.summary_plot(shap_values, intermediate_data,
