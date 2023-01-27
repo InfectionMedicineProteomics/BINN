@@ -9,18 +9,20 @@ from binn.network import Network
 
 
 class BINN(LightningModule):
-    def __init__(self,
-                 pathways: Network = None,
-                 activation: str = 'tanh',
-                 weight: torch.Tensor = torch.Tensor([1, 1]),
-                 learning_rate: float = 1e-4,
-                 n_layers: int = 4,
-                 scheduler='plateau',
-                 optimizer='adam',
-                 validate: bool = True,
-                 n_outputs: int = 2,
-                 dropout: float = 0,
-                 residual: bool = False):
+    def __init__(
+        self,
+        pathways: Network = None,
+        activation: str = "tanh",
+        weight: torch.Tensor = torch.Tensor([1, 1]),
+        learning_rate: float = 1e-4,
+        n_layers: int = 4,
+        scheduler="plateau",
+        optimizer="adam",
+        validate: bool = True,
+        n_outputs: int = 2,
+        dropout: float = 0,
+        residual: bool = False,
+    ):
 
         super().__init__()
 
@@ -35,12 +37,14 @@ class BINN(LightningModule):
             layer_sizes.append(i)
             self.layer_names.append(matrix.index)
 
-        self.layers = generate_sequential(layer_sizes,
-                                          connectivity_matrices=connectivity_matrices,
-                                          activation=activation,
-                                          bias=True,
-                                          n_outputs=n_outputs,
-                                          dropout=dropout)
+        self.layers = generate_sequential(
+            layer_sizes,
+            connectivity_matrices=connectivity_matrices,
+            activation=activation,
+            bias=True,
+            n_outputs=n_outputs,
+            dropout=dropout,
+        )
         init_weights(self.layers)
         self.loss = nn.CrossEntropyLoss(weight=weight)
         self.learning_rate = learning_rate
@@ -87,7 +91,7 @@ class BINN(LightningModule):
     def report_layer_structure(self, verbose=False):
         if verbose:
             print(self.layers)
-        parameters = {'nz weights': [], 'weights': [], 'biases': []}
+        parameters = {"nz weights": [], "weights": [], "biases": []}
         for i, l in enumerate(self.layers):
             if isinstance(l, nn.Linear):
                 nz_weights = torch.count_nonzero(l.weight)
@@ -98,36 +102,39 @@ class BINN(LightningModule):
                     print(f"Number of nonzero weights: {nz_weights} ")
                     print(f"Number biases: {nz_weights} ")
                     print(f"Total number of elements: {weights + biases} ")
-                parameters['nz weights'].append(nz_weights)
-                parameters['weights'].append(weights)
-                parameters['biases'].append(biases)
+                parameters["nz weights"].append(nz_weights)
+                parameters["weights"].append(weights)
+                parameters["biases"].append(biases)
         return parameters
 
     def configure_optimizers(self):
         if self.validate == True:
-            monitor = 'val_loss'
+            monitor = "val_loss"
         else:
-            monitor = 'train_loss'
+            monitor = "train_loss"
 
         if isinstance(self.optimizer, str):
-            if self.optimizer == 'adam':
-                optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=1e-3)
+            if self.optimizer == "adam":
+                optimizer = torch.optim.Adam(
+                    self.parameters(), lr=self.learning_rate, weight_decay=1e-3
+                )
         else:
             optimizer = self.optimizer
 
-        if self.scheduler == 'plateau':
-            scheduler = {"scheduler":
-                torch.optim.lr_scheduler.ReduceLROnPlateau(
-                    optimizer,
-                    patience=5,
-                    threshold=0.00001,
-                    mode='min',
-                    verbose=True),
-                "interval": "epoch",
-                "monitor": monitor}
-        elif self.scheduler == 'step':
+        if self.scheduler == "plateau":
             scheduler = {
-                "scheduler": torch.optim.lr_scheduler.StepLR(optimizer, step_size=25, gamma=0.1, verbose=True)}
+                "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+                    optimizer, patience=5, threshold=0.00001, mode="min", verbose=True
+                ),
+                "interval": "epoch",
+                "monitor": monitor,
+            }
+        elif self.scheduler == "step":
+            scheduler = {
+                "scheduler": torch.optim.lr_scheduler.StepLR(
+                    optimizer, step_size=25, gamma=0.1, verbose=True
+                )
+            }
 
         return [optimizer], [scheduler]
 
@@ -149,25 +156,29 @@ def reset_params(m):
 
 
 def append_activation(layers, activation, n):
-    if activation == 'tanh':
-        layers.append((f'Tanh {n}', nn.Tanh()))
-    elif activation == 'relu':
-        layers.append((f'ReLU {n}', nn.ReLU()))
+    if activation == "tanh":
+        layers.append((f"Tanh {n}", nn.Tanh()))
+    elif activation == "relu":
+        layers.append((f"ReLU {n}", nn.ReLU()))
     elif activation == "leaky relu":
-        layers.append((f'LeakyReLU {n}', nn.LeakyReLU()))
+        layers.append((f"LeakyReLU {n}", nn.LeakyReLU()))
     elif activation == "sigmoid":
-        layers.append((f'Sigmoid {n}', nn.Sigmoid()))
-    elif activation == 'elu':
-        layers.append((f'Elu {n}', nn.ELU()))
-    elif activation == 'hardsigmoid':
-        layers.append((f'HardSigmoid', nn.Hardsigmoid()))
+        layers.append((f"Sigmoid {n}", nn.Sigmoid()))
+    elif activation == "elu":
+        layers.append((f"Elu {n}", nn.ELU()))
+    elif activation == "hardsigmoid":
+        layers.append((f"HardSigmoid", nn.Hardsigmoid()))
     return layers
 
 
-def generate_sequential(layer_sizes,
-                        connectivity_matrices=None,
-                        activation='tanh', bias=True,
-                        n_outputs=2, dropout=0):
+def generate_sequential(
+    layer_sizes,
+    connectivity_matrices=None,
+    activation="tanh",
+    bias=True,
+    n_outputs=2,
+    dropout=0,
+):
     """
     Generates a sequential model from layer sizes.
     """
@@ -175,50 +186,64 @@ def generate_sequential(layer_sizes,
     for n in range(len(layer_sizes) - 1):
         linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
         layers.append((f"Layer_{n}", linear_layer))  # linear layer
-        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1])))  # batch normalization
+        layers.append(
+            (f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1]))
+        )  # batch normalization
         if connectivity_matrices is not None:
             # Masking matrix
-            prune.custom_from_mask(linear_layer, name='weight', mask=torch.tensor(connectivity_matrices[n].T.values))
+            prune.custom_from_mask(
+                linear_layer,
+                name="weight",
+                mask=torch.tensor(connectivity_matrices[n].T.values),
+            )
         if isinstance(dropout, list):
             layers.append((f"Dropout_{n}", nn.Dropout(dropout[n])))
         else:
             layers.append((f"Dropout_{n}", nn.Dropout(dropout)))
         if isinstance(activation, list):
-            layers.append((f'Activation_{n}', activation[n]))
+            layers.append((f"Activation_{n}", activation[n]))
         else:
             append_activation(layers, activation, n)
-    layers.append(("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias)))  # Output layer
+    layers.append(
+        ("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias))
+    )  # Output layer
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
 
 
-def generate_residual(layer_sizes,
-                      connectivity_matrices=None,
-                      activation='tanh', bias=False,
-                      n_outpus=2):
+def generate_residual(
+    layer_sizes, connectivity_matrices=None, activation="tanh", bias=False, n_outpus=2
+):
     layers = []
 
     def generate_block(n, layers):
         linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
         layers.append((f"Layer_{n}", linear_layer))  # linear layer
-        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(
-            layer_sizes[n + 1])))  # batch normalization
+        layers.append(
+            (f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1]))
+        )  # batch normalization
         if connectivity_matrices is not None:
-            prune.custom_from_mask(linear_layer, name='weight', mask=torch.tensor(
-                connectivity_matrices[n].T.values))
+            prune.custom_from_mask(
+                linear_layer,
+                name="weight",
+                mask=torch.tensor(connectivity_matrices[n].T.values),
+            )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
-        layers.append((f'Residual_out_{n}', nn.Linear(
-            layer_sizes[n + 1], n_outpus, bias=bias)))
+        layers.append(
+            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outpus, bias=bias))
+        )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers
 
     for res_index in range(len(layer_sizes)):
         if res_index == len(layer_sizes) - 1:
-            layers.append((f"BatchNorm_final", nn.BatchNorm1d(
-                layer_sizes[-1])))  # batch normalization
+            layers.append(
+                (f"BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1]))
+            )  # batch normalization
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
-            layers.append((f'Residual_out_final', nn.Linear(
-                layer_sizes[-1], n_outpus, bias=bias)))
+            layers.append(
+                (f"Residual_out_final", nn.Linear(layer_sizes[-1], n_outpus, bias=bias))
+            )
             layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
         else:
             layers = generate_block(res_index, layers)
