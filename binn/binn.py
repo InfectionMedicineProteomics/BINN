@@ -18,7 +18,7 @@ class BINN(LightningModule):
         n_layers: int = 4,
         scheduler="plateau",
         optimizer="adam",
-        validate: bool = True,
+        validate: bool = False,
         n_outputs: int = 2,
         dropout: float = 0,
         residual: bool = False,
@@ -66,8 +66,10 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("train_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_loss", loss, prog_bar=True,
+                 on_step=False, on_epoch=True)
+        self.log("train_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_nb):
@@ -77,7 +79,8 @@ class BINN(LightningModule):
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("val_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("val_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
 
     def test_step(self, batch, batch_nb):
         x, y = batch
@@ -85,8 +88,10 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("test_loss", loss, prog_bar=True,
+                 on_step=False, on_epoch=True)
+        self.log("test_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
 
     def report_layer_structure(self, verbose=False):
         if verbose:
@@ -230,7 +235,8 @@ def generate_residual(
             )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
         layers.append(
-            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outpus, bias=bias))
+            (f"Residual_out_{n}", nn.Linear(
+                layer_sizes[n + 1], n_outpus, bias=bias))
         )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers
@@ -242,7 +248,8 @@ def generate_residual(
             )  # batch normalization
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
             layers.append(
-                (f"Residual_out_final", nn.Linear(layer_sizes[-1], n_outpus, bias=bias))
+                (f"Residual_out_final", nn.Linear(
+                    layer_sizes[-1], n_outpus, bias=bias))
             )
             layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
         else:

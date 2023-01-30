@@ -39,11 +39,13 @@ class BINNExplainer:
                     :, (connections != 0).any(axis=0)
                 ]  # get targets and append to target
                 for target in connections:
-                    feature_dict["source"].append(f"{features[f]}_{curr_layer}")
+                    feature_dict["source"].append(
+                        f"{features[f]}_{curr_layer}")
                     feature_dict["target"].append(f"{target}_{curr_layer + 1}")
                     feature_dict["value"].append(sv_mean[0][f])
                     feature_dict["type"].append(0)
-                    feature_dict["source"].append(f"{features[f]}_{curr_layer}")
+                    feature_dict["source"].append(
+                        f"{features[f]}_{curr_layer}")
                     feature_dict["target"].append(f"{target}_{curr_layer + 1}")
                     feature_dict["value"].append(sv_mean[1][f])
                     feature_dict["type"].append(1)
@@ -62,7 +64,8 @@ class BINNExplainer:
         explainer = shap.DeepExplainer(self.model, background_data)
         shap_values = explainer.shap_values(test_data)
 
-        shap_dict = {"features": self.model.column_names[0], "shap_values": shap_values}
+        shap_dict = {
+            "features": self.model.layer_names[0], "shap_values": shap_values}
 
         return shap_dict
 
@@ -81,9 +84,11 @@ class BINNExplainer:
             if isinstance(layer, torch.nn.Linear) and (
                 not "Residual" in name or "final" in name
             ):
-                explainer = shap.DeepExplainer((self.model, layer), background_data)
+                explainer = shap.DeepExplainer(
+                    (self.model, layer), background_data)
                 shap_values = explainer.shap_values(test_data)
-                shap_dict["features"].append(self.model.column_names[feature_index])
+                shap_dict["features"].append(
+                    self.model.layer_names[feature_index])
                 shap_dict["shap_values"].append(shap_values)
                 feature_index += 1
 

@@ -18,7 +18,7 @@ def get_code(feature, feature_map):
 
 
 def remove_loops(df):
-    df["loop"] = df.apply(lambda x: x["source"] == x["target"], axis=1)
+    df["loop"] = df.apply(lambda x: x["source"] == x["target"], axis=1).copy()
     df = df[df["loop"] == False]
     return df
 
@@ -26,8 +26,8 @@ def remove_loops(df):
 def shap_sankey(
     df: pd.DataFrame, final_node: str = "root", val_col="value", cmap_name="coolwarm"
 ):
-    df["source layer"] = df["source layer"].astype(int)
-    df["target layer"] = df["target layer"].astype(int)
+    df["source layer"] = df["source layer"].astype(int).copy()
+    df["target layer"] = df["target layer"].astype(int).copy()
     unique_features = df["source"].unique().tolist()
     unique_features += df["target"].unique().tolist()
     code_map, feature_labels = encode_features(list(set(unique_features)))
@@ -37,7 +37,7 @@ def shap_sankey(
         new_df = pd.DataFrame()
         total_value_sum = df[val_col].sum()
         for layer in df["source layer"].unique():
-            layer_df = df.loc[df["source layer"] == layer]
+            layer_df = df.loc[df["source layer"] == layer].copy()
             layer_total = layer_df[val_col].sum()
             layer_df["normalized value"] = (
                 total_value_sum * layer_df[val_col] / layer_total
@@ -84,7 +84,6 @@ def shap_sankey(
             pairs = [(f, v) for f, v in zip(n, w)]
             for pair in pairs:
                 n, w = pair
-                print(n, w)
                 r, g, b, a = cmap.to_rgba(w, alpha=0.5)
                 weight_dict[n] = w
                 node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
@@ -96,7 +95,8 @@ def shap_sankey(
         return new_df, colors
 
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(
+        sources, df)
     nodes = dict(
         pad=20,
         thickness=20,
@@ -130,8 +130,8 @@ def complete_shap_sankey(
     val_col="value",
     cmap_name="Reds",
 ):
-    df["source layer"] = df["source layer"].astype(int)
-    df["target layer"] = df["target layer"].astype(int)
+    df["source layer"] = df["source layer"].astype(int).copy()
+    df["target layer"] = df["target layer"].astype(int).copy()
     df = remove_loops(df)
     n_layers = max(df["target layer"].values)
     df["value"] = df[val_col]
@@ -171,12 +171,15 @@ def complete_shap_sankey(
                 return False  # can change to True if want to remove Other to root
             return False
 
-        df["is_other_to_other"] = df.apply(lambda x: contains_other(x), axis=1)
+        df["is_other_to_other"] = df.apply(
+            lambda x: contains_other(x), axis=1).copy()
         df = df[df["is_other_to_other"] == False]
         return df
 
-    df["source_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "source"), axis=1)
-    df["target_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "target"), axis=1)
+    df["source_w_other"] = df.apply(
+        lambda x: set_to_other(x, top_n, "source"), axis=1).copy()
+    df["target_w_other"] = df.apply(
+        lambda x: set_to_other(x, top_n, "target"), axis=1).copy()
 
     df = remove_other_to_other(df)
 
@@ -184,18 +187,19 @@ def complete_shap_sankey(
         new_df = pd.DataFrame()
         df["Other"] = df["source"].apply(
             lambda x: True if "Other connections" in x else False
-        )
+        ).copy()
         other_df = df[df["Other"] == True]
         df = df[df["Other"] == False]
         for layer in df["source layer"].unique():
-            layer_df = df.loc[df["source layer"] == layer]
+            layer_df = df.loc[df["source layer"] == layer].copy()
             layer_total = layer_df["value"].sum()
             layer_df["normalized value"] = 1 * layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         for layer in other_df["source layer"].unique():
             layer_df = other_df.loc[df["source layer"] == layer]
             layer_total = layer_df["value"].sum()
-            layer_df["normalized value"] = 0.1 * layer_df["value"] / layer_total
+            layer_df["normalized value"] = 0.1 * \
+                layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
@@ -207,7 +211,8 @@ def complete_shap_sankey(
     sources = df["source_w_other"].unique().tolist()
 
     def get_connections(sources, source_target_df):
-        conn = source_target_df[source_target_df["source_w_other"].isin(sources)]
+        conn = source_target_df[source_target_df["source_w_other"].isin(
+            sources)]
         source_code = [get_code(s, code_map) for s in conn["source_w_other"]]
         target_code = [get_code(s, code_map) for s in conn["target_w_other"]]
         values = [v for v in conn["normalized value"]]
@@ -223,13 +228,16 @@ def complete_shap_sankey(
         for layer in df["source layer"].unique():
             c_df = df[df["source layer"] == layer]
             # remove Other so that scaling is not messed up
-            c_df = c_df[~c_df["source_w_other"].str.startswith("Other")]
-            max_value = c_df.groupby("source_w_other").mean()["normalized value"].max()
+            c_df = c_df[~c_df["source_w_other"].str.startswith("Other")].copy()
+            max_value = c_df.groupby("source_w_other").mean()[
+                "normalized value"].max()
             min_value = (
-                c_df.groupby("source_w_other").mean()["normalized value"].min() * 0.8
+                c_df.groupby("source_w_other").mean()[
+                    "normalized value"].min() * 0.8
             )
             cmap = plt.cm.ScalarMappable(
-                norm=matplotlib.colors.Normalize(vmin=min_value, vmax=max_value),
+                norm=matplotlib.colors.Normalize(
+                    vmin=min_value, vmax=max_value),
                 cmap=cmap_name,
             )
             cmaps[layer] = cmap
@@ -273,7 +281,8 @@ def complete_shap_sankey(
             layer_df = grouped_df[grouped_df["source layer"] == layer].sort_values(
                 ["value"], ascending=True
             )
-            layer_df = layer_df.loc[~layer_df["source_w_other"].str.startswith("Other")]
+            layer_df = layer_df.loc[~layer_df["source_w_other"].str.startswith(
+                "Other")]
             layer_df["rank"] = range(len(layer_df.index))
             layer_df["value"] = layer_df["value"] / layer_df["value"].sum()
             layer_df["y"] = (
@@ -294,9 +303,9 @@ def complete_shap_sankey(
                         (0.01 + layer) / (len(layers) + 1),
                     ]
                 ],
-                columns=["source_w_other", "source layer", "value", "rank", "y", "x"],
+                columns=["source_w_other", "source layer",
+                         "value", "rank", "y", "x"],
             )
-            print(layer_df)
             final_df = pd.concat([final_df, layer_df, other_df])
 
         for f in feature_labels:
@@ -304,13 +313,15 @@ def complete_shap_sankey(
                 x.append(0.85)
                 y.append(0.5)
             else:
-                print(f)
-                x.append(final_df[final_df["source_w_other"] == f]["x"].values[0])
-                y.append(final_df[final_df["source_w_other"] == f]["y"].values[0])
+                x.append(
+                    final_df[final_df["source_w_other"] == f]["x"].values[0])
+                y.append(
+                    final_df[final_df["source_w_other"] == f]["y"].values[0])
         return x, y
 
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(
+        sources, df)
     x, y = get_node_positions(feature_labels, df)
     # format text
     feature_labels = [f.split("_")[0] for f in feature_labels]
