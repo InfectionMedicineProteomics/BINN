@@ -369,7 +369,7 @@ class ImportanceNetwork():
             lambda x: x["value"]/(np.log2(x['nodes_in_SG'])), axis=1)
         return self.df
 
-    def generate_sankey(self, query_node, upstream=False, save_name='sankey.png', val_col='value', cmap_name='coolwarm'):
+    def generate_sankey(self, query_node, upstream=False, savename='sankey.png', val_col='value', cmap_name='coolwarm'):
         if upstream == False:
             final_node = "root"
             SG = self.get_downstream_subgraph(
@@ -386,4 +386,4 @@ class ImportanceNetwork():
                           val_col=val_col, cmap_name=cmap_name)
 
         fig.write_image(
-            f'{save_name}', width=1200, scale=2.5, height=500)
+            f'{savename}', width=1200, scale=2.5, height=500)

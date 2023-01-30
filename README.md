@@ -28,7 +28,7 @@ binn = BINN(
 )
 ```
 
-A sklearn wrapper is also available:
+An sklearn wrapper is also available:
 
 ```py
 binn = BINNClassifier(
@@ -65,26 +65,6 @@ Sequential(
   (Output layer): Linear(in_features=28, out_features=2, bias=True)
 )
 
-Layer 0
-Number of nonzero weights: 2509
-Number biases: 2509
-Total number of elements: 425991
-Layer 4
-Number of nonzero weights: 955
-Number biases: 955
-Total number of elements: 434070
-Layer 8
-Number of nonzero weights: 455
-Number biases: 455
-Total number of elements: 73872
-Layer 12
-Number of nonzero weights: 163
-Number biases: 163
-Total number of elements: 4564
-Layer 16
-Number of nonzero weights: 56
-Number biases: 56
-Total number of elements: 58
 ```
 
 ### Example input
