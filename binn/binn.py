@@ -39,10 +39,13 @@ class BINN(LightningModule):
             self.layer_names.append(matrix.index)
 
         if self.residual:
-            self.layers = generate_residual(layer_sizes,
-                                            connectivity_matrices=connectivity_matrices,
-                                            activation="tanh",
-                                            bias=True, n_outputs=2)
+            self.layers = generate_residual(
+                layer_sizes,
+                connectivity_matrices=connectivity_matrices,
+                activation="tanh",
+                bias=True,
+                n_outputs=2,
+            )
         else:
             self.layers = generate_sequential(
                 layer_sizes,
@@ -72,10 +75,8 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("train_loss", loss, prog_bar=True,
-                 on_step=False, on_epoch=True)
-        self.log("train_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_nb):
@@ -85,8 +86,7 @@ class BINN(LightningModule):
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("val_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("val_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
 
     def test_step(self, batch, batch_nb):
         x, y = batch
@@ -94,10 +94,8 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("test_loss", loss, prog_bar=True,
-                 on_step=False, on_epoch=True)
-        self.log("test_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
 
     def report_layer_structure(self, verbose=False):
         if verbose:
@@ -241,8 +239,7 @@ def generate_residual(
             )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
         layers.append(
-            (f"Residual_out_{n}", nn.Linear(
-                layer_sizes[n + 1], n_outputs, bias=bias))
+            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outputs, bias=bias))
         )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers
@@ -254,8 +251,10 @@ def generate_residual(
             )  # batch normalization
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
             layers.append(
-                (f"Residual_out_final", nn.Linear(
-                    layer_sizes[-1], n_outputs, bias=bias))
+                (
+                    f"Residual_out_final",
+                    nn.Linear(layer_sizes[-1], n_outputs, bias=bias),
+                )
             )
             layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
         else:
@@ -285,7 +284,9 @@ def forward_residual(model: nn.Sequential, x):
         if name.startswith("Residual"):
             if "out" in name:  # we've reached res output
                 x_temp = layer(x)
-            if is_activation(layer):  # weve reached output sigmoid. Time to add to x_final
+            if is_activation(
+                layer
+            ):  # weve reached output sigmoid. Time to add to x_final
                 x_temp = layer(x_temp)
                 x_final = x_final + x_temp
                 residual_counter = residual_counter + 1

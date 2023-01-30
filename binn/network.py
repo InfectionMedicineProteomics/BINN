@@ -20,8 +20,7 @@ def get_mapping_to_all_layers(path_df, translation_df):
 
     components = {"input": [], "connections": []}
     for translation in translation_df["input"]:
-        ids = translation_df[translation_df["input"]
-                             == translation]["translation"]
+        ids = translation_df[translation_df["input"] == translation]["translation"]
         for id in ids:
             connections = graph.subgraph(
                 nx.single_source_shortest_path(graph, id).keys()
@@ -140,8 +139,7 @@ class Network:
                 inputs = list(mapp.index)
                 self.inputs = inputs
             filter_df = pd.DataFrame(index=inputs)
-            all = filter_df.merge(mapp, right_index=True,
-                                  left_index=True, how="inner")
+            all = filter_df.merge(mapp, right_index=True, left_index=True, how="inner")
             inputs = list(mapp.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices
@@ -238,11 +236,9 @@ def subset_on_proteins_in_ms_data(
     input_df, translation_df, input_data_column, verbose=False
 ):
     proteins_in_ms_data = input_df[input_data_column].unique()
-    translation_df = translation_df[translation_df["input"].isin(
-        proteins_in_ms_data)]
+    translation_df = translation_df[translation_df["input"].isin(proteins_in_ms_data)]
     if verbose:
-        print(
-            f"Number of reactome ids before subsetting: {len(translation_df.index)}")
+        print(f"Number of reactome ids before subsetting: {len(translation_df.index)}")
         print(
             f"Unique proteins in reactome df: {len(list(translation_df['input'].unique()))}"
         )
@@ -277,34 +273,39 @@ def subset_pathways_on_idx(path_df, translation_df, verbose=False):
     return path_df
 
 
-class ImportanceNetwork():
-    def __init__(self, df: pd.DataFrame, val_col: str = 'value'):
+class ImportanceNetwork:
+    def __init__(self, df: pd.DataFrame, val_col: str = "value"):
         self.df = df
         self.val_col = val_col
         self.G = self.create_graph()
         self.G_reverse = self.G.reverse()
 
     def create_graph(self):
-        self.df['source'] = self.df['source'].apply(lambda x: x.split('_')[0])
-        self.df['target'] = self.df['target'].apply(lambda x: x.split('_')[0])
+        self.df["source"] = self.df["source"].apply(lambda x: x.split("_")[0])
+        self.df["target"] = self.df["target"].apply(lambda x: x.split("_")[0])
         G = nx.DiGraph()
         for k in self.df.iterrows():
-            source = k[1]['source']
+            source = k[1]["source"]
             value = k[1][self.val_col]
-            source_layer = k[1]['source layer']+1
+            source_layer = k[1]["source layer"] + 1
             G.add_node(source, weight=value, layer=source_layer)
         for k in self.df.iterrows():
-            source = k[1]['source']
-            target = k[1]['target']
+            source = k[1]["source"]
+            target = k[1]["target"]
             G.add_edge(source, target)
-        root_layer = max(self.df['target layer'])+1
-        G.add_node('root', weight=0, layer=root_layer)
+        root_layer = max(self.df["target layer"]) + 1
+        G.add_node("root", weight=0, layer=root_layer)
         return G
 
     def get_downstream_subgraph(self, query_node, depth_limit=None):
         SG = nx.DiGraph()
-        nodes = [n for n in nx.traversal.bfs_successors(
-            self.G, query_node, depth_limit=depth_limit) if n != query_node]
+        nodes = [
+            n
+            for n in nx.traversal.bfs_successors(
+                self.G, query_node, depth_limit=depth_limit
+            )
+            if n != query_node
+        ]
         for source, targets in nodes:
             SG.add_node(source, **self.G.nodes()[source])
             for t in targets:
@@ -323,8 +324,13 @@ class ImportanceNetwork():
 
     def get_complete_subgraph(self, query_node, depth_limit=None):
         SG = self.get_downstream_subgraph(self.G, query_node)
-        nodes = [n for n in nx.traversal.bfs_successors(
-            self.G_reverse, query_node, depth_limit=depth_limit) if n != query_node]
+        nodes = [
+            n
+            for n in nx.traversal.bfs_successors(
+                self.G_reverse, query_node, depth_limit=depth_limit
+            )
+            if n != query_node
+        ]
         for source, targets in nodes:
             SG.add_node(source, **self.G_reverse.nodes()[source])
             for t in targets:
@@ -341,49 +347,59 @@ class ImportanceNetwork():
         SG = self.get_upstream_subgraph(query_node, depth_limit=None)
         return SG.number_of_nodes()
 
-    def get_nr_nodes_in_downstream_SG(self,  query_node):
+    def get_nr_nodes_in_downstream_SG(self, query_node):
         SG = self.get_downstream_subgraph(query_node, depth_limit=None)
         return SG.number_of_nodes()
 
-    def get_fan_in(self,  query_node):
+    def get_fan_in(self, query_node):
         return len([n for n in self.G.in_edges(query_node)])
 
-    def get_fan_out(self,  query_node):
+    def get_fan_out(self, query_node):
         return len([n for n in self.G.out_edges(query_node)])
 
     def add_normalization(self):
-        self.df['fan_in'] = self.df.apply(
-            lambda x: self.get_fan_in(x['source']), axis=1)
-        self.df['fan_out'] = self.df.apply(
-            lambda x: self.get_fan_out(x['source']), axis=1)
-        self.df['fan_tot'] = self.df.apply(
-            lambda x: x['fan_in'] + x['fan_out'], axis=1)
-        self.df['nodes_in_upstream'] = self.df.apply(
-            lambda x: self.get_nr_nodes_in_upstream_SG(x['source']), axis=1)
-        self.df['nodes_in_downstream'] = self.df.apply(
-            lambda x: self.get_nr_nodes_in_downstream_SG(x['source']), axis=1)
-        self.df['nodes_in_SG'] = self.df['nodes_in_downstream'] + \
-            self.df['nodes_in_upstream']
-        self.df['log(nodes_in_SG)'] = np.log2(self.df['nodes_in_SG'])
-        self.df['weighted_val_log'] = self.df.apply(
-            lambda x: x["value"]/(np.log2(x['nodes_in_SG'])), axis=1)
+        self.df["fan_in"] = self.df.apply(
+            lambda x: self.get_fan_in(x["source"]), axis=1
+        )
+        self.df["fan_out"] = self.df.apply(
+            lambda x: self.get_fan_out(x["source"]), axis=1
+        )
+        self.df["fan_tot"] = self.df.apply(lambda x: x["fan_in"] + x["fan_out"], axis=1)
+        self.df["nodes_in_upstream"] = self.df.apply(
+            lambda x: self.get_nr_nodes_in_upstream_SG(x["source"]), axis=1
+        )
+        self.df["nodes_in_downstream"] = self.df.apply(
+            lambda x: self.get_nr_nodes_in_downstream_SG(x["source"]), axis=1
+        )
+        self.df["nodes_in_SG"] = (
+            self.df["nodes_in_downstream"] + self.df["nodes_in_upstream"]
+        )
+        self.df["log(nodes_in_SG)"] = np.log2(self.df["nodes_in_SG"])
+        self.df["weighted_val_log"] = self.df.apply(
+            lambda x: x["value"] / (np.log2(x["nodes_in_SG"])), axis=1
+        )
         return self.df
 
-    def generate_sankey(self, query_node, upstream=False, savename='sankey.png', val_col='value', cmap_name='coolwarm'):
+    def generate_sankey(
+        self,
+        query_node,
+        upstream=False,
+        savename="sankey.png",
+        val_col="value",
+        cmap_name="coolwarm",
+    ):
         if upstream == False:
             final_node = "root"
-            SG = self.get_downstream_subgraph(
-                query_node, depth_limit=None)
+            SG = self.get_downstream_subgraph(query_node, depth_limit=None)
             source_or_target = "source"
         else:
             final_node = query_node
-            SG = self.get_upstream_subgraph(
-                query_node, depth_limit=None)
+            SG = self.get_upstream_subgraph(query_node, depth_limit=None)
             source_or_target = "target"
         nodes_in_SG = [n for n in SG.nodes]
         df = self.df[self.df[source_or_target].isin(nodes_in_SG)]
-        fig = shap_sankey(df, final_node=final_node,
-                          val_col=val_col, cmap_name=cmap_name)
+        fig = shap_sankey(
+            df, final_node=final_node, val_col=val_col, cmap_name=cmap_name
+        )
 
-        fig.write_image(
-            f'{savename}', width=1200, scale=2.5, height=500)
+        fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)

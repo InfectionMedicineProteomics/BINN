@@ -177,17 +177,21 @@ def complete_shap_sankey(
         return df
 
     df["source_w_other"] = df.apply(
-        lambda x: set_to_other(x, top_n, "source"), axis=1).copy()
+        lambda x: set_to_other(x, top_n, "source"), axis=1
+    ).copy()
     df["target_w_other"] = df.apply(
-        lambda x: set_to_other(x, top_n, "target"), axis=1).copy()
+        lambda x: set_to_other(x, top_n, "target"), axis=1
+    ).copy()
 
     df = remove_other_to_other(df)
 
     def normalize_layer_values(df):
         new_df = pd.DataFrame()
-        df["Other"] = df["source"].apply(
-            lambda x: True if "Other connections" in x else False
-        ).copy()
+        df["Other"] = (
+            df["source"]
+            .apply(lambda x: True if "Other connections" in x else False)
+            .copy()
+        )
         other_df = df[df["Other"] == True]
         df = df[df["Other"] == False]
         for layer in df["source layer"].unique():
