@@ -18,33 +18,43 @@ class BINN(LightningModule):
         n_layers: int = 4,
         scheduler="plateau",
         optimizer="adam",
-        validate: bool = True,
+        validate: bool = False,
         n_outputs: int = 2,
         dropout: float = 0,
         residual: bool = False,
     ):
 
         super().__init__()
-
+        self.residual = residual
         self.RN = pathways
-
         self.n_layers = n_layers
+
         connectivity_matrices = self.RN.get_connectivity_matrices(n_layers)
         layer_sizes = []
         self.layer_names = []
+
         for matrix in connectivity_matrices:
             i, _ = matrix.shape
             layer_sizes.append(i)
             self.layer_names.append(matrix.index)
 
-        self.layers = generate_sequential(
-            layer_sizes,
-            connectivity_matrices=connectivity_matrices,
-            activation=activation,
-            bias=True,
-            n_outputs=n_outputs,
-            dropout=dropout,
-        )
+        if self.residual:
+            self.layers = generate_residual(
+                layer_sizes,
+                connectivity_matrices=connectivity_matrices,
+                activation="tanh",
+                bias=True,
+                n_outputs=2,
+            )
+        else:
+            self.layers = generate_sequential(
+                layer_sizes,
+                connectivity_matrices=connectivity_matrices,
+                activation=activation,
+                bias=True,
+                n_outputs=n_outputs,
+                dropout=dropout,
+            )
         init_weights(self.layers)
         self.loss = nn.CrossEntropyLoss(weight=weight)
         self.learning_rate = learning_rate
@@ -52,11 +62,10 @@ class BINN(LightningModule):
         self.optimizer = optimizer
         self.validate = validate
         self.save_hyperparameters()
-        self.residual = residual
 
     def forward(self, x):
         if self.residual:
-            return forward_residual(x)
+            return forward_residual(self.layers, x)
         else:
             return self.layers(x)
 
@@ -212,7 +221,7 @@ def generate_sequential(
 
 
 def generate_residual(
-    layer_sizes, connectivity_matrices=None, activation="tanh", bias=False, n_outpus=2
+    layer_sizes, connectivity_matrices=None, activation="tanh", bias=False, n_outputs=2
 ):
     layers = []
 
@@ -230,7 +239,7 @@ def generate_residual(
             )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
         layers.append(
-            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outpus, bias=bias))
+            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outputs, bias=bias))
         )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers
@@ -242,7 +251,10 @@ def generate_residual(
             )  # batch normalization
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
             layers.append(
-                (f"Residual_out_final", nn.Linear(layer_sizes[-1], n_outpus, bias=bias))
+                (
+                    f"Residual_out_final",
+                    nn.Linear(layer_sizes[-1], n_outputs, bias=bias),
+                )
             )
             layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
         else:
@@ -260,6 +272,8 @@ def is_activation(layer):
         return True
     elif isinstance(layer, nn.LeakyReLU):
         return True
+    elif isinstance(layer, nn.Sigmoid):
+        return True
     return False
 
 
@@ -270,7 +284,9 @@ def forward_residual(model: nn.Sequential, x):
         if name.startswith("Residual"):
             if "out" in name:  # we've reached res output
                 x_temp = layer(x)
-            if "sigmoid" in name:  # weve reached output sigmoid. Time to add to x_final
+            if is_activation(
+                layer
+            ):  # weve reached output sigmoid. Time to add to x_final
                 x_temp = layer(x_temp)
                 x_final = x_final + x_temp
                 residual_counter = residual_counter + 1

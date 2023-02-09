@@ -1,36 +1,48 @@
 # Biologically Informed Neural Network (BINN)
 
-Generates a sparse network and translates it into a pytorch lightning architecture sequential neural network. Read
-more [here](test.ipynb) for code examples.
+The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [notebooks](notebooks/) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots.
+
+First, a network is created. This is the network that will be used to create the sparse BINN.
 
 ```py
-from binn.NN import BINN
+input_data = pd.read_csv("../data/test_data.tsv", sep="\t")
+translation = pd.read_csv("../data/translation.tsv", sep="\t")
+pathways = pd.read_csv("../data/pathways.tsv", sep="\t")
 
-model = BINN(
-            input_data  = 'data/TestQM.tsv', # the data containing the input column
-            input_data_column = 'Protein', # specify input column
-            pathways = 'data/pathways.tsv', # datafile containing the pathways
-            translation_mapping  = 'data/translation.tsv', # translation between input and pathways (can be None)
-            n_layers  = 4,
-            activation ='tanh',
-            learning_rate  = 1e-4, # initial learning rate
-            scheduler = 'plateau', # can pass own scheduler
-            optimizer = 'adam', # can pass own optimizer
-            n_outputs = 2, # 2 for binary classification
-            dropout = 0.2, # dropout rate. After every hidden layer.
-            validate  = True
-            )
-
-
-import torch.nn as nn
-# we can also pass a list of activations
-activations = [nn.Sigmoid(), nn.Tanh(), nn.ReLU(), nn.ReLU()]
-# and a list of dropout ratios
-dropouts = [0.5, 0.3, 0.1, 0.1]
-
+network = Network(
+    input_data=input_data,
+    pathways=pathways,
+    mapping=translation,
+    verbose=True
+)
 ```
 
-Generates a model:
+The BINN can thereafter be generated using the network:
+
+```py
+binn = BINN(
+    pathways=network,
+    n_layers=4,
+    dropout=0.2,
+    validate=False,
+)
+```
+
+An sklearn wrapper is also available:
+
+```py
+binn = BINNClassifier(
+    pathways=network,
+    n_layers=4,
+    dropout=0.2,
+    validate=True,
+    epochs=10,
+    threads=10,
+    logger=SuperLogger("logs/test")
+)
+```
+
+This generates the model:
 
 ```py
 Sequential(
@@ -53,26 +65,6 @@ Sequential(
   (Output layer): Linear(in_features=28, out_features=2, bias=True)
 )
 
-Layer 0
-Number of nonzero weights: 2509
-Number biases: 2509
-Total number of elements: 425991
-Layer 4
-Number of nonzero weights: 955
-Number biases: 955
-Total number of elements: 434070
-Layer 8
-Number of nonzero weights: 455
-Number biases: 455
-Total number of elements: 73872
-Layer 12
-Number of nonzero weights: 163
-Number biases: 163
-Total number of elements: 4564
-Layer 16
-Number of nonzero weights: 56
-Number biases: 56
-Total number of elements: 58
 ```
 
 ### Example input
@@ -104,6 +96,11 @@ Total number of elements: 58
 # 4    A0A075B6P5  R-HSA-2029481
 ...
 ```
+
+Plotting a subgraph starting from a node generates the plot:
+![Pathway sankey!](/img/sankey.png "Pathway sankey")
+A compelte sankey may look like this:
+![Complete sankey!](/img/test.png "Complete sankey")
 
 ---
 

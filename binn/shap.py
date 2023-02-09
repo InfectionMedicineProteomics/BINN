@@ -88,7 +88,7 @@ class BINNExplainer:
                     (self.model, layer), background_data)
                 shap_values = explainer.shap_values(test_data)
                 shap_dict["features"].append(
-                    self.model.column_names[feature_index])
+                    self.model.layer_names[feature_index])
                 shap_dict["shap_values"].append(shap_values)
                 feature_index += 1
 
