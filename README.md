@@ -1,10 +1,17 @@
 # Biologically Informed Neural Network (BINN)
 
-The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [notebooks](notebooks/) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots.
+The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [notebooks](notebooks/) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found at [bioRxiv](https://doi.org/10.1101/2023.02.16.528807).
+
+---
+
+## Usage
 
 First, a network is created. This is the network that will be used to create the sparse BINN.
 
 ```py
+from binn import BINN, Network
+import pandas as pd
+
 input_data = pd.read_csv("../data/test_data.tsv", sep="\t")
 translation = pd.read_csv("../data/translation.tsv", sep="\t")
 pathways = pd.read_csv("../data/pathways.tsv", sep="\t")
@@ -31,6 +38,8 @@ binn = BINN(
 An sklearn wrapper is also available:
 
 ```py
+from binn import BINNClassifier
+
 binn = BINNClassifier(
     pathways=network,
     n_layers=4,
@@ -64,47 +73,50 @@ Sequential(
   (Tanh 3): Tanh()
   (Output layer): Linear(in_features=28, out_features=2, bias=True)
 )
-
 ```
 
-### Example input
+## Example input
 
-```py
+Test data (quantmatrix or some matrix containing input column - in this case "Protein")
 
-#Test data (quantmatrix or some matrix containing input column - in this case "Protein")
-#                        PeptideSequence Protein
-# 0  VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR  P00746
-# 1  VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR  P00746
-# 2                          VDTVDPPYPR  P04004
-# 3                      AVTEQGAELSNEER  P27348
-# 4                     VDVIPVNLPGEHGQR  P02751
-...
-#Pathways file
-#           parent          child
-# 0    R-BTA-109581   R-BTA-109606
-# 1    R-BTA-109581   R-BTA-169911
-# 2    R-BTA-109581  R-BTA-5357769
-# 3    R-BTA-109581    R-BTA-75153
-# 4    R-BTA-109582   R-BTA-140877
-...
-#Translation file
-#           input    translation
-# 0    A0A075B6P5   R-HSA-166663
-# 1    A0A075B6P5   R-HSA-173623
-# 2    A0A075B6P5   R-HSA-198933
-# 3    A0A075B6P5   R-HSA-202733
-# 4    A0A075B6P5  R-HSA-2029481
-...
-```
+| PeptideSequence                    | Protein |
+| ---------------------------------- | ------- |
+| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746  |
+| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746  |
+| VDTVDPPYPR                         | P04004  |
+| AVTEQGAELSNEER                     | P27348  |
+| VDVIPVNLPGEHGQR                    | P02751  |
+
+Pathways file
+
+| parent       | child         |
+| ------------ | ------------- |
+| R-BTA-109581 | R-BTA-109606  |
+| R-BTA-109581 | R-BTA-169911  |
+| R-BTA-109581 | R-BTA-5357769 |
+| R-BTA-109581 | R-BTA-75153   |
+| R-BTA-109582 | R-BTA-140877  |
+
+Translation file
+
+| input      | translation   |
+| ---------- | ------------- |
+| A0A075B6P5 | R-HSA-166663  |
+| A0A075B6P5 | R-HSA-173623  |
+| A0A075B6P5 | R-HSA-198933  |
+| A0A075B6P5 | R-HSA-202733  |
+| A0A075B6P5 | R-HSA-2029481 |
+
+---
+
+### Plotting
 
 Plotting a subgraph starting from a node generates the plot:
 ![Pathway sankey!](/img/sankey.png "Pathway sankey")
 A compelte sankey may look like this:
 ![Complete sankey!](/img/test.png "Complete sankey")
 
----
-
-### Installation
+## Installation
 
 The package can be installed with git.
 
@@ -112,11 +124,16 @@ The package can be installed with git.
 gh repo clone InfectionMedicineProteomics/BINN
 ```
 
-### Contributors
+## Testing
 
-Erik Hartman
-Aaron Scott
+The software has been tested on desktop machines running Windows 10/Linux (Ubuntu). Small networks are not RAM-intensive and all experiments have been run comfortably with 16 GB RAM.
 
-### Contact
+## Contributors
+
+[Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University
+
+Aaron Scott, infection medicine proteomics, Lund University
+
+## Contact
 
 Erik Hartman - erik.hartman@hotmail.com
