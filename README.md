@@ -51,7 +51,7 @@ binn = BINNClassifier(
 )
 ```
 
-This generates the model:
+This generates the Pytorch sequential model:
 
 ```py
 Sequential(
@@ -77,35 +77,35 @@ Sequential(
 
 ## Example input
 
-Test data (quantmatrix or some matrix containing input column - in this case "Protein")
+Test data - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein")
 
-| PeptideSequence                    | Protein |
-| ---------------------------------- | ------- |
-| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746  |
-| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746  |
-| VDTVDPPYPR                         | P04004  |
-| AVTEQGAELSNEER                     | P27348  |
-| VDVIPVNLPGEHGQR                    | P02751  |
+| PeptideSequence                    | Protein (this is our input column) |
+| ---------------------------------- | ---------------------------------- |
+| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746                             |
+| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746                             |
+| VDTVDPPYPR                         | P04004                             |
+| AVTEQGAELSNEER                     | P27348                             |
+| VDVIPVNLPGEHGQR                    | P02751                             |
 
-Pathways file
+Pathways file - this file should contain the mapping used to create the connectivity in the hidden layers.
 
-| parent       | child         |
-| ------------ | ------------- |
-| R-BTA-109581 | R-BTA-109606  |
-| R-BTA-109581 | R-BTA-169911  |
-| R-BTA-109581 | R-BTA-5357769 |
-| R-BTA-109581 | R-BTA-75153   |
-| R-BTA-109582 | R-BTA-140877  |
+| parent (target) | child (source) |
+| --------------- | -------------- |
+| R-BTA-109581    | R-BTA-109606   |
+| R-BTA-109581    | R-BTA-169911   |
+| R-BTA-109581    | R-BTA-5357769  |
+| R-BTA-109581    | R-BTA-75153    |
+| R-BTA-109582    | R-BTA-140877   |
 
-Translation file
+Translation file - this file is alternative, but is useful if some translation is needed to map the input features to the pathways in the hiddenn layers. In this case, it is used to map proteins (UniProt IDs) to pathways (Reactome IDs).
 
-| input      | translation   |
-| ---------- | ------------- |
-| A0A075B6P5 | R-HSA-166663  |
-| A0A075B6P5 | R-HSA-173623  |
-| A0A075B6P5 | R-HSA-198933  |
-| A0A075B6P5 | R-HSA-202733  |
-| A0A075B6P5 | R-HSA-2029481 |
+| input (UniProd IDs) | translation (Reactome IDs) |
+| ------------------- | -------------------------- |
+| A0A075B6P5          | R-HSA-166663               |
+| A0A075B6P5          | R-HSA-173623               |
+| A0A075B6P5          | R-HSA-198933               |
+| A0A075B6P5          | R-HSA-202733               |
+| A0A075B6P5          | R-HSA-2029481              |
 
 ---
 
