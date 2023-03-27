@@ -75,7 +75,7 @@ Sequential(
 )
 ```
 
-## Example input
+### Example input
 
 Test data - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein")
 
@@ -132,7 +132,7 @@ The software has been tested on desktop machines running Windows 10/Linux (Ubunt
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University
 
-Aaron Scott, infection medicine proteomics, Lund University
+[Aaron Scott](https://orcid.org/0000-0002-2391-6914), infection medicine proteomics, Lund University
 
 ## Contact
 
