@@ -40,7 +40,8 @@ class Network:
         pathways: pd.DataFrame,
         mapping: Union[pd.DataFrame, None] = None,
         input_data_column="Protein",
-        verbose=False,
+        verbose: bool = False,
+        subset_pathways: bool = True
     ):
 
         if isinstance(mapping, pd.DataFrame):
@@ -56,11 +57,17 @@ class Network:
                 }
             )
 
-        self.mapping = subset_on_proteins_in_ms_data(
-            input_data, self.mapping, input_data_column, verbose
-        )
+        if subset_pathways:
 
-        self.pathways = subset_pathways_on_idx(pathways, self.mapping, verbose)
+            self.mapping = subset_input(
+                input_data, self.mapping, input_data_column, verbose
+            )
+
+            self.pathways = subset_pathways_on_idx(pathways, self.mapping, verbose)
+
+        else:
+
+            self.pathways = pathways
 
         self.mapping = get_mapping_to_all_layers(self.pathways, self.mapping)
 
@@ -232,15 +239,17 @@ def get_separation(pathways, input_data, translation_mapping):
     return sep_path, sep_input, sep_transl
 
 
-def subset_on_proteins_in_ms_data(
+def subset_input(
     input_df, translation_df, input_data_column, verbose=False
 ):
-    proteins_in_ms_data = input_df[input_data_column].unique()
-    translation_df = translation_df[translation_df["input"].isin(proteins_in_ms_data)]
+    keys_in_data = input_df[input_data_column].unique()
+
+    translation_df = translation_df[translation_df["input"].isin(keys_in_data)]
+
     if verbose:
-        print(f"Number of reactome ids before subsetting: {len(translation_df.index)}")
+        print(f"Number of ids before subsetting: {len(translation_df.index)}")
         print(
-            f"Unique proteins in reactome df: {len(list(translation_df['input'].unique()))}"
+            f"Unique ids in df: {len(list(translation_df['input'].unique()))}"
         )
     return translation_df
 

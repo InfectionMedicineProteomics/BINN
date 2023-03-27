@@ -25,6 +25,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         threads: int = 1,
         epochs: int = 100,
         logger: Union[SuperLogger, None] = None,
+        log_steps: int = 50
     ):
         self.clf = BINN(
             pathways=pathways,
@@ -43,6 +44,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         self.threads = threads
         self.epochs = epochs
         self.logger = logger
+        self.log_steps = log_steps
 
     def fit(self, X, y):
         dataloader = DataLoader(
@@ -53,7 +55,8 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         )
 
         trainer = Trainer(
-            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs
+            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs,
+            log_every_n_steps=self.log_steps
         )
 
         trainer.fit(self.clf, dataloader)
