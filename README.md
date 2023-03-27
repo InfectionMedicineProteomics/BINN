@@ -104,4 +104,19 @@ A compelte sankey may look like this:
 
 ---
 
-#### Contact: Erik Hartman - erik.hartman@hotmail.com
+### Installation
+
+The package can be installed with git.
+
+```
+gh repo clone InfectionMedicineProteomics/BINN
+```
+
+### Contributors
+
+Erik Hartman
+Aaron Scott
+
+### Contact
+
+Erik Hartman - erik.hartman@hotmail.com
