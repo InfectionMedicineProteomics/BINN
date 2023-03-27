@@ -121,7 +121,8 @@ A compelte sankey may look like this:
 The package can be installed with git.
 
 ```
-gh repo clone InfectionMedicineProteomics/BINN
+git clone git@github.com:InfectionMedicineProteomics/BINN.git
+pip install -e BINN/
 ```
 
 ## Testing

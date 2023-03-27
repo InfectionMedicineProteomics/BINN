@@ -27,10 +27,8 @@ class BINNExplainer:
         for sv, features, cm in zip(
             shap_dict["shap_values"], shap_dict["features"], connectivity_matrices
         ):
-            # first dim: positive vs negative class, second dim: for each test data, third dim: for each feature
             sv = np.asarray(sv)
             sv = abs(sv)
-            # mean(|shap_value|) = impact on model class
             sv_mean = np.mean(sv, axis=1)
             for f in range(sv_mean.shape[-1]):
                 connections = cm[cm.index == features[f]]
