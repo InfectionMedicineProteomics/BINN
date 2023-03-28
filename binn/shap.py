@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import shap
 import numpy as np
 import torch
@@ -28,10 +27,8 @@ class BINNExplainer:
         for sv, features, cm in zip(
             shap_dict["shap_values"], shap_dict["features"], connectivity_matrices
         ):
-            # first dim: positive vs negative class, second dim: for each test data, third dim: for each feature
             sv = np.asarray(sv)
             sv = abs(sv)
-            # mean(|shap_value|) = impact on model class
             sv_mean = np.mean(sv, axis=1)
             for f in range(sv_mean.shape[-1]):
                 connections = cm[cm.index == features[f]]
@@ -55,6 +52,33 @@ class BINNExplainer:
                     feature_dict["target layer"].append(curr_layer + 1)
             curr_layer += 1
         df = pd.DataFrame(data=feature_dict)
+        return df
+
+    def explain_average(self,
+                        test_data: torch.Tensor,
+                        background_data: torch.Tensor,
+                        nr_iterations: int,
+                        trainer,
+                        dataloader):
+        dfs = {}
+        for iteration in range(nr_iterations):
+            self.model.reset_params()
+            self.model.init_weights()
+            trainer.fit(self.model, dataloader)
+            df = self.explain(test_data, background_data)
+            dfs[iteration] = df
+
+        col_names = [f'value_{n}' for n in range(len(list(dfs.keys())))]
+        values = [df.value.values for df in dfs.values()]
+        values = np.array(values)
+        values_mean = np.mean(values, axis=0)
+        values_std = np.std(values, axis=0)
+        df = dfs[0].copy()
+        df.drop(columns=['value'], inplace=True)
+        df[col_names] = values.T
+        df['value_mean'] = values_mean
+        df['values_std'] = values_std
+        df['value'] = values_mean
         return df
 
     def explain_input(
