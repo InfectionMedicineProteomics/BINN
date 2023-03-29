@@ -55,7 +55,7 @@ class BINN(LightningModule):
                 n_outputs=n_outputs,
                 dropout=dropout,
             )
-        init_weights(self.layers)
+        self.apply(init_weights)
         self.loss = nn.CrossEntropyLoss(weight=weight)
         self.learning_rate = learning_rate
         self.scheduler = scheduler
@@ -75,8 +75,10 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("train_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_loss", loss, prog_bar=True,
+                 on_step=False, on_epoch=True)
+        self.log("train_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_nb):
@@ -86,7 +88,8 @@ class BINN(LightningModule):
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("val_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("val_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
 
     def test_step(self, batch, batch_nb):
         x, y = batch
@@ -94,8 +97,10 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("test_loss", loss, prog_bar=True,
+                 on_step=False, on_epoch=True)
+        self.log("test_acc", accuracy, prog_bar=True,
+                 on_step=False, on_epoch=True)
 
     def report_layer_structure(self, verbose=False):
         if verbose:
@@ -152,6 +157,12 @@ class BINN(LightningModule):
 
     def get_connectivity_matrices(self):
         return self.RN.get_connectivity_matrices(self.n_layers)
+
+    def reset_params(self):
+        self.apply(reset_params)
+
+    def init_weights(self):
+        self.apply(init_weights)
 
 
 def init_weights(m):
@@ -239,7 +250,8 @@ def generate_residual(
             )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
         layers.append(
-            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outputs, bias=bias))
+            (f"Residual_out_{n}", nn.Linear(
+                layer_sizes[n + 1], n_outputs, bias=bias))
         )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers

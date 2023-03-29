@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import shap
 import numpy as np
 import torch
@@ -28,10 +27,8 @@ class BINNExplainer:
         for sv, features, cm in zip(
             shap_dict["shap_values"], shap_dict["features"], connectivity_matrices
         ):
-            # first dim: positive vs negative class, second dim: for each test data, third dim: for each feature
             sv = np.asarray(sv)
             sv = abs(sv)
-            # mean(|shap_value|) = impact on model class
             sv_mean = np.mean(sv, axis=1)
             for f in range(sv_mean.shape[-1]):
                 connections = cm[cm.index == features[f]]
@@ -39,11 +36,13 @@ class BINNExplainer:
                     :, (connections != 0).any(axis=0)
                 ]  # get targets and append to target
                 for target in connections:
-                    feature_dict["source"].append(f"{features[f]}_{curr_layer}")
+                    feature_dict["source"].append(
+                        f"{features[f]}_{curr_layer}")
                     feature_dict["target"].append(f"{target}_{curr_layer + 1}")
                     feature_dict["value"].append(sv_mean[0][f])
                     feature_dict["type"].append(0)
-                    feature_dict["source"].append(f"{features[f]}_{curr_layer}")
+                    feature_dict["source"].append(
+                        f"{features[f]}_{curr_layer}")
                     feature_dict["target"].append(f"{target}_{curr_layer + 1}")
                     feature_dict["value"].append(sv_mean[1][f])
                     feature_dict["type"].append(1)
@@ -55,6 +54,33 @@ class BINNExplainer:
         df = pd.DataFrame(data=feature_dict)
         return df
 
+    def explain_average(self,
+                        test_data: torch.Tensor,
+                        background_data: torch.Tensor,
+                        nr_iterations: int,
+                        trainer,
+                        dataloader):
+        dfs = {}
+        for iteration in range(nr_iterations):
+            self.model.reset_params()
+            self.model.init_weights()
+            trainer.fit(self.model, dataloader)
+            df = self.explain(test_data, background_data)
+            dfs[iteration] = df
+
+        col_names = [f'value_{n}' for n in range(len(list(dfs.keys())))]
+        values = [df.value.values for df in dfs.values()]
+        values = np.array(values)
+        values_mean = np.mean(values, axis=0)
+        values_std = np.std(values, axis=0)
+        df = dfs[0].copy()
+        df.drop(columns=['value'], inplace=True)
+        df[col_names] = values.T
+        df['value_mean'] = values_mean
+        df['values_std'] = values_std
+        df['value'] = values_mean
+        return df
+
     def explain_input(
         self, test_data: torch.Tensor, background_data: torch.Tensor, layer: int
     ):
@@ -62,12 +88,13 @@ class BINNExplainer:
         explainer = shap.DeepExplainer(self.model, background_data)
         shap_values = explainer.shap_values(test_data)
 
-        shap_dict = {"features": self.model.layer_names[0], "shap_values": shap_values}
+        shap_dict = {
+            "features": self.model.column_names[0], "shap_values": shap_values}
 
         return shap_dict
 
     def _explain_layers(
-        self, background_data: torch.Tensor, test_data: torch.Tensor, plot=True
+        self, background_data: torch.Tensor, test_data: torch.Tensor
     ) -> dict:
 
         feature_index = 0
@@ -81,9 +108,11 @@ class BINNExplainer:
             if isinstance(layer, torch.nn.Linear) and (
                 not "Residual" in name or "final" in name
             ):
-                explainer = shap.DeepExplainer((self.model, layer), background_data)
+                explainer = shap.DeepExplainer(
+                    (self.model, layer), background_data)
                 shap_values = explainer.shap_values(test_data)
-                shap_dict["features"].append(self.model.layer_names[feature_index])
+                shap_dict["features"].append(
+                    self.model.layer_names[feature_index])
                 shap_dict["shap_values"].append(shap_values)
                 feature_index += 1
 

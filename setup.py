@@ -12,7 +12,7 @@ setup(
     author="Erik Hartman",
     author_email="erik.hartman@hotmail.com",
     name='BINN',
-    version='0.1dev',
+    version='0.1',
     packages=['binn', ],
     license='MIT',
     long_description=open('README.md').read(),
