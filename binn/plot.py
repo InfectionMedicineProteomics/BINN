@@ -224,14 +224,13 @@ def complete_shap_sankey(
             conn["node_color"]
             .apply(lambda x: x.split(", 0.75)")[0] + ", 0.3)")
             .values.tolist()
-        )  # change alpha
+        )
         return source_code, target_code, values, link_colors
 
     def get_node_colors(sources, df):
         cmaps = {}
         for layer in df["source layer"].unique():
             c_df = df[df["source layer"] == layer]
-            # remove Other so that scaling is not messed up
             c_df = c_df[~c_df["source_w_other"].str.startswith("Other")].copy()
             max_value = c_df.groupby("source_w_other").mean()[
                 "normalized value"].max()
@@ -327,7 +326,7 @@ def complete_shap_sankey(
     encoded_source, encoded_target, value, link_colors = get_connections(
         sources, df)
     x, y = get_node_positions(feature_labels, df)
-    # format text
+
     feature_labels = [f.split("_")[0] for f in feature_labels]
     nodes = dict(
         pad=15,
