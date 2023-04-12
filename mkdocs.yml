@@ -1,0 +1,16 @@
+# mkdocs.yml
+site_name: BINN
+
+theme:
+  name: gitbook
+
+nav:
+  - index.md
+  - Examples:
+      - binn_example.ipynb
+      - shap_example.ipynb
+  - reference.md
+
+plugins:
+  - mkdocstrings
+  - mkdocs-jupyter

@@ -9,6 +9,10 @@ from binn.network import Network
 
 
 class BINN(LightningModule):
+    """
+    The core BINN module. This inherits from the PyTorch Lightning LightningModule.
+    """
+
     def __init__(
         self,
         pathways: Network = None,
@@ -53,7 +57,7 @@ class BINN(LightningModule):
                 n_outputs=2,
             )
         else:
-            self.layers = generate_sequential(
+            self.layers = _generate_sequential(
                 layer_sizes,
                 connectivity_matrices=connectivity_matrices,
                 activation=activation,
@@ -61,7 +65,7 @@ class BINN(LightningModule):
                 n_outputs=n_outputs,
                 dropout=dropout,
             )
-        self.apply(init_weights)
+        self.apply(_init_weights)
         self.loss = nn.CrossEntropyLoss(weight=weight)
         self.learning_rate = learning_rate
         self.scheduler = scheduler
@@ -69,13 +73,19 @@ class BINN(LightningModule):
         self.validate = validate
         self.save_hyperparameters()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Performs a forward pass.
+        """
         if self.residual:
-            return forward_residual(self.layers, x)
+            return _forward_residual(self.layers, x)
         else:
             return self.layers(x)
 
     def training_step(self, batch, _):
+        """
+        Training step.
+        """
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -88,6 +98,9 @@ class BINN(LightningModule):
         return loss
 
     def validation_step(self, batch, _):
+        """
+        Validation step.
+        """
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -98,6 +111,9 @@ class BINN(LightningModule):
                  on_step=False, on_epoch=True)
 
     def test_step(self, batch, _):
+        """
+        Test step.
+        """
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -143,26 +159,32 @@ class BINN(LightningModule):
         return torch.sum(y == prediction).item() / (float(len(y)))
 
     def get_connectivity_matrices(self):
+        """
+        Returns the connectivity matrices underlying the BINN.
+        """
         return self.pathways.get_connectivity_matrices(self.n_layers)
 
     def reset_params(self):
-        self.apply(reset_params)
+        """
+        Resets trainable parameters.
+        """
+        self.apply(_reset_params)
 
     def init_weights(self):
-        self.apply(init_weights)
+        self.apply(_init_weights)
 
 
-def init_weights(m):
+def _init_weights(m):
     if type(m) == nn.Linear:
-        torch.nn.init.xavier_uniform(m.weight)
+        torch.nn.init.xavier_uniform_(m.weight)
 
 
-def reset_params(m):
+def _reset_params(m):
     if isinstance(m, nn.BatchNorm1d) or isinstance(m, nn.Linear):
         m.reset_parameters()
 
 
-def append_activation(layers, activation, n):
+def _append_activation(layers, activation, n):
     if activation == "tanh":
         layers.append((f"Tanh {n}", nn.Tanh()))
     elif activation == "relu":
@@ -178,7 +200,7 @@ def append_activation(layers, activation, n):
     return layers
 
 
-def generate_sequential(
+def _generate_sequential(
     layer_sizes,
     connectivity_matrices=None,
     activation="tanh",
@@ -186,9 +208,7 @@ def generate_sequential(
     n_outputs=2,
     dropout=0,
 ):
-    """
-    Generates a sequential model from layer sizes.
-    """
+
     layers = []
     for n in range(len(layer_sizes) - 1):
         linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
@@ -209,7 +229,7 @@ def generate_sequential(
         if isinstance(activation, list):
             layers.append((f"Activation_{n}", activation[n]))
         else:
-            append_activation(layers, activation, n)
+            _append_activation(layers, activation, n)
     layers.append(
         ("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias))
     )
@@ -257,13 +277,13 @@ def generate_residual(
             layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
         else:
             layers = generate_block(res_index, layers)
-            append_activation(layers, activation, res_index)
+            _append_activation(layers, activation, res_index)
 
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
 
 
-def is_activation(layer):
+def _is_activation(layer):
     if isinstance(layer, nn.Tanh):
         return True
     elif isinstance(layer, nn.ReLU):
@@ -275,14 +295,14 @@ def is_activation(layer):
     return False
 
 
-def forward_residual(model: nn.Sequential, x):
+def _forward_residual(model: nn.Sequential, x):
     x_final = torch.Tensor([0, 0])
     residual_counter = 0
     for name, layer in model.named_children():
         if name.startswith("Residual"):
             if "out" in name:
                 x_temp = layer(x)
-            if is_activation(
+            if _is_activation(
                 layer
             ):
                 x_temp = layer(x_temp)

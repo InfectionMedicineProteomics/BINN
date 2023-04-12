@@ -6,6 +6,8 @@ import pandas as pd
 
 
 class BINNExplainer:
+    """ BINNExplainer. """
+
     def __init__(self, model: BINN):
 
         self.model = model

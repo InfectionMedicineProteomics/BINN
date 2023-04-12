@@ -13,35 +13,17 @@ Modified to fit our repo.
 """
 
 
-def get_mapping_to_all_layers(path_df, translation_df):
-    graph = nx.from_pandas_edgelist(
-        path_df, source="child", target="parent", create_using=nx.DiGraph()
-    )
-
-    components = {"input": [], "connections": []}
-    for translation in translation_df["input"]:
-        ids = translation_df[translation_df["input"]
-                             == translation]["translation"]
-        for id in ids:
-            connections = graph.subgraph(
-                nx.single_source_shortest_path(graph, id).keys()
-            ).nodes
-            for connection in connections:
-                components["input"].append(translation)
-                components["connections"].append(connection)
-    components = pd.DataFrame(components)
-    components.drop_duplicates(inplace=True)
-    return components
-
-
 class Network:
+    """
+    Core Network module. 
+    """
+
     def __init__(
         self,
         input_data: pd.DataFrame,
         pathways: pd.DataFrame,
         mapping: Union[pd.DataFrame, None] = None,
-        input_data_column="Protein",
-        verbose: bool = False,
+        input_data_column: str = "Protein",
         subset_pathways: bool = True
     ):
 
@@ -61,17 +43,17 @@ class Network:
         if subset_pathways:
 
             self.mapping = subset_input(
-                input_data, self.mapping, input_data_column, verbose
+                input_data, self.mapping, input_data_column
             )
 
             self.pathways = subset_pathways_on_idx(
-                pathways, self.mapping, verbose)
+                pathways, self.mapping)
 
         else:
 
             self.pathways = pathways
 
-        self.mapping = get_mapping_to_all_layers(self.pathways, self.mapping)
+        self.mapping = _get_mapping_to_all_layers(self.pathways, self.mapping)
 
         self.input_data = input_data
 
@@ -235,49 +217,38 @@ def get_separation(pathways, input_data, translation_mapping):
 
 
 def subset_input(
-    input_df, translation_df, input_data_column, verbose=False
+    input_df, translation, input_data_column,
 ):
     keys_in_data = input_df[input_data_column].unique()
-
-    translation_df = translation_df[translation_df["input"].isin(keys_in_data)]
-
-    if verbose:
-        print(f"Number of ids before subsetting: {len(translation_df.index)}")
-        print(
-            f"Unique ids in df: {len(list(translation_df['input'].unique()))}"
-        )
-    return translation_df
+    translation = translation[translation["input"].isin(keys_in_data)]
+    return translation
 
 
-def subset_pathways_on_idx(path_df, translation_df, verbose=False):
-    """
-    Recursive method to add parents and children to pathway_df based on filtered translation_df.
-    """
-
+def subset_pathways_on_idx(pathways, translation):
     def add_pathways(counter, idx_list, parent):
         counter += 1
-        if verbose:
-            print(f"Function called {counter} times.")
-            print(f"Values in idx_list: {len(idx_list)}")
         if len(parent) == 0:
-            print("Base case reached")
+
             return idx_list
         else:
             idx_list = idx_list + parent
-            subsetted_pathway = path_df[path_df["child"].isin(parent)]
+            subsetted_pathway = pathways[pathways["child"].isin(parent)]
             new_parent = list(subsetted_pathway["parent"].unique())
             return add_pathways(counter, idx_list, new_parent)
 
     counter = 0
-    original_parent = list(translation_df["translation"].unique())
+    original_parent = list(translation["translation"].unique())
     idx_list = []
     idx_list = add_pathways(counter, idx_list, original_parent)
-    path_df = path_df[path_df["child"].isin(idx_list)]
-    print("Final number of unique connections in pathway: ", len(path_df.index))
-    return path_df
+    pathways = pathways[pathways["child"].isin(idx_list)]
+    return pathways
 
 
 class ImportanceNetwork:
+    """
+    Importance Network module. Used when creating SHAP-networks used for plotting.
+    """
+
     def __init__(self, df: pd.DataFrame, val_col: str = "value"):
         self.df = df
         self.val_col = val_col
@@ -408,3 +379,24 @@ class ImportanceNetwork:
         )
 
         fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
+
+
+def _get_mapping_to_all_layers(pathways, translation):
+    graph = nx.from_pandas_edgelist(
+        pathways, source="child", target="parent", create_using=nx.DiGraph()
+    )
+
+    components = {"input": [], "connections": []}
+    for translation in translation["input"]:
+        ids = translation[translation["input"]
+                          == translation]["translation"]
+        for id in ids:
+            connections = graph.subgraph(
+                nx.single_source_shortest_path(graph, id).keys()
+            ).nodes
+            for connection in connections:
+                components["input"].append(translation)
+                components["connections"].append(connection)
+    components = pd.DataFrame(components)
+    components.drop_duplicates(inplace=True)
+    return components
