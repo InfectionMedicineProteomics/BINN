@@ -20,7 +20,8 @@ def get_mapping_to_all_layers(path_df, translation_df):
 
     components = {"input": [], "connections": []}
     for translation in translation_df["input"]:
-        ids = translation_df[translation_df["input"] == translation]["translation"]
+        ids = translation_df[translation_df["input"]
+                             == translation]["translation"]
         for id in ids:
             connections = graph.subgraph(
                 nx.single_source_shortest_path(graph, id).keys()
@@ -40,7 +41,8 @@ class Network:
         pathways: pd.DataFrame,
         mapping: Union[pd.DataFrame, None] = None,
         input_data_column="Protein",
-        verbose=False,
+        verbose: bool = False,
+        subset_pathways: bool = True
     ):
 
         if isinstance(mapping, pd.DataFrame):
@@ -56,11 +58,18 @@ class Network:
                 }
             )
 
-        self.mapping = subset_on_proteins_in_ms_data(
-            input_data, self.mapping, input_data_column, verbose
-        )
+        if subset_pathways:
 
-        self.pathways = subset_pathways_on_idx(pathways, self.mapping, verbose)
+            self.mapping = subset_input(
+                input_data, self.mapping, input_data_column, verbose
+            )
+
+            self.pathways = subset_pathways_on_idx(
+                pathways, self.mapping, verbose)
+
+        else:
+
+            self.pathways = pathways
 
         self.mapping = get_mapping_to_all_layers(self.pathways, self.mapping)
 
@@ -94,10 +103,10 @@ class Network:
         return net
 
     def get_tree(self):
-        # convert to tree
+
         return nx.bfs_tree(
             self.netx, "root"
-        )  # breadth first to remove weird connections
+        )
 
     def get_completed_network(self, n_levels):
         return complete_network(self.netx, n_levels=n_levels)
@@ -113,8 +122,8 @@ class Network:
 
         terminal_nodes = [
             n for n, d in net.out_degree() if d == 0
-        ]  # set of terminal pathways
-        # we need to find inputs belonging to these pathways
+        ]
+
         mapping_df = self.mapping
         dict = {}
         missing_pathways = []
@@ -139,7 +148,8 @@ class Network:
                 inputs = list(mapp.index)
                 self.inputs = inputs
             filter_df = pd.DataFrame(index=inputs)
-            all = filter_df.merge(mapp, right_index=True, left_index=True, how="inner")
+            all = filter_df.merge(mapp, right_index=True,
+                                  left_index=True, how="inner")
             inputs = list(mapp.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices
@@ -165,7 +175,7 @@ def add_edges(G, node, n_levels):
         source = target
         edges.append(edge)
 
-    G.add_edges_from(edges)  # this adds n_levels of "copies" to node.
+    G.add_edges_from(edges)
     return G
 
 
@@ -180,18 +190,12 @@ def complete_network(G, n_levels=4):
             diff = n_levels - distance + 1
             sub_graph = add_edges(
                 sub_graph, node, diff
-            )  # This just adds nodes if n_levels is longer than distance. It creates node_last_copy1, node_last_copy2 etc.
-
-    # Basically, this methods adds "copy layers" if a path is shorter than n_levels.
-    print(f"Number of copies made for {n_levels} layers: {nr_copies}")
+            )
     return sub_graph
 
 
 def get_nodes_at_level(net, distance):
-    # This methods just gets node at a certain distance from root.
-    # get all nodes within distance around the query node
     nodes = set(nx.ego_graph(net, "root", radius=distance))
-    # remove nodes that are not **at** the specified distance but closer
     if distance >= 1.0:
         nodes -= set(nx.ego_graph(net, "root", radius=distance - 1))
 
@@ -201,21 +205,19 @@ def get_nodes_at_level(net, distance):
 def get_layers_from_net(net, n_levels):
     layers = []
     for i in range(n_levels):
-        # returns all the nodes at a specific Level
         nodes = get_nodes_at_level(net, i)
         dict = {}
         for n in nodes:
             n_name = re.sub(
                 "_copy.*", "", n
-            )  # removes the "_copy" in the node name (see complete_network())
-            next = net.successors(n)  # gets all the succesor of nodes at level
+            )
+            next = net.successors(n)
             dict[n_name] = [
                 re.sub("_copy.*", "", nex) for nex in next
-            ]  # for each node, it adds a list of succesors
-            # dict[n_name] = [nex for nex in next]
+            ]
         layers.append(
             dict
-        )  # this will then return a list where all layers have a dict of origin node and successors.
+        )
     return layers
 
 
@@ -232,15 +234,17 @@ def get_separation(pathways, input_data, translation_mapping):
     return sep_path, sep_input, sep_transl
 
 
-def subset_on_proteins_in_ms_data(
+def subset_input(
     input_df, translation_df, input_data_column, verbose=False
 ):
-    proteins_in_ms_data = input_df[input_data_column].unique()
-    translation_df = translation_df[translation_df["input"].isin(proteins_in_ms_data)]
+    keys_in_data = input_df[input_data_column].unique()
+
+    translation_df = translation_df[translation_df["input"].isin(keys_in_data)]
+
     if verbose:
-        print(f"Number of reactome ids before subsetting: {len(translation_df.index)}")
+        print(f"Number of ids before subsetting: {len(translation_df.index)}")
         print(
-            f"Unique proteins in reactome df: {len(list(translation_df['input'].unique()))}"
+            f"Unique ids in df: {len(list(translation_df['input'].unique()))}"
         )
     return translation_df
 
@@ -364,7 +368,8 @@ class ImportanceNetwork:
         self.df["fan_out"] = self.df.apply(
             lambda x: self.get_fan_out(x["source"]), axis=1
         )
-        self.df["fan_tot"] = self.df.apply(lambda x: x["fan_in"] + x["fan_out"], axis=1)
+        self.df["fan_tot"] = self.df.apply(
+            lambda x: x["fan_in"] + x["fan_out"], axis=1)
         self.df["nodes_in_upstream"] = self.df.apply(
             lambda x: self.get_nr_nodes_in_upstream_SG(x["source"]), axis=1
         )

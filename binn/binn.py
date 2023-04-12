@@ -26,14 +26,20 @@ class BINN(LightningModule):
 
         super().__init__()
         self.residual = residual
-        self.RN = pathways
+        self.pathways = pathways
         self.n_layers = n_layers
 
-        connectivity_matrices = self.RN.get_connectivity_matrices(n_layers)
+        connectivity_matrices = self.pathways.get_connectivity_matrices(
+            n_layers)
         layer_sizes = []
         self.layer_names = []
 
-        for matrix in connectivity_matrices:
+        matrix = connectivity_matrices[0]
+        i, _ = matrix.shape
+        layer_sizes.append(i)
+        self.layer_names.append(matrix.index)
+        self.features = matrix.index
+        for matrix in connectivity_matrices[1:]:
             i, _ = matrix.shape
             layer_sizes.append(i)
             self.layer_names.append(matrix.index)
@@ -69,7 +75,7 @@ class BINN(LightningModule):
         else:
             return self.layers(x)
 
-    def training_step(self, batch, batch_nb):
+    def training_step(self, batch, _):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -81,7 +87,7 @@ class BINN(LightningModule):
                  on_step=False, on_epoch=True)
         return loss
 
-    def validation_step(self, batch, batch_nb):
+    def validation_step(self, batch, _):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -91,7 +97,7 @@ class BINN(LightningModule):
         self.log("val_acc", accuracy, prog_bar=True,
                  on_step=False, on_epoch=True)
 
-    def test_step(self, batch, batch_nb):
+    def test_step(self, batch, _):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -101,25 +107,6 @@ class BINN(LightningModule):
                  on_step=False, on_epoch=True)
         self.log("test_acc", accuracy, prog_bar=True,
                  on_step=False, on_epoch=True)
-
-    def report_layer_structure(self, verbose=False):
-        if verbose:
-            print(self.layers)
-        parameters = {"nz weights": [], "weights": [], "biases": []}
-        for i, l in enumerate(self.layers):
-            if isinstance(l, nn.Linear):
-                nz_weights = torch.count_nonzero(l.weight)
-                weights = torch.numel(l.weight)
-                biases = torch.numel(l.bias)
-                if verbose:
-                    print(f"Layer {i}")
-                    print(f"Number of nonzero weights: {nz_weights} ")
-                    print(f"Number biases: {nz_weights} ")
-                    print(f"Total number of elements: {weights + biases} ")
-                parameters["nz weights"].append(nz_weights)
-                parameters["weights"].append(weights)
-                parameters["biases"].append(biases)
-        return parameters
 
     def configure_optimizers(self):
         if self.validate == True:
@@ -156,7 +143,7 @@ class BINN(LightningModule):
         return torch.sum(y == prediction).item() / (float(len(y)))
 
     def get_connectivity_matrices(self):
-        return self.RN.get_connectivity_matrices(self.n_layers)
+        return self.pathways.get_connectivity_matrices(self.n_layers)
 
     def reset_params(self):
         self.apply(reset_params)
@@ -208,9 +195,8 @@ def generate_sequential(
         layers.append((f"Layer_{n}", linear_layer))  # linear layer
         layers.append(
             (f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1]))
-        )  # batch normalization
+        )
         if connectivity_matrices is not None:
-            # Masking matrix
             prune.custom_from_mask(
                 linear_layer,
                 name="weight",
@@ -226,7 +212,7 @@ def generate_sequential(
             append_activation(layers, activation, n)
     layers.append(
         ("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias))
-    )  # Output layer
+    )
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
 
@@ -260,7 +246,7 @@ def generate_residual(
         if res_index == len(layer_sizes) - 1:
             layers.append(
                 (f"BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1]))
-            )  # batch normalization
+            )
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
             layers.append(
                 (
@@ -294,16 +280,16 @@ def forward_residual(model: nn.Sequential, x):
     residual_counter = 0
     for name, layer in model.named_children():
         if name.startswith("Residual"):
-            if "out" in name:  # we've reached res output
+            if "out" in name:
                 x_temp = layer(x)
             if is_activation(
                 layer
-            ):  # weve reached output sigmoid. Time to add to x_final
+            ):
                 x_temp = layer(x_temp)
                 x_final = x_final + x_temp
                 residual_counter = residual_counter + 1
         else:
             x = layer(x)
-    x_final = x_final / (residual_counter)  # average
+    x_final = x_final / (residual_counter)
 
     return x_final

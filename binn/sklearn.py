@@ -18,13 +18,13 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         n_layers: int = 4,
         scheduler="plateau",
         optimizer="adam",
-        validate: bool = True,
         n_outputs: int = 2,
         dropout: float = 0,
         residual: bool = False,
         threads: int = 1,
         epochs: int = 100,
         logger: Union[SuperLogger, None] = None,
+        log_steps: int = 50
     ):
         self.clf = BINN(
             pathways=pathways,
@@ -34,7 +34,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
             n_layers=n_layers,
             scheduler=scheduler,
             optimizer=optimizer,
-            validate=validate,
+            validate=False,
             n_outputs=n_outputs,
             dropout=dropout,
             residual=residual,
@@ -43,6 +43,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         self.threads = threads
         self.epochs = epochs
         self.logger = logger
+        self.log_steps = log_steps
 
     def fit(self, X, y):
         dataloader = DataLoader(
@@ -53,16 +54,14 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         )
 
         trainer = Trainer(
-            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs
+            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs,
+            log_every_n_steps=self.log_steps
         )
 
         trainer.fit(self.clf, dataloader)
 
     def predict(self, X):
-
-        return NotImplemented
-
-    @property
-    def feature_importances_(self):
-
-        return NotImplemented
+        X = torch.Tensor(X)
+        with torch.no_grad():
+            y_hat = self.clf(X)
+        return y_hat
