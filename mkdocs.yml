@@ -9,6 +9,7 @@ nav:
   - Examples & tutorials:
       - binn_example.ipynb
       - shap_example.ipynb
+      - sklearn_api.ipynb
   - Reference:
       - reference.md
 

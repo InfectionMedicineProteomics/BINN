@@ -1,6 +1,6 @@
 # Welcome to the BINN documentation
 
-The BINN-package allows you to create a sparse neural network from a pathway and input file. It also allows you to train and interpret the network using SHAP. Plotting functions are also available for generating sankey plots.
+The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874).
 
 <a style="color:red">Note that the docs are still stabilizing!</a>
 
@@ -23,11 +23,17 @@ Biological systems are highly complex and require tools which are capable of cap
 
 The initial layer of the BINN contain the input features, and should connect to the chosen graph. This could be genes, proteins or any other entities which map correctly to the input graph. The network is then trained and interpreted using SHAP. This results in importance values for each node in the network, allowing you to identify which biological entities and pathways are important for the classification you trained the network on.
 
-We also include some plotting functionalities which allow you to visualize the importance in the network.
+We also include some plotting functionalities which allow you to visualize the importance of each node in the network.
 
-|                                                                                           ![sankey](/img/sankey.png "Sankey")                                                                                           |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Sankey plot showing the importance of a subset of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database. |
+|                                                                                    ![sankey](/img/test.png "Complete sankey")                                                                                    |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Sankey plot showing the importance of a of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database. |
+
+We can also subset an importance-graph to generate visualizations for specific parts of the network, e.g., originating from a certain node and looking downstream. In the example below we subset the BINN by choosing node 'P02766' and looking at what nodes it influences downstream:
+
+|                  ![sankey](/img/sankey.png "Sankey")                  |
+| :-------------------------------------------------------------------: |
+| Sankey plot showing the importance of nodes downstream from 'P02766'. |
 
 ### Install
 

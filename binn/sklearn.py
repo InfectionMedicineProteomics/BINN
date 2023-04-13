@@ -97,7 +97,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         self.logger = logger
         self.log_steps = log_steps
 
-    def fit(self, X: np.ndarray, y: np.ndarray):
+    def fit(self, X: np.ndarray, y: np.ndarray, epochs: int):
         """
         Trains the classifier using the provided input data and target labels.
 
@@ -108,6 +108,9 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         Returns:
             None
         """
+        if epochs != None:
+            self.epochs = epochs
+
         dataloader = DataLoader(
             dataset=TensorDataset(torch.Tensor(X), torch.LongTensor(y)),
             batch_size=8,
