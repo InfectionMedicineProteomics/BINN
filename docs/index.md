@@ -25,15 +25,15 @@ The initial layer of the BINN contain the input features, and should connect to 
 
 We also include some plotting functionalities which allow you to visualize the importance of each node in the network.
 
-|                                                                                    ![sankey](/img/test.png "Complete sankey")                                                                                    |
+|                                                                <img src="img/test.png" style="display:block;margin-left:auto;margin-right:auto;">                                                                |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | Sankey plot showing the importance of a of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database. |
 
 We can also subset an importance-graph to generate visualizations for specific parts of the network, e.g., originating from a certain node and looking downstream. In the example below we subset the BINN by choosing node 'P02766' and looking at what nodes it influences downstream:
 
-|                  ![sankey](/img/sankey.png "Sankey")                  |
-| :-------------------------------------------------------------------: |
-| Sankey plot showing the importance of nodes downstream from 'P02766'. |
+| <img src="img/sankey.png" style="display:block;margin-left:auto;margin-right:auto;"> |
+| :----------------------------------------------------------------------------------: |
+|        Sankey plot showing the importance of nodes downstream from 'P02766'.         |
 
 ### Install
 
