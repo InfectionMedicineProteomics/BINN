@@ -1,5 +1,5 @@
 from typing import Union
-
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from pytorch_lightning import Trainer
@@ -68,8 +68,8 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
         n_layers: int = 4,
-        scheduler="plateau",
-        optimizer="adam",
+        scheduler: str = "plateau",
+        optimizer: str = "adam",
         n_outputs: int = 2,
         dropout: float = 0,
         residual: bool = False,
@@ -97,7 +97,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         self.logger = logger
         self.log_steps = log_steps
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray):
         """
         Trains the classifier using the provided input data and target labels.
 
@@ -122,7 +122,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
 
         trainer.fit(self.clf, dataloader)
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray):
         """
         Predicts target labels for the provided input data using the trained classifier.
 

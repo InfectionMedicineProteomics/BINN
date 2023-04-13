@@ -76,7 +76,7 @@ class BINNExplainer:
                         background_data: torch.Tensor,
                         nr_iterations: int,
                         trainer,
-                        dataloader):
+                        dataloader) -> pd.DataFrame:
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
         For each iteration, the model's parameters are randomly initialized and trained on the provided data using
@@ -115,7 +115,7 @@ class BINNExplainer:
 
     def explain_input(
         self, test_data: torch.Tensor, background_data: torch.Tensor, layer: int
-    ):
+    ) -> dict:
         """
         Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the
         Shapley values for each feature using the provided background_data. The feature importances are then returned

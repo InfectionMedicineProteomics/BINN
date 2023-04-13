@@ -81,7 +81,7 @@ class Network:
 
         self.netx = self.build_network()
 
-    def get_terminals(self):
+    def get_terminals(self) -> list:
         """
         Returns a list of all terminal nodes (nodes with no outgoing edges) in the network.
 
@@ -157,7 +157,7 @@ class Network:
         G = self.get_tree()
         return complete_network(G, n_levels=n_levels)
 
-    def get_layers(self, n_levels, direction="root_to_leaf"):
+    def get_layers(self, n_levels, direction="root_to_leaf") -> list:
         """
         Returns a list of dictionaries where each dictionary contains the pathways at a certain level of the completed network and their inputs.
 
@@ -190,7 +190,7 @@ class Network:
         layers.append(dict)
         return layers
 
-    def get_connectivity_matrices(self, n_levels, direction="root_to_leaf"):
+    def get_connectivity_matrices(self, n_levels, direction="root_to_leaf") -> list:
         """
         Returns a list of connectivity matrices for each layer of the completed network, ordered from leaf nodes to root node.
 
@@ -325,7 +325,14 @@ def subset_pathways_on_idx(pathways, translation):
 
 class ImportanceNetwork:
     """
-    Importance Network module. Used when creating SHAP-networks used for plotting.
+    Class for generating and analyzing importance networks.
+
+    This class generates and analyzes directed graphs representing importance networks, in which nodes represent variables and edges represent dependencies or influences between the variables. The graphs are constructed from a pandas DataFrame specifying the relationships between the variables, with columns for the source and target nodes, the weight of the edge, and optionally the layers of the source and target nodes. The graphs can be used to calculate various properties of the importance network, such as the number of nodes in upstream or downstream subgraphs, the fan-in and fan-out of nodes, and the weighted values of nodes. The class also includes a method for generating a Sankey diagram of the importance network.
+
+    Parameters:
+        df (pandas.DataFrame): A DataFrame specifying the relationships between the variables, with columns for the source and target nodes, the weight of the edge, and optionally the layers of the source and target nodes.
+        val_col (str, optional): The name of the column in df containing the weight of the edge. Default is "value".
+
     """
 
     def __init__(self, df: pd.DataFrame, val_col: str = "value"):
@@ -335,6 +342,12 @@ class ImportanceNetwork:
         self.G_reverse = self.G.reverse()
 
     def create_graph(self):
+        """
+        Create a directed graph (DiGraph) from the source and target nodes in the input dataframe.
+
+        Returns:
+            G: a directed graph (DiGraph) object
+        """
         self.df["source"] = self.df["source"].apply(lambda x: x.split("_")[0])
         self.df["target"] = self.df["target"].apply(lambda x: x.split("_")[0])
         G = nx.DiGraph()
@@ -351,7 +364,17 @@ class ImportanceNetwork:
         G.add_node("root", weight=0, layer=root_layer)
         return G
 
-    def get_downstream_subgraph(self, query_node, depth_limit=None):
+    def get_downstream_subgraph(self, query_node: str, depth_limit=None):
+        """
+        Get a subgraph that contains all nodes downstream of the query node up to the given depth limit (if provided).
+
+        Args:
+            query_node: a string representing the name of the node from which the downstream subgraph is constructed
+            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
+
+        Returns:
+            SG: a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit
+        """
         SG = nx.DiGraph()
         nodes = [
             n
@@ -372,11 +395,31 @@ class ImportanceNetwork:
         SG.add_node(query_node, **self.G.nodes()[query_node])
         return SG
 
-    def get_upstream_subgraph(self, query_node, depth_limit=None):
+    def get_upstream_subgraph(self, query_node: str, depth_limit=None):
+        """
+        Get a subgraph that contains all nodes upstream of the query node up to the given depth limit (if provided).
+
+        Args:
+            query_node: a string representing the name of the node from which the upstream subgraph is constructed
+            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
+
+        Returns:
+            SG: a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit
+        """
         SG = self.get_downstream_subgraph(query_node, depth_limit=depth_limit)
         return SG
 
-    def get_complete_subgraph(self, query_node, depth_limit=None):
+    def get_complete_subgraph(self, query_node: str, depth_limit=None):
+        """
+        Get a subgraph that contains all nodes both upstream and downstream of the query node up to the given depth limit (if provided).
+
+        Args:
+            query_node: a string representing the name of the node from which the complete subgraph is constructed
+            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
+
+        Returns:
+            SG: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit
+        """
         SG = self.get_downstream_subgraph(self.G, query_node)
         nodes = [
             n
@@ -397,21 +440,80 @@ class ImportanceNetwork:
         SG.add_node(query_node, **self.G_reverse.nodes()[query_node])
         return SG
 
-    def get_nr_nodes_in_upstream_SG(self, query_node):
+    def get_nr_nodes_in_upstream_SG(self, query_node: str):
+        """
+        Get the number of nodes in the upstream subgraph of the query node.
+
+        Args:
+            query_node: a string representing the name of the node from which the upstream subgraph is constructed
+
+        Returns:
+            the number of nodes in the upstream subgraph of the query node
+        """
+
         SG = self.get_upstream_subgraph(query_node, depth_limit=None)
         return SG.number_of_nodes()
 
-    def get_nr_nodes_in_downstream_SG(self, query_node):
+    def get_nr_nodes_in_downstream_SG(self, query_node: str):
+        """
+        Get the number of nodes in the downstream subgraph of the query node.
+
+        Args:
+            query_node: a string representing the name of the node from which the downstream subgraph is constructed
+
+        Returns:
+            the number of nodes in the downstream subgraph of the query node
+        """
         SG = self.get_downstream_subgraph(query_node, depth_limit=None)
         return SG.number_of_nodes()
 
-    def get_fan_in(self, query_node):
+    def get_fan_in(self, query_node: str):
+        """
+        Get the number of incoming edges (fan-in) for the query node.
+
+        Args:
+            query_node: a string representing the name of the node
+
+        Returns:
+            the number of incoming edges (fan-in) for the query node
+        """
         return len([n for n in self.G.in_edges(query_node)])
 
-    def get_fan_out(self, query_node):
+    def get_fan_out(self, query_node: str):
+        """
+        Get the number of outgoing edges (fan-out) for the query node.
+
+        Args:
+            query_node: a string representing the name of the node
+
+        Returns:
+            the number of outgoing edges (fan-out) for the query node
+        """
         return len([n for n in self.G.out_edges(query_node)])
 
     def add_normalization(self):
+        """
+        Adds several normalization columns to the dataframe:
+        - 'fan_in': the number of incoming edges for each node
+
+        - 'fan_out': the number of outgoing edges for each node
+
+        - 'fan_tot': the total number of incoming and outgoing edges for each node
+
+        - 'nodes_in_upstream': the number of nodes in the upstream subgraph for each node
+
+        - 'nodes_in_downstream': the number of nodes in the downstream subgraph for each node
+
+        - 'nodes_in_SG': the total number of nodes in the upstream and downstream subgraphs for each node
+
+        - 'log(nodes_in_SG)': the logarithm (base 2) of 'nodes_in_SG'
+
+        - 'weighted_val_log': the 'value' column normalized by the logarithm of 'nodes_in_SG'
+
+        Returns:
+            pd.DataFrame:
+                The input dataframe with the added normalization columns.
+        """
         self.df["fan_in"] = self.df.apply(
             lambda x: self.get_fan_in(x["source"]), axis=1
         )
@@ -437,12 +539,33 @@ class ImportanceNetwork:
 
     def generate_sankey(
         self,
-        query_node,
-        upstream=False,
-        savename="sankey.png",
-        val_col="value",
-        cmap_name="coolwarm",
+        query_node: str,
+        upstream: bool = False,
+        savename: str = "sankey.png",
+        val_col: str = "value",
+        cmap_name: str = "coolwarm",
     ):
+        """
+        Generate a Sankey diagram using the provided query node.
+
+        Args:
+            query_node (str): The node to use as the starting point for the Sankey diagram.
+            upstream (bool, optional): If True, the Sankey diagram will show the upstream flow of the
+                query_node. If False (default), the Sankey diagram will show the downstream flow of the
+                query_node.
+            savename (str, optional): The file name to save the Sankey diagram as. Defaults to "sankey.png".
+            val_col (str, optional): The column in the DataFrame that represents the value flow between
+                nodes. Defaults to "value".
+            cmap_name (str, optional): The name of the color map to use for the Sankey diagram. Defaults
+                to "coolwarm".
+
+        Returns:
+            None: The Sankey diagram will be saved as an image file.
+
+        Raises:
+            ValueError: If the provided query_node is not present in the graph.
+
+        """
         if upstream == False:
             final_node = "root"
             SG = self.get_downstream_subgraph(query_node, depth_limit=None)
@@ -460,16 +583,16 @@ class ImportanceNetwork:
         fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
 
 
-def _get_mapping_to_all_layers(pathways, translation):
+def _get_mapping_to_all_layers(pathways, mapping):
     graph = nx.from_pandas_edgelist(
         pathways, source="child", target="parent", create_using=nx.DiGraph()
     )
-
     components = {"input": [], "connections": []}
-    for translation in translation["input"]:
-        ids = translation[translation["input"]
-                          == translation]["translation"]
+    for translation in mapping["input"]:
+        ids = mapping[mapping["input"]
+                      == translation]["translation"]
         for id in ids:
+
             connections = graph.subgraph(
                 nx.single_source_shortest_path(graph, id).keys()
             ).nodes

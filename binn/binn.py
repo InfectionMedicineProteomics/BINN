@@ -10,7 +10,11 @@ from binn.network import Network
 
 class BINN(LightningModule):
     """
-    Implements a Biologically Informed Neural Network (BINN).
+    Implements a Biologically Informed Neural Network (BINN). The BINN 
+    is implemented using the PyTorch Lightning-framework.
+    If you are unfamiliar with PyTorch, we suggest visiting 
+    their website: https://pytorch.org/ 
+
 
     Args:
         pathways (Network): A Network object that defines the network topology.
@@ -114,7 +118,7 @@ class BINN(LightningModule):
         else:
             return self.layers(x)
 
-    def training_step(self, batch, _):
+    def training_step(self, batch, _) -> float:
         """
         Performs a single training step for the BINN.
 
@@ -209,7 +213,7 @@ class BINN(LightningModule):
 
         return [optimizer], [scheduler]
 
-    def calculate_accuracy(self, y, prediction):
+    def calculate_accuracy(self, y, prediction) -> float:
         """
         Calculates the accuracy of the BINN predictions for a given batch.
 
@@ -222,7 +226,7 @@ class BINN(LightningModule):
         """
         return torch.sum(y == prediction).item() / (float(len(y)))
 
-    def get_connectivity_matrices(self):
+    def get_connectivity_matrices(self) -> list:
         """
         Returns the connectivity matrices underlying the BINN.
 
