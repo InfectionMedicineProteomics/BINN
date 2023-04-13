@@ -19,3 +19,7 @@ This is the API reference for the BINN-package. For usage examples, see [Example
 ## ::: binn.sklearn
 
 ---
+
+## Plotting
+
+## ::: binn.plot

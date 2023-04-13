@@ -26,6 +26,23 @@ def remove_loops(df):
 def shap_sankey(
     df: pd.DataFrame, final_node: str = "root", val_col="value", cmap_name="coolwarm"
 ):
+    """
+    Create a Sankey diagram using Plotly and Seaborn.
+
+    Parameters:
+        df : pd.DataFrame
+            The input DataFrame containing the data to be plotted.
+        final_node : str, optional
+            The final node in the Sankey diagram (default is "root").
+        val_col : str, optional
+            The column in the input DataFrame containing the values to be plotted (default is "value").
+        cmap_name : str, optional
+            The name of the color map to be used (default is "coolwarm").
+
+    Returns:
+        fig : go.Figure
+            The Sankey diagram figure created using Plotly.
+    """
     df["source layer"] = df["source layer"].astype(int).copy()
     df["target layer"] = df["target layer"].astype(int).copy()
     unique_features = df["source"].unique().tolist()
@@ -130,6 +147,21 @@ def complete_shap_sankey(
     val_col="value",
     cmap_name="Reds",
 ):
+    """
+    Generate a Sankey diagram to visualize feature contributions using SHAP values.
+
+    Parameters:
+        df (pandas.DataFrame): A DataFrame with columns "source", "target", "source layer", and "target layer".
+        show_top_n (int, optional): The number of top features to show in each layer. Default is 10.
+        savename (str, optional): The name to use when saving the Sankey diagram.
+        val_col (str, optional): The name of the column in the input DataFrame that contains the values to use for the width of the connections. Default is "value".
+        cmap_name (str, optional): The name of the matplotlib colormap to use for coloring the links between the nodes. Default is "Reds".
+
+    Returns:
+        fig : go.Figure
+            The Sankey diagram figure created using Plotly.
+    """
+
     df["source layer"] = df["source layer"].astype(int).copy()
     df["target layer"] = df["target layer"].astype(int).copy()
     df = remove_loops(df)
@@ -353,6 +385,7 @@ def complete_shap_sankey(
         ],
     )
     fig.write_image(f"{savename}", width=1900, scale=2, height=800)
+    return fig
 
 
 def plot_shap_summary(shap_values, test_data, feature_names, output_path):
