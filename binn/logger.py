@@ -2,7 +2,6 @@ from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 
 
 class SuperLogger:
-    """ Class to store loggers. """
 
     def __init__(
         self,

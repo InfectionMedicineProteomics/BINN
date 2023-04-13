@@ -6,10 +6,11 @@ theme:
 
 nav:
   - index.md
-  - Examples:
+  - Examples & tutorials:
       - binn_example.ipynb
       - shap_example.ipynb
-  - reference.md
+  - Reference:
+      - reference.md
 
 plugins:
   - mkdocstrings

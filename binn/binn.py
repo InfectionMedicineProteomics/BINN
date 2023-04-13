@@ -10,7 +10,33 @@ from binn.network import Network
 
 class BINN(LightningModule):
     """
-    The core BINN module. This inherits from the PyTorch Lightning LightningModule.
+    Implements a Biologically Informed Neural Network (BINN).
+
+    Args:
+        pathways (Network): A Network object that defines the network topology.
+        activation (str, optional): Activation function to use. Defaults to "tanh".
+        weight (torch.Tensor, optional): Weights for loss function. Defaults to torch.Tensor([1, 1]).
+        learning_rate (float, optional): Learning rate for optimizer. Defaults to 1e-4.
+        n_layers (int, optional): Number of layers in the network. Defaults to 4.
+        scheduler (str, optional): Learning rate scheduler to use. Defaults to "plateau".
+        optimizer (str, optional): Optimizer to use. Defaults to "adam".
+        validate (bool, optional): Whether to use validation data during training. Defaults to False.
+        n_outputs (int, optional): Number of output nodes. Defaults to 2.
+        dropout (float, optional): Dropout probability. Defaults to 0.
+        residual (bool, optional): Whether to use residual connections. Defaults to False.
+
+    Attributes:
+        residual (bool): Whether to use residual connections.
+        pathways (Network): A Network object that defines the network topology.
+        n_layers (int): Number of layers in the network.
+        layer_names (List[str]): List of layer names.
+        features (Index): A pandas Index object containing the input features.
+        layers (nn.Module): The layers of the BINN.
+        loss (nn.Module): The loss function used during training.
+        learning_rate (float): Learning rate for optimizer.
+        scheduler (str): Learning rate scheduler used.
+        optimizer (str): Optimizer used.
+        validate (bool): Whether to use validation data during training.
     """
 
     def __init__(
@@ -49,7 +75,7 @@ class BINN(LightningModule):
             self.layer_names.append(matrix.index)
 
         if self.residual:
-            self.layers = generate_residual(
+            self.layers = _generate_residual(
                 layer_sizes,
                 connectivity_matrices=connectivity_matrices,
                 activation="tanh",
@@ -75,7 +101,13 @@ class BINN(LightningModule):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Performs a forward pass.
+        Performs a forward pass through the BINN.
+
+        Args:
+            x (torch.Tensor): The input tensor to the BINN.
+
+        Returns:
+            torch.Tensor: The output tensor of the BINN.
         """
         if self.residual:
             return _forward_residual(self.layers, x)
@@ -84,7 +116,14 @@ class BINN(LightningModule):
 
     def training_step(self, batch, _):
         """
-        Training step.
+        Performs a single training step for the BINN.
+
+        Args:
+            batch: The batch of data to use for the training step.
+            _: Not used.
+
+        Returns:
+            torch.Tensor: The loss tensor for the training step.
         """
         x, y = batch
         y_hat = self(x)
@@ -99,8 +138,13 @@ class BINN(LightningModule):
 
     def validation_step(self, batch, _):
         """
-        Validation step.
+        Implements a single validation step for the BINN.
+
+        Args:
+            batch: A tuple containing the input and output data for the current batch.
+            _: The batch index, which is not used.
         """
+
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
@@ -112,7 +156,11 @@ class BINN(LightningModule):
 
     def test_step(self, batch, _):
         """
-        Test step.
+        Implements a single testing step for the BINN.
+
+        Args:
+            batch: A tuple containing the input and output data for the current batch.
+            _: The batch index, which is not used.
         """
         x, y = batch
         y_hat = self(x)
@@ -125,6 +173,12 @@ class BINN(LightningModule):
                  on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
+        """
+        Configures the optimizer and learning rate scheduler for training the BINN.
+
+        Returns:
+            A list of optimizers and a list of learning rate schedulers.
+        """
         if self.validate == True:
             monitor = "val_loss"
         else:
@@ -156,21 +210,37 @@ class BINN(LightningModule):
         return [optimizer], [scheduler]
 
     def calculate_accuracy(self, y, prediction):
+        """
+        Calculates the accuracy of the BINN predictions for a given batch.
+
+        Args:
+            y: The ground-truth labels for the batch.
+            prediction: The predicted labels for the batch.
+
+        Returns:
+            The calculated accuracy as a float.
+        """
         return torch.sum(y == prediction).item() / (float(len(y)))
 
     def get_connectivity_matrices(self):
         """
         Returns the connectivity matrices underlying the BINN.
+
+        Returns:
+            The connectivity matrices as a list of Pandas DataFrames.
         """
         return self.pathways.get_connectivity_matrices(self.n_layers)
 
     def reset_params(self):
         """
-        Resets trainable parameters.
+        Resets the trainable parameters of the BINN.
         """
         self.apply(_reset_params)
 
     def init_weights(self):
+        """
+        Initializes the trainable parameters of the BINN.
+        """
         self.apply(_init_weights)
 
 
@@ -237,7 +307,7 @@ def _generate_sequential(
     return model
 
 
-def generate_residual(
+def _generate_residual(
     layer_sizes, connectivity_matrices=None, activation="tanh", bias=False, n_outputs=2
 ):
     layers = []

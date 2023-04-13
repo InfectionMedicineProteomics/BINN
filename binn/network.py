@@ -6,7 +6,7 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-""" 
+"""
 Original file from https://github.com/marakeby/pnet_prostate_paper/blob/master/data/pathways/reactome.py
 Modified to fit our repo.
 
@@ -15,7 +15,27 @@ Modified to fit our repo.
 
 class Network:
     """
-    Core Network module. 
+    A class for building and analyzing a directed graph network of biological pathways.
+
+    Args:
+        input_data (pandas.DataFrame): A DataFrame containing the input data for the pathways.
+        pathways (pandas.DataFrame): A DataFrame containing information on the pathways.
+        mapping (pandas.DataFrame or None, optional): A DataFrame containing mapping information.
+            If None, then a DataFrame will be constructed from the `input_data` argument.
+            Default is None.
+        input_data_column (str, optional): The name of the column in `input_data` that contains
+            the input data. Default is 'Protein'.
+        subset_pathways (bool, optional): Whether to subset the pathways DataFrame to include
+            only those pathways that are relevant to the input data. Default is True.
+
+    Attributes:
+        mapping (pandas.DataFrame): A DataFrame containing the mapping information.
+        pathways (pandas.DataFrame): A DataFrame containing information on the pathways.
+        input_data (pandas.DataFrame): A DataFrame containing the input data for the pathways.
+        inputs (list): A list of the unique inputs in the mapping DataFrame.
+        netx (networkx.DiGraph): A directed graph network of the pathways.
+
+
     """
 
     def __init__(
@@ -62,14 +82,31 @@ class Network:
         self.netx = self.build_network()
 
     def get_terminals(self):
+        """
+        Returns a list of all terminal nodes (nodes with no outgoing edges) in the network.
+
+        Returns:
+            A list of strings representing the terminal nodes in the network.
+        """
+
         return [n for n, d in self.netx.out_degree() if d == 0]
 
     def get_roots(self):
+        """
+        Returns a list of all root nodes (nodes with no incoming edges) in the network.
+
+        Returns:
+            A list of strings representing the root nodes in the network.
+        """
         return get_nodes_at_level(self.netx, distance=1)
 
-    # get a DiGraph representation of the Reactome hierarchy
     def build_network(self):
+        """
+        Constructs a networkx DiGraph from the edges in the 'pathways' attribute of the object, with a root node added to the graph to connect all root nodes together.
 
+        Returns:
+            A networkx DiGraph object representing the constructed network.
+        """
         if hasattr(self, "netx"):
             return self.netx
 
@@ -85,19 +122,52 @@ class Network:
         return net
 
     def get_tree(self):
+        """
+        Returns a BFS tree of the network from the root node.
 
+        Returns:
+            A networkx DiGraph object representing the BFS tree of the network from the root node.
+        """
         return nx.bfs_tree(
             self.netx, "root"
         )
 
     def get_completed_network(self, n_levels):
+        """
+        Returns a network that has been completed up to a certain number of levels below the root node.
+
+        Args:
+            n_levels: The number of levels below the root node to complete the network to.
+
+        Returns:
+            A networkx DiGraph object representing the completed network.
+        """
         return complete_network(self.netx, n_levels=n_levels)
 
     def get_completed_tree(self, n_levels):
+        """
+        Returns a BFS tree of the completed network up to a certain number of levels below the root node.
+
+        Args:
+            n_levels: The number of levels below the root node to complete the network to.
+
+        Returns:
+            A networkx DiGraph object representing the completed BFS tree of the network from the root node.
+        """
         G = self.get_tree()
         return complete_network(G, n_levels=n_levels)
 
     def get_layers(self, n_levels, direction="root_to_leaf"):
+        """
+        Returns a list of dictionaries where each dictionary contains the pathways at a certain level of the completed network and their inputs.
+
+        Args:
+            n_levels: The number of levels below the root node to complete the network to.
+            direction: The direction of the layers to return. Must be either "root_to_leaf" or "leaf_to_root". Defaults to "root_to_leaf".
+
+        Returns:
+            A list of dictionaries, where each dictionary contains pathway names as keys and input lists as values.
+        """
         if direction == "root_to_leaf":
             net = self.get_completed_network(n_levels)
             layers = get_layers_from_net(net, n_levels)
@@ -121,7 +191,16 @@ class Network:
         return layers
 
     def get_connectivity_matrices(self, n_levels, direction="root_to_leaf"):
+        """
+        Returns a list of connectivity matrices for each layer of the completed network, ordered from leaf nodes to root node.
 
+        Args:
+            n_levels: The number of levels below the root node to complete the network to.
+            direction: The direction of the layers to return. Must be either "root_to_leaf" or "leaf_to_root". Defaults to "root_to_leaf".
+
+        Returns:
+            A list of pandas DataFrames representing the connectivity matrices for each layer of the completed network.
+        """
         connectivity_matrices = []
         layers = self.get_layers(n_levels, direction)
         for i, layer in enumerate(layers[::-1]):

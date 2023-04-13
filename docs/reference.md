@@ -1,19 +1,21 @@
 # API Reference
 
-For usage examples, see [Examples](../binn_example)
+This is the API reference for the BINN-package. For usage examples, see [Examples](../binn_example). Note that the API is still stabilizing and may undergo changes.
 
 ---
 
-## BINN
-
-::: binn.binn
+## ::: binn.binn
 
 ---
-
-## Network
 
 ## ::: binn.network
 
-## BINNExplainer
+---
 
 ## ::: binn.explainer
+
+---
+
+## ::: binn.sklearn
+
+---

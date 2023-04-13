@@ -6,14 +6,29 @@ import pandas as pd
 
 
 class BINNExplainer:
-    """ BINNExplainer. """
+    """
+    A class for explaining the predictions of a BINN model using SHAP values.
+
+    Args:
+        model (BINN): A trained BINN model.
+    """
 
     def __init__(self, model: BINN):
 
         self.model = model
 
     def explain(self, test_data: torch.Tensor, background_data: torch.Tensor):
+        """
+        Generates SHAP explanations for a given test_data by computing the Shapley values for each feature using
+        the provided background_data. The feature importances are then aggregated and returned in a pandas dataframe.
 
+        Args:
+            test_data (torch.Tensor): The input data for which to generate the explanations.
+            background_data (torch.Tensor): The background data to use for computing the Shapley values.
+
+        Returns:
+            pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.
+        """
         shap_dict = self._explain_layers(background_data, test_data)
 
         feature_dict = {
@@ -62,6 +77,21 @@ class BINNExplainer:
                         nr_iterations: int,
                         trainer,
                         dataloader):
+        """
+        Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
+        For each iteration, the model's parameters are randomly initialized and trained on the provided data using
+        the provided trainer and dataloader. The feature importances are then aggregated and returned in a pandas dataframe.
+
+        Args:
+            test_data (torch.Tensor): The input data for which to generate the explanations.
+            background_data (torch.Tensor): The background data to use for computing the Shapley values.
+            nr_iterations (int): The number of iterations to use for averaging the Shapley values.
+            trainer: The PyTorch Lightning trainer to use for training the model.
+            dataloader: The PyTorch DataLoader to use for loading the data.
+
+        Returns:
+            pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.
+        """
         dfs = {}
         for iteration in range(nr_iterations):
             self.model.reset_params()
@@ -86,6 +116,19 @@ class BINNExplainer:
     def explain_input(
         self, test_data: torch.Tensor, background_data: torch.Tensor, layer: int
     ):
+        """
+        Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the
+        Shapley values for each feature using the provided background_data. The feature importances are then returned
+        in a dictionary.
+
+        Args:
+            test_data (torch.Tensor): The input data for which to generate the explanations.
+            background_data (torch.Tensor): The background data to use for computing the Shapley values.
+            layer (int): The index of the layer for which to compute the SHAP explanations.
+
+        Returns:
+            dict: A dictionary containing the SHAP feature importances.
+        """
 
         explainer = shap.DeepExplainer(self.model, background_data)
         shap_values = explainer.shap_values(test_data)
@@ -98,7 +141,16 @@ class BINNExplainer:
     def _explain_layers(
         self, background_data: torch.Tensor, test_data: torch.Tensor
     ) -> dict:
+        """
+        Helper method to compute SHAP explanations for each layer in the model.
 
+        Args:
+            background_data (torch.Tensor): The background data to use for computing the Shapley values.
+            test_data (torch.Tensor): The input data for which to generate the explanations.
+
+        Returns:
+            dict: A dictionary containing the SHAP feature importances for each layer.
+        """
         feature_index = 0
 
         intermediate_data = test_data
