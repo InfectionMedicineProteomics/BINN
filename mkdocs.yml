@@ -10,7 +10,7 @@ nav:
       - binn_example.ipynb
       - shap_example.ipynb
       - sklearn_api.ipynb
-  - Reference:
+  - API Reference:
       - reference/binn_ref.md
       - reference/net_ref.md
       - reference/explain_ref.md
