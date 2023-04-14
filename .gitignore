@@ -1,6 +1,7 @@
 test-venv
 __pycache__/
 lightning_logs/
+logs/
 
 # Distribution / packaging
 .Python
