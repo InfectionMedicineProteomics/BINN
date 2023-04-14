@@ -1,5 +1,10 @@
 # Biologically Informed Neural Network (BINN)
 
+[![Docs](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
+
 The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [notebooks](notebooks/) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found at [bioRxiv](https://doi.org/10.1101/2023.02.16.528807).
 
 ---
@@ -138,3 +143,5 @@ The software has been tested on desktop machines running Windows 10/Linux (Ubunt
 ## Contact
 
 Erik Hartman - erik.hartman@hotmail.com
+
+![imp](/img/imp_logo.png "imp")

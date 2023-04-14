@@ -1,6 +1,7 @@
 test-venv
 __pycache__/
 lightning_logs/
+logs/
 
 # Distribution / packaging
 .Python
@@ -22,3 +23,5 @@ var/
 
 .idea
 .idea/*
+
+site

@@ -3,4 +3,4 @@ from .logger import SuperLogger
 from .network import Network, ImportanceNetwork
 from .sklearn import BINNClassifier
 from .plot import *
-from .shap import BINNExplainer
+from .explainer import BINNExplainer

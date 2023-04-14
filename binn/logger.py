@@ -1,9 +1,8 @@
 from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 
-""" Class to store loggers """
-
 
 class SuperLogger:
+
     def __init__(
         self,
         save_dir="",

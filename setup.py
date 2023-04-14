@@ -6,6 +6,7 @@ requirements = [
     "pandas",
     "torch",
     "pytorch-lightning",
+    "shap",
 ]
 
 setup(
@@ -13,7 +14,7 @@ setup(
     author_email="erik.hartman@hotmail.com",
     name='BINN',
     version='0.1',
-    packages=['binn', ],
+    packages=['binn'],
     license='MIT',
     long_description=open('README.md').read(),
     install_requires=requirements,
