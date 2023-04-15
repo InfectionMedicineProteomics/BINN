@@ -253,6 +253,7 @@ def _init_weights(m):
         torch.nn.init.xavier_uniform_(m.weight)
 
 
+
 def _reset_params(m):
     if isinstance(m, nn.BatchNorm1d) or isinstance(m, nn.Linear):
         m.reset_parameters()
