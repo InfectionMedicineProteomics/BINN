@@ -123,7 +123,13 @@ A compelte sankey may look like this:
 
 ## Installation
 
-The package can be installed and built from source with git.
+BINN can be installed via ```pip```
+
+```
+pip install binn
+```
+
+The package can also be built from source and installed with git.
 
 ```
 git clone git@github.com:InfectionMedicineProteomics/BINN.git
