@@ -6,8 +6,8 @@ The BINN-package allows you to create a sparse neural network in the PyTorch-fra
 
 ### Table Of Contents
 
-- Introduction
-- Install
+- [Introduction](#introduction)
+- [Install](#install)
 - [API Reference](reference.md)
 
 **Examples:**
