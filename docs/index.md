@@ -37,14 +37,18 @@ We can also subset an importance-graph to generate visualizations for specific p
 
 ### Install
 
-Currently, the package is available at GitHub and can be cloned with the following commands.
+BINN can be installed via ```pip```
+
+```
+pip install binn
+```
+
+The package can also be built from source and installed with git.
 
 ```
 git clone git@github.com:InfectionMedicineProteomics/BINN.git
 pip install -e BINN/
 ```
-
-We are working on making the package available through pip.
 
 ### Contributors
 
