@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "binn"
+version = "0.0.2"
+authors = [
+  { name="Erik Hartman", email="erik.hartman@hotmail.com" },
+  { name="Aaron Scott", email="aaron.scott@med.lu.se" }
+]
+description = "A package to generate and interpret biologically informed neural networks."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://infectionmedicineproteomics.github.io/BINN/"
+"Bug Tracker" = "https://github.com/InfectionMedicineProteomics/BINN/issues"
+"Source" = "https://github.com/InfectionMedicineProteomics/BINN"

@@ -7,13 +7,15 @@ requirements = [
     "torch",
     "pytorch-lightning",
     "shap",
+    "matplotlib",
+    "plotly"
 ]
 
 setup(
     author="Erik Hartman",
     author_email="erik.hartman@hotmail.com",
-    name='BINN',
-    version='0.1',
+    name='binn',
+    version='0.0.2',
     packages=['binn'],
     license='MIT',
     long_description=open('README.md').read(),
