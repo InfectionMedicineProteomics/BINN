@@ -11,7 +11,6 @@ def subgraph_sankey(
 ):
     """
     Create a Sankey diagram using Plotly and Seaborn.
-
     Parameters:
         df : pd.DataFrame
             The input DataFrame containing the data to be plotted.
@@ -21,7 +20,6 @@ def subgraph_sankey(
             The column in the input DataFrame containing the values to be plotted (default is "value").
         cmap_name : str, optional
             The name of the color map to be used (default is "coolwarm").
-
     Returns:
         fig : go.Figure
             The Sankey diagram figure created using Plotly.
@@ -37,11 +35,10 @@ def subgraph_sankey(
         new_df = pd.DataFrame()
         total_value_sum = df[val_col].sum()
         for layer in df["source layer"].unique():
-            layer_df = df.loc[df["source layer"] == layer].copy()
+            layer_df = df.loc[df["source layer"] == layer].loc[:, :].copy()
             layer_total = layer_df[val_col].sum()
-            layer_df["normalized value"] = (
-                total_value_sum * layer_df[val_col] / layer_total
-            )
+            layer_df.loc[:, "normalized value"] = total_value_sum * \
+                layer_df[val_col] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
@@ -57,44 +54,43 @@ def subgraph_sankey(
         return source_code, target_code, values, link_colors
 
     def get_node_colors(sources, df):
-        cmaps = {}
-        for layer in df["source layer"].unique():
-            c_df = df[df["source layer"] == layer]
-            c_df = c_df[~c_df["source_w_other"].str.startswith("Other")].copy()
-            max_value = c_df.groupby("source_w_other").mean()[
-                "normalized value"].max()
-            min_value = (
-                c_df.groupby("source_w_other").mean()[
-                    "normalized value"].min() * 0.8
-            )
-            cmap = plt.cm.ScalarMappable(
-                norm=matplotlib.colors.Normalize(
-                    vmin=min_value, vmax=max_value),
-                cmap=cmap_name,
-            )
-            cmaps[layer] = cmap
+        cmap = plt.cm.ScalarMappable(
+            norm=matplotlib.colors.Normalize(vmin=0, vmax=1), cmap=cmap_name
+        )
         colors = []
+        new_df = df
+        node_dict = {}
+        weight_dict = {}
+        for layer in df["source layer"].unique():
+            w = df.loc[df["source layer"] == layer, "normalized value"].values
+            n = df.loc[df["source layer"] == layer, "source"].values
 
-        new_df = pd.DataFrame()
-        for source in sources:
-            source_df = df[df["source_w_other"] == source]
-            if "Other connections" in source:
-                colors.append("rgb(236,236,236, 0.75)")
-                source_df["node_color"] = "rgb(236,236,236, 0.75)"
-            elif "root" in source:
-                colors.append("rgba(0,0,0,1)")
-                source_df["node_color"] = "rgb(0,0,0,1)"
+            if len(w) < 2:
+                w = [1]
             else:
-                intensity = (
-                    source_df.groupby("source_w_other")
-                    .mean()["normalized value"]
-                    .values[0]
-                )
-                cmap = cmaps[source_df["source layer"].unique()[0]]
-                r, g, b, a = cmap.to_rgba(intensity, alpha=0.75)
-                colors.append(f"rgba({r * 255}, {g * 255}, {b * 255}, {a})")
-                source_df["node_color"] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
-            new_df = pd.concat([new_df, source_df])
+                xmin = min(w)
+                xmax = max(w)
+                if xmax == xmin:
+                    w = [1] * len(n)
+                else:
+                    w = np.array(w)
+                    X_std = (w - xmin) / (xmax - xmin)
+                    X_scaled = X_std
+                    w = X_scaled.tolist()
+
+            pairs = [(f, v) for f, v in zip(n, w)]
+            for pair in pairs:
+                n, w = pair
+                r, g, b, a = cmap.to_rgba(w, alpha=0.5)
+                weight_dict[n] = w
+                node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
+        node_dict[final_node] = f"rgba(0,0,0,1)"
+        weight_dict[final_node] = 1
+        colors = [node_dict[n] for n in sources]
+        new_df = new_df.assign(
+            node_color=[node_dict[n] for n in new_df["source"]],
+            node_weight=[weight_dict[n] for n in new_df["source"]],
+        )
         return new_df, colors
 
     df, node_colors = get_node_colors(feature_labels, df)
@@ -132,8 +128,7 @@ def complete_sankey(
     show_top_n: int = 10,
     val_col: str = "value",
     node_cmap: str = "Reds",
-    edge_cmap: Union[str, list] = 'Reds',
-    savename: str = "sepsis_complete_sankey",
+    edge_cmap: Union[str, list] = "Reds",
 ):
 
     df["source layer"] = df["source layer"].astype(int).copy()
@@ -144,8 +139,14 @@ def complete_sankey(
 
     top_n = {}
     for layer in range(n_layers):
-        top_n[layer] = df.loc[df["source layer"] == layer].groupby("source").mean(
-        ).sort_values("value", ascending=False).iloc[:show_top_n].index.tolist()
+        top_n[layer] = (
+            df.loc[df["source layer"] == layer]
+            .groupby("source")
+            .mean()
+            .sort_values("value", ascending=False)
+            .iloc[:show_top_n]
+            .index.tolist()
+        )
 
     def set_to_other(row, top_n, source_or_target):
         s = row[source_or_target]
@@ -161,17 +162,22 @@ def complete_sankey(
 
     def remove_other_to_other(df):
         df["source_w_other"] = df.apply(
-            lambda x: set_to_other(x, top_n, "source"), axis=1)
+            lambda x: set_to_other(x, top_n, "source"), axis=1
+        )
         df["target_w_other"] = df.apply(
-            lambda x: set_to_other(x, top_n, "target"), axis=1)
-        return df[~((df["source_w_other"].str.contains("Other connections")) & (df["target_w_other"].str.contains("Other connections")))]
-
-    df = remove_other_to_other(df)
+            lambda x: set_to_other(x, top_n, "target"), axis=1
+        )
+        return df[
+            ~(
+                (df["source_w_other"].str.contains("Other connections"))
+                & (df["target_w_other"].str.contains("Other connections"))
+            )
+        ]
 
     def normalize_layer_values(df):
         new_df = pd.DataFrame()
         df["Other"] = (
-            df["source"]
+            df["source_w_other"]
             .apply(lambda x: True if "Other connections" in x else False)
             .copy()
         )
@@ -179,26 +185,19 @@ def complete_sankey(
         df = df[df["Other"] == False]
         for layer in df["source layer"].unique():
             layer_df = df.loc[df["source layer"] == layer].copy()
-            layer_df["normalized value"] = 1 * \
-                layer_df["value"] / layer_df["value"].sum()
+            layer_total = layer_df["value"].sum()
+            layer_df["normalized value"] = layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         for layer in other_df["source layer"].unique():
-            layer_df = other_df.loc[df["source layer"] == layer]
+            layer_df = other_df.loc[other_df["source layer"] == layer]
+            layer_total = layer_df["value"].sum()
             layer_df["normalized value"] = 0.1 * \
-                layer_df["value"] / layer_df["value"].sum()
+                layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
-    df = normalize_layer_values(df)
-
-    unique_features = df["source_w_other"].unique(
-    ).tolist() + df["target_w_other"].unique().tolist()
-    code_map, feature_labels = _encode_features(list(set(unique_features)))
-    sources = df["source_w_other"].unique().tolist()
-
     def get_connections(sources, df):
-        conn = df[df["source_w_other"].isin(
-            sources)]
+        conn = df[df["source_w_other"].isin(sources)]
         source_code = [_get_code(s, code_map) for s in conn["source_w_other"]]
         target_code = [_get_code(s, code_map) for s in conn["target_w_other"]]
         values = [v for v in conn["normalized value"]]
@@ -211,36 +210,48 @@ def complete_sankey(
                 .values.tolist()
             )
         else:
-            link_colors = (
-                conn
-                .apply(lambda x: 'rgba(236,236,236, 0.75)' if 'Other connections' in x['source_w_other'] else edge_cmap[x['type']], axis=1)
-                .values.tolist()
-            )
+            link_colors = conn.apply(
+                lambda x: "rgba(236,236,236, 0.75)"
+                if "Other connections" in x["source_w_other"]
+                else edge_cmap[x["type"]],
+                axis=1,
+            ).values.tolist()
         return source_code, target_code, values, link_colors
 
-    def get_node_colors(sources, df, curr_cmap=node_cmap, alpha=0.75):
+    def get_node_colors(sources, df, curr_cmap=node_cmap):
         cmaps = {}
         for layer in df["source layer"].unique():
-            c_df = df[(df["source layer"] == layer) & (
-                ~df["source_w_other"].str.startswith("Other"))]
-            cmap = plt.cm.ScalarMappable(norm=matplotlib.colors.Normalize(
-                vmin=c_df["normalized value"].min() * 0.8, vmax=c_df["normalized value"].max()), cmap=curr_cmap)
+            c_df = df[df["source layer"] == layer]
+            c_df = c_df[~c_df["source_w_other"].str.startswith("Other")].copy()
+            cmap = plt.cm.ScalarMappable(
+                norm=matplotlib.colors.Normalize(
+                    vmin=c_df.groupby("source_w_other").mean()[
+                        "normalized value"].min() * 0.8, vmax=c_df.groupby("source_w_other").mean()[
+                        "normalized value"].max()),
+                cmap=curr_cmap,
+            )
             cmaps[layer] = cmap
         colors = []
+
         new_df = pd.DataFrame()
         for source in sources:
             source_df = df[df["source_w_other"] == source]
             if "Other connections" in source:
-                color = f"rgb(236,236,236, {alpha})"
+                colors.append("rgb(236,236,236, 0.75)")
+                source_df["node_color"] = "rgb(236,236,236, 0.75)"
             elif "root" in source:
-                color = "rgba(0,0,0,1)"
+                colors.append("rgba(0,0,0,1)")
+                source_df["node_color"] = "rgb(0,0,0,1)"
             else:
-                intensity = source_df["normalized value"].values[0]
+                intensity = (
+                    source_df.groupby("source_w_other")
+                    .mean()["normalized value"]
+                    .values[0]
+                )
                 cmap = cmaps[source_df["source layer"].unique()[0]]
-                r, g, b, a = cmap.to_rgba(intensity, alpha=alpha)
-                color = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
-            colors.append(color)
-            source_df["node_color"] = color
+                r, g, b, a = cmap.to_rgba(intensity, alpha=0.75)
+                colors.append(f"rgba({r * 255}, {g * 255}, {b * 255}, {a})")
+                source_df["node_color"] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
             new_df = pd.concat([new_df, source_df])
         return new_df, colors
 
@@ -298,6 +309,14 @@ def complete_sankey(
                     final_df[final_df["source_w_other"] == f]["y"].values[0])
         return x, y
 
+    df = remove_other_to_other(df)
+    df = normalize_layer_values(df)
+    unique_features = (
+        df["source_w_other"].unique().tolist(
+        ) + df["target_w_other"].unique().tolist()
+    )
+    code_map, feature_labels = _encode_features(list(set(unique_features)))
+    sources = df["source_w_other"].unique().tolist()
     df, node_colors = get_node_colors(feature_labels, df)
     encoded_source, encoded_target, value, link_colors = get_connections(
         sources, df)
@@ -328,7 +347,6 @@ def complete_sankey(
             )
         ],
     )
-    fig.write_image(f"{savename}", width=1900, scale=2, height=800)
     return fig
 
 
@@ -347,6 +365,6 @@ def _get_code(feature, feature_map):
 
 
 def _remove_loops(df):
-    df["loop"] = df.apply(lambda x: x["source"] == x["target"], axis=1).copy()
+    df.loc[:, "loop"] = df.apply(lambda x: x["source"] == x["target"], axis=1)
     df = df[df["loop"] == False]
     return df

@@ -1,7 +1,7 @@
 import itertools
 import re
 from typing import Union
-from binn.plot import subgraph_sankey
+from binn.plot import subgraph_sankey, complete_sankey
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -35,7 +35,6 @@ class Network:
         inputs (list): A list of the unique inputs in the mapping DataFrame.
         netx (networkx.DiGraph): A directed graph network of the pathways.
 
-
     """
 
     def __init__(
@@ -44,7 +43,7 @@ class Network:
         pathways: pd.DataFrame,
         mapping: Union[pd.DataFrame, None] = None,
         input_data_column: str = "Protein",
-        subset_pathways: bool = True
+        subset_pathways: bool = True,
     ):
 
         if isinstance(mapping, pd.DataFrame):
@@ -62,12 +61,10 @@ class Network:
 
         if subset_pathways:
 
-            self.mapping = subset_input(
-                input_data, self.mapping, input_data_column
-            )
+            self.mapping = _subset_input(
+                input_data, self.mapping, input_data_column)
 
-            self.pathways = subset_pathways_on_idx(
-                pathways, self.mapping)
+            self.pathways = _subset_pathways_on_idx(pathways, self.mapping)
 
         else:
 
@@ -80,25 +77,6 @@ class Network:
         self.inputs = self.mapping["input"].unique()
 
         self.netx = self.build_network()
-
-    def get_terminals(self) -> list:
-        """
-        Returns a list of all terminal nodes (nodes with no outgoing edges) in the network.
-
-        Returns:
-            A list of strings representing the terminal nodes in the network.
-        """
-
-        return [n for n, d in self.netx.out_degree() if d == 0]
-
-    def get_roots(self):
-        """
-        Returns a list of all root nodes (nodes with no incoming edges) in the network.
-
-        Returns:
-            A list of strings representing the root nodes in the network.
-        """
-        return get_nodes_at_level(self.netx, distance=1)
 
     def build_network(self):
         """
@@ -113,49 +91,12 @@ class Network:
         net = nx.from_pandas_edgelist(
             self.pathways, "parent", "child", create_using=nx.DiGraph()
         )
-        # add root node
         roots = [n for n, d in net.in_degree() if d == 0]
         root_node = "root"
         edges = [(root_node, n) for n in roots]
         net.add_edges_from(edges)
 
         return net
-
-    def get_tree(self):
-        """
-        Returns a BFS tree of the network from the root node.
-
-        Returns:
-            A networkx DiGraph object representing the BFS tree of the network from the root node.
-        """
-        return nx.bfs_tree(
-            self.netx, "root"
-        )
-
-    def get_completed_network(self, n_levels):
-        """
-        Returns a network that has been completed up to a certain number of levels below the root node.
-
-        Args:
-            n_levels: The number of levels below the root node to complete the network to.
-
-        Returns:
-            A networkx DiGraph object representing the completed network.
-        """
-        return complete_network(self.netx, n_levels=n_levels)
-
-    def get_completed_tree(self, n_levels):
-        """
-        Returns a BFS tree of the completed network up to a certain number of levels below the root node.
-
-        Args:
-            n_levels: The number of levels below the root node to complete the network to.
-
-        Returns:
-            A networkx DiGraph object representing the completed BFS tree of the network from the root node.
-        """
-        G = self.get_tree()
-        return complete_network(G, n_levels=n_levels)
 
     def get_layers(self, n_levels, direction="root_to_leaf") -> list:
         """
@@ -169,12 +110,10 @@ class Network:
             A list of dictionaries, where each dictionary contains pathway names as keys and input lists as values.
         """
         if direction == "root_to_leaf":
-            net = self.get_completed_network(n_levels)
-            layers = get_layers_from_net(net, n_levels)
+            net = _complete_network(self.netx, n_levels=n_levels)
+            layers = _get_layers_from_net(net, n_levels)
 
-        terminal_nodes = [
-            n for n, d in net.out_degree() if d == 0
-        ]
+        terminal_nodes = [n for n, d in net.out_degree() if d == 0]
 
         mapping_df = self.mapping
         dict = {}
@@ -204,142 +143,89 @@ class Network:
         connectivity_matrices = []
         layers = self.get_layers(n_levels, direction)
         for i, layer in enumerate(layers[::-1]):
-            mapp = get_map_from_layer(layer)
+            layer_map = _get_map_from_layer(layer)
             if i == 0:
-                inputs = list(mapp.index)
+                inputs = list(layer_map.index)
                 self.inputs = inputs
             filter_df = pd.DataFrame(index=inputs)
-            all = filter_df.merge(mapp, right_index=True,
-                                  left_index=True, how="inner")
-            inputs = list(mapp.columns)
+            all = filter_df.merge(
+                layer_map, right_index=True, left_index=True, how="inner"
+            )
+            inputs = list(layer_map.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices
 
 
-def get_map_from_layer(layer_dict):
-    pathways = layer_dict.keys()
-    inputs = list(itertools.chain.from_iterable(layer_dict.values()))
-    inputs = list(np.unique(inputs))
-    df = pd.DataFrame(index=pathways, columns=inputs)
-    for k, v in layer_dict.items():
-        df.loc[k, v] = 1
-    df = df.fillna(0)
-    return df.T
-
-
-def add_edges(G, node, n_levels):
-    edges = []
-    source = node
-    for l in range(n_levels):
-        target = node + "_copy" + str(l + 1)
-        edge = (source, target)
-        source = target
-        edges.append(edge)
-
-    G.add_edges_from(edges)
-    return G
-
-
-def complete_network(G, n_levels=4):
-    nr_copies = 0
-    sub_graph = nx.ego_graph(G, "root", radius=n_levels)
-    terminal_nodes = [n for n, d in sub_graph.out_degree() if d == 0]
-    for node in terminal_nodes:
-        distance = len(nx.shortest_path(sub_graph, source="root", target=node))
-        if distance <= n_levels:
-            nr_copies = nr_copies + n_levels - distance
-            diff = n_levels - distance + 1
-            sub_graph = add_edges(
-                sub_graph, node, diff
-            )
-    return sub_graph
-
-
-def get_nodes_at_level(net, distance):
-    nodes = set(nx.ego_graph(net, "root", radius=distance))
-    if distance >= 1.0:
-        nodes -= set(nx.ego_graph(net, "root", radius=distance - 1))
-
-    return list(nodes)
-
-
-def get_layers_from_net(net, n_levels):
-    layers = []
-    for i in range(n_levels):
-        nodes = get_nodes_at_level(net, i)
-        dict = {}
-        for n in nodes:
-            n_name = re.sub(
-                "_copy.*", "", n
-            )
-            next = net.successors(n)
-            dict[n_name] = [
-                re.sub("_copy.*", "", nex) for nex in next
-            ]
-        layers.append(
-            dict
-        )
-    return layers
-
-
-def get_separation(pathways, input_data, translation_mapping):
-    sep_path = ","
-    sep_input = ","
-    sep_transl = ","
-    if pathways.endswith("tsv"):
-        sep_path = "\t"
-    if input_data.endswith("tsv"):
-        sep_input = "\t"
-    if translation_mapping.endswith("tsv"):
-        sep_transl = "\t"
-    return sep_path, sep_input, sep_transl
-
-
-def subset_input(
-    input_df, translation, input_data_column,
-):
-    keys_in_data = input_df[input_data_column].unique()
-    translation = translation[translation["input"].isin(keys_in_data)]
-    return translation
-
-
-def subset_pathways_on_idx(pathways, translation):
-    def add_pathways(counter, idx_list, parent):
-        counter += 1
-        if len(parent) == 0:
-
-            return idx_list
-        else:
-            idx_list = idx_list + parent
-            subsetted_pathway = pathways[pathways["child"].isin(parent)]
-            new_parent = list(subsetted_pathway["parent"].unique())
-            return add_pathways(counter, idx_list, new_parent)
-
-    counter = 0
-    original_parent = list(translation["translation"].unique())
-    idx_list = []
-    idx_list = add_pathways(counter, idx_list, original_parent)
-    pathways = pathways[pathways["child"].isin(idx_list)]
-    return pathways
-
-
 class ImportanceNetwork:
-    """
-    Class for generating and analyzing importance networks.
-
-    This class generates and analyzes directed graphs representing importance networks, in which nodes represent variables and edges represent dependencies or influences between the variables. The graphs are constructed from a pandas DataFrame specifying the relationships between the variables, with columns for the source and target nodes, the weight of the edge, and optionally the layers of the source and target nodes. The graphs can be used to calculate various properties of the importance network, such as the number of nodes in upstream or downstream subgraphs, the fan-in and fan-out of nodes, and the weighted values of nodes. The class also includes a method for generating a Sankey diagram of the importance network.
-
-    Parameters:
-        df (pandas.DataFrame): A DataFrame specifying the relationships between the variables, with columns for the source and target nodes, the weight of the edge, and optionally the layers of the source and target nodes.
-        val_col (str, optional): The name of the column in df containing the weight of the edge. Default is "value".
-
-    """
-
     def __init__(self, df: pd.DataFrame, val_col: str = "value"):
+        self.complete_df = df
         self.df = df
         self.val_col = val_col
         self.G = self.create_graph()
         self.G_reverse = self.G.reverse()
+
+    def plot_subgraph_sankey(
+        self,
+        query_node: str,
+        upstream: bool = False,
+        savename: str = "sankey.png",
+        val_col: str = "value",
+        cmap: str = "coolwarm",
+    ):
+        """
+        Generate a Sankey diagram using the provided query node.
+
+        Args:
+            query_node (str): The node to use as the starting point for the Sankey diagram.
+            upstream (bool, optional): If True, the Sankey diagram will show the upstream flow of the
+                query_node. If False (default), the Sankey diagram will show the downstream flow of the
+                query_node.
+            savename (str, optional): The file name to save the Sankey diagram as. Defaults to "sankey.png".
+            val_col (str, optional): The column in the DataFrame that represents the value flow between
+                nodes. Defaults to "value".
+            cmap_name (str, optional): The name of the color map to use for the Sankey diagram. Defaults
+                to "coolwarm".
+
+        Returns:
+            None: The Sankey diagram will be saved as an image file.
+
+        Raises:
+            ValueError: If the provided query_node is not present in the graph.
+
+        """
+        if upstream == False:
+            final_node = "root"
+            SG = self.get_downstream_subgraph(query_node, depth_limit=None)
+            source_or_target = "source"
+        else:
+            final_node = query_node
+            SG = self.get_upstream_subgraph(query_node, depth_limit=None)
+            source_or_target = "target"
+        nodes_in_SG = [n for n in SG.nodes]
+        df = self.df[self.df[source_or_target].isin(nodes_in_SG)]
+        fig = subgraph_sankey(
+            df, final_node=final_node, val_col=val_col, cmap_name=cmap
+        )
+
+        fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
+        return fig
+
+    def plot_complete_sankey(self,
+                             multiclass: bool = False,
+                             show_top_n: int = 10,
+                             node_cmap: str = "Reds",
+                             edge_cmap: Union[str, list] = "Reds",
+                             savename='sankey.png'):
+
+        fig = complete_sankey(self.complete_df,
+                              multiclass=multiclass,
+                              val_col=self.val_col,
+                              show_top_n=show_top_n,
+                              edge_cmap=edge_cmap,
+                              node_cmap=node_cmap)
+
+        fig.write_image(f"{savename}", width=1900, scale=2, height=800)
+        return fig
 
     def create_graph(self):
         """
@@ -537,51 +423,6 @@ class ImportanceNetwork:
         )
         return self.df
 
-    def generate_sankey(
-        self,
-        query_node: str,
-        upstream: bool = False,
-        savename: str = "sankey.png",
-        val_col: str = "value",
-        cmap_name: str = "coolwarm",
-    ):
-        """
-        Generate a Sankey diagram using the provided query node.
-
-        Args:
-            query_node (str): The node to use as the starting point for the Sankey diagram.
-            upstream (bool, optional): If True, the Sankey diagram will show the upstream flow of the
-                query_node. If False (default), the Sankey diagram will show the downstream flow of the
-                query_node.
-            savename (str, optional): The file name to save the Sankey diagram as. Defaults to "sankey.png".
-            val_col (str, optional): The column in the DataFrame that represents the value flow between
-                nodes. Defaults to "value".
-            cmap_name (str, optional): The name of the color map to use for the Sankey diagram. Defaults
-                to "coolwarm".
-
-        Returns:
-            None: The Sankey diagram will be saved as an image file.
-
-        Raises:
-            ValueError: If the provided query_node is not present in the graph.
-
-        """
-        if upstream == False:
-            final_node = "root"
-            SG = self.get_downstream_subgraph(query_node, depth_limit=None)
-            source_or_target = "source"
-        else:
-            final_node = query_node
-            SG = self.get_upstream_subgraph(query_node, depth_limit=None)
-            source_or_target = "target"
-        nodes_in_SG = [n for n in SG.nodes]
-        df = self.df[self.df[source_or_target].isin(nodes_in_SG)]
-        fig = subgraph_sankey(
-            df, final_node=final_node, val_col=val_col, cmap_name=cmap_name
-        )
-
-        fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
-
 
 def _get_mapping_to_all_layers(pathways, mapping):
     graph = nx.from_pandas_edgelist(
@@ -589,10 +430,8 @@ def _get_mapping_to_all_layers(pathways, mapping):
     )
     components = {"input": [], "connections": []}
     for translation in mapping["input"]:
-        ids = mapping[mapping["input"]
-                      == translation]["translation"]
+        ids = mapping[mapping["input"] == translation]["translation"]
         for id in ids:
-
             connections = graph.subgraph(
                 nx.single_source_shortest_path(graph, id).keys()
             ).nodes
@@ -602,3 +441,86 @@ def _get_mapping_to_all_layers(pathways, mapping):
     components = pd.DataFrame(components)
     components.drop_duplicates(inplace=True)
     return components
+
+
+def _get_map_from_layer(layer_dict):
+    pathways = layer_dict.keys()
+    inputs = list(itertools.chain.from_iterable(layer_dict.values()))
+    inputs = list(np.unique(inputs))
+    df = pd.DataFrame(index=pathways, columns=inputs)
+    for k, v in layer_dict.items():
+        df.loc[k, v] = 1
+    df = df.fillna(0)
+    return df.T
+
+
+def _add_edges(G, node, n_levels):
+    edges = []
+    source = node
+    for l in range(n_levels):
+        target = node + "_copy" + str(l + 1)
+        edge = (source, target)
+        source = target
+        edges.append(edge)
+
+    G.add_edges_from(edges)
+    return G
+
+
+def _complete_network(G, n_levels=4):
+    nr_copies = 0
+    sub_graph = nx.ego_graph(G, "root", radius=n_levels)
+    terminal_nodes = [n for n, d in sub_graph.out_degree() if d == 0]
+    for node in terminal_nodes:
+        distance = len(nx.shortest_path(sub_graph, source="root", target=node))
+        if distance <= n_levels:
+            nr_copies = nr_copies + n_levels - distance
+            diff = n_levels - distance + 1
+            sub_graph = _add_edges(sub_graph, node, diff)
+    return sub_graph
+
+
+def _get_nodes_at_level(net, distance):
+    nodes = set(nx.ego_graph(net, "root", radius=distance))
+    if distance >= 1.0:
+        nodes -= set(nx.ego_graph(net, "root", radius=distance - 1))
+    return list(nodes)
+
+
+def _get_layers_from_net(net, n_levels):
+    layers = []
+    for i in range(n_levels):
+        nodes = _get_nodes_at_level(net, i)
+        dict = {}
+        for n in nodes:
+            n_name = re.sub("_copy.*", "", n)
+            next = net.successors(n)
+            dict[n_name] = [re.sub("_copy.*", "", nex) for nex in next]
+        layers.append(dict)
+    return layers
+
+
+def _subset_input(
+    input_df,
+    translation,
+    input_data_column,
+):
+    keys_in_data = input_df[input_data_column].unique()
+    translation = translation[translation["input"].isin(keys_in_data)]
+    return translation
+
+
+def _subset_pathways_on_idx(pathways, translation):
+    def add_pathways(idx_list, parent):
+        if len(parent) == 0:
+            return idx_list
+        else:
+            idx_list = idx_list + parent
+            subsetted_pathway = pathways[pathways["child"].isin(parent)]
+            new_parent = list(subsetted_pathway["parent"].unique())
+            return add_pathways(idx_list, new_parent)
+    original_parent = list(translation["translation"].unique())
+    idx_list = []
+    idx_list = add_pathways(idx_list, original_parent)
+    pathways = pathways[pathways["child"].isin(idx_list)]
+    return pathways
