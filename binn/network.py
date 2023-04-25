@@ -1,6 +1,8 @@
 import itertools
 import re
 from typing import Union
+
+import plotly
 from binn.plot import subgraph_sankey, complete_sankey
 import networkx as nx
 import numpy as np
@@ -171,7 +173,7 @@ class ImportanceNetwork:
         savename: str = "sankey.png",
         val_col: str = "value",
         cmap: str = "coolwarm",
-    ):
+    ) -> plotly.graph_objs._figure.Figure:
         """
         Generate a Sankey diagram using the provided query node.
 
@@ -187,10 +189,8 @@ class ImportanceNetwork:
                 to "coolwarm".
 
         Returns:
-            None: The Sankey diagram will be saved as an image file.
-
-        Raises:
-            ValueError: If the provided query_node is not present in the graph.
+            plotly.graph_objs._figure.Figure:
+                The plotly Figure object representing the Sankey diagram.
 
         """
         if upstream == False:
@@ -215,7 +215,26 @@ class ImportanceNetwork:
                              show_top_n: int = 10,
                              node_cmap: str = "Reds",
                              edge_cmap: Union[str, list] = "Reds",
-                             savename='sankey.png'):
+                             savename='sankey.png') -> plotly.graph_objs._figure.Figure:
+        """
+        Plot a complete Sankey diagram for the importance network.
+
+        Parameters:
+            multiclass : bool, optional
+                If True, plot multiclass Sankey diagram. Defaults to False.
+            show_top_n : int, optional
+                Show only the top N nodes in the Sankey diagram. Defaults to 10.
+            node_cmap : str, optional
+                The color map for the nodes. Defaults to "Reds".
+            edge_cmap : str or list, optional
+                The color map for the edges. Defaults to "Reds".
+            savename : str, optional
+                The filename to save the plot. Defaults to "sankey.png".
+
+        Returns:
+            plotly.graph_objs._figure.Figure
+                The plotly Figure object representing the Sankey diagram.
+        """
 
         fig = complete_sankey(self.complete_df,
                               multiclass=multiclass,

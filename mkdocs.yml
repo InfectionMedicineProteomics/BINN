@@ -15,7 +15,6 @@ nav:
       - reference/net_ref.md
       - reference/explain_ref.md
       - reference/sk_ref.md
-      - reference/plot_ref.md
 
 plugins:
   - mkdocstrings
