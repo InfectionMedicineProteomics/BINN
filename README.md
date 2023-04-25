@@ -52,7 +52,6 @@ binn = BINNClassifier(
     validate=True,
     epochs=10,
     threads=10,
-    logger=SuperLogger("logs/test")
 )
 ```
 
@@ -117,9 +116,9 @@ Translation file - this file is alternative, but is useful if some translation i
 ### Plotting
 
 Plotting a subgraph starting from a node generates the plot:
-![Pathway sankey!](/img/sankey.png "Pathway sankey")
+![Pathway sankey!](docs/img/subgraph_sankey.png "Pathway sankey")
 A compelte sankey may look like this:
-![Complete sankey!](/img/test.png "Complete sankey")
+![Complete sankey!](docs/img/complete_sankey.png "Complete sankey")
 
 ## Installation
 
@@ -144,4 +143,4 @@ The software has been tested on desktop machines running Windows 10/Linux (Ubunt
 
 Erik Hartman - erik.hartman@hotmail.com
 
-![imp](/img/imp_logo.png "imp")
+![imp](docs/img/imp_logo.png "imp")

@@ -159,6 +159,24 @@ class Network:
 
 
 class ImportanceNetwork:
+    """
+    A class for building and analyzing a directed graph representing the importance network of a system.
+
+    Parameters:
+        df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,
+            and layer for each node. This dataframe should represent the complete importance network of the system.
+        val_col (str, optional): The name of the column in the DataFrame that represents the value flow between
+            nodes. Defaults to "value".
+
+    Attributes:
+        complete_df (pandas.DataFrame): The original dataframe containing the complete importance network of the system.
+        df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.
+        val_col (str): The name of the column in the DataFrame that represents the value flow between nodes.
+        G (networkx.DiGraph): A directed graph object representing the importance network of the system.
+        G_reverse (networkx.DiGraph): A directed graph object representing the importance network of the system in reverse.
+
+    """
+
     def __init__(self, df: pd.DataFrame, val_col: str = "value"):
         self.complete_df = df
         self.df = df
