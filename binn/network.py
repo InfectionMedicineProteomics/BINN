@@ -60,8 +60,7 @@ class Network:
 
         if subset_pathways:
 
-            self.mapping = _subset_input(
-                input_data, self.mapping, input_data_column)
+            self.mapping = _subset_input(input_data, self.mapping, input_data_column)
 
             self.pathways = _subset_pathways_on_idx(pathways, self.mapping)
 
@@ -250,6 +249,7 @@ def _subset_pathways_on_idx(pathways, translation):
             subsetted_pathway = pathways[pathways["child"].isin(parent)]
             new_parent = list(subsetted_pathway["parent"].unique())
             return add_pathways(idx_list, new_parent)
+
     original_parent = list(translation["translation"].unique())
     idx_list = []
     idx_list = add_pathways(idx_list, original_parent)

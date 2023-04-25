@@ -76,12 +76,14 @@ class ImportanceNetwork:
         fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
         return fig
 
-    def plot_complete_sankey(self,
-                             multiclass: bool = False,
-                             show_top_n: int = 10,
-                             node_cmap: str = "Reds",
-                             edge_cmap: Union[str, list] = "Reds",
-                             savename='sankey.png') -> plotly.graph_objs._figure.Figure:
+    def plot_complete_sankey(
+        self,
+        multiclass: bool = False,
+        show_top_n: int = 10,
+        node_cmap: str = "Reds",
+        edge_cmap: Union[str, list] = "Reds",
+        savename="sankey.png",
+    ) -> plotly.graph_objs._figure.Figure:
         """
         Plot a complete Sankey diagram for the importance network.
 
@@ -102,12 +104,14 @@ class ImportanceNetwork:
                 The plotly Figure object representing the Sankey diagram.
         """
 
-        fig = complete_sankey(self.complete_df,
-                              multiclass=multiclass,
-                              val_col=self.val_col,
-                              show_top_n=show_top_n,
-                              edge_cmap=edge_cmap,
-                              node_cmap=node_cmap)
+        fig = complete_sankey(
+            self.complete_df,
+            multiclass=multiclass,
+            val_col=self.val_col,
+            show_top_n=show_top_n,
+            edge_cmap=edge_cmap,
+            node_cmap=node_cmap,
+        )
 
         fig.write_image(f"{savename}", width=1900, scale=2, height=800)
         return fig
@@ -291,8 +295,7 @@ class ImportanceNetwork:
         self.df["fan_out"] = self.df.apply(
             lambda x: self.get_fan_out(x["source"]), axis=1
         )
-        self.df["fan_tot"] = self.df.apply(
-            lambda x: x["fan_in"] + x["fan_out"], axis=1)
+        self.df["fan_tot"] = self.df.apply(lambda x: x["fan_in"] + x["fan_out"], axis=1)
         self.df["nodes_in_upstream"] = self.df.apply(
             lambda x: self.get_nr_nodes_in_upstream_SG(x["source"]), axis=1
         )

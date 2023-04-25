@@ -37,8 +37,9 @@ def subgraph_sankey(
         for layer in df["source layer"].unique():
             layer_df = df.loc[df["source layer"] == layer].loc[:, :].copy()
             layer_total = layer_df[val_col].sum()
-            layer_df.loc[:, "normalized value"] = total_value_sum * \
-                layer_df[val_col] / layer_total
+            layer_df.loc[:, "normalized value"] = (
+                total_value_sum * layer_df[val_col] / layer_total
+            )
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
@@ -94,8 +95,7 @@ def subgraph_sankey(
         return new_df, colors
 
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(
-        sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
     nodes = dict(
         pad=20,
         thickness=20,
@@ -191,8 +191,7 @@ def complete_sankey(
         for layer in other_df["source layer"].unique():
             layer_df = other_df.loc[other_df["source layer"] == layer]
             layer_total = layer_df["value"].sum()
-            layer_df["normalized value"] = 0.1 * \
-                layer_df["value"] / layer_total
+            layer_df["normalized value"] = 0.1 * layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
@@ -202,8 +201,7 @@ def complete_sankey(
         target_code = [_get_code(s, code_map) for s in conn["target_w_other"]]
         values = [v for v in conn["normalized value"]]
         if multiclass == False:
-            temp_df, _ = get_node_colors(
-                feature_labels, df, curr_cmap=edge_cmap)
+            temp_df, _ = get_node_colors(feature_labels, df, curr_cmap=edge_cmap)
             link_colors = (
                 temp_df["node_color"]
                 .apply(lambda x: x.split(", 0.75)")[0] + ", 0.3)")
@@ -225,9 +223,12 @@ def complete_sankey(
             c_df = c_df[~c_df["source_w_other"].str.startswith("Other")].copy()
             cmap = plt.cm.ScalarMappable(
                 norm=matplotlib.colors.Normalize(
-                    vmin=c_df.groupby("source_w_other").mean()[
-                        "normalized value"].min() * 0.8, vmax=c_df.groupby("source_w_other").mean()[
-                        "normalized value"].max()),
+                    vmin=c_df.groupby("source_w_other").mean()["normalized value"].min()
+                    * 0.8,
+                    vmax=c_df.groupby("source_w_other")
+                    .mean()["normalized value"]
+                    .max(),
+                ),
                 cmap=curr_cmap,
             )
             cmaps[layer] = cmap
@@ -271,8 +272,7 @@ def complete_sankey(
             layer_df = grouped_df[grouped_df["source layer"] == layer].sort_values(
                 ["value"], ascending=True
             )
-            layer_df = layer_df.loc[~layer_df["source_w_other"].str.startswith(
-                "Other")]
+            layer_df = layer_df.loc[~layer_df["source_w_other"].str.startswith("Other")]
             layer_df["rank"] = range(len(layer_df.index))
             layer_df["value"] = layer_df["value"] / layer_df["value"].sum()
             layer_df["y"] = (
@@ -293,8 +293,7 @@ def complete_sankey(
                         (0.01 + layer) / (len(layers) + 1),
                     ]
                 ],
-                columns=["source_w_other", "source layer",
-                         "value", "rank", "y", "x"],
+                columns=["source_w_other", "source layer", "value", "rank", "y", "x"],
             )
             final_df = pd.concat([final_df, layer_df, other_df])
 
@@ -303,23 +302,19 @@ def complete_sankey(
                 x.append(0.85)
                 y.append(0.5)
             else:
-                x.append(
-                    final_df[final_df["source_w_other"] == f]["x"].values[0])
-                y.append(
-                    final_df[final_df["source_w_other"] == f]["y"].values[0])
+                x.append(final_df[final_df["source_w_other"] == f]["x"].values[0])
+                y.append(final_df[final_df["source_w_other"] == f]["y"].values[0])
         return x, y
 
     df = remove_other_to_other(df)
     df = normalize_layer_values(df)
     unique_features = (
-        df["source_w_other"].unique().tolist(
-        ) + df["target_w_other"].unique().tolist()
+        df["source_w_other"].unique().tolist() + df["target_w_other"].unique().tolist()
     )
     code_map, feature_labels = _encode_features(list(set(unique_features)))
     sources = df["source_w_other"].unique().tolist()
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(
-        sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
     x, y = get_node_positions(feature_labels, df)
 
     feature_labels = [f.split("_")[0] for f in feature_labels]
