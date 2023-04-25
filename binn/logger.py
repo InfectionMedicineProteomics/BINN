@@ -16,6 +16,7 @@ class SuperLogger:
             "tb": TensorBoardLogger(save_dir),
         }
         self.version = self.logger_dict["csv"].version
+        self.save_dir = save_dir
 
     def get_logger_list(self):
         l = []

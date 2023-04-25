@@ -3,6 +3,8 @@ import numpy as np
 import torch
 from binn import BINN
 import pandas as pd
+import copy
+import pytorch_lightning
 
 
 class BINNExplainer:
@@ -30,7 +32,6 @@ class BINNExplainer:
             pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.
         """
         shap_dict = self._explain_layers(background_data, test_data)
-
         feature_dict = {
             "source": [],
             "target": [],
@@ -47,26 +48,22 @@ class BINNExplainer:
             sv = np.asarray(sv)
             sv = abs(sv)
             sv_mean = np.mean(sv, axis=1)
+
             for f in range(sv_mean.shape[-1]):
+                n_classes = sv_mean.shape[0]
                 connections = cm[cm.index == features[f]]
                 connections = connections.loc[
                     :, (connections != 0).any(axis=0)
                 ]  # get targets and append to target
                 for target in connections:
-                    feature_dict["source"].append(
-                        f"{features[f]}_{curr_layer}")
-                    feature_dict["target"].append(f"{target}_{curr_layer + 1}")
-                    feature_dict["value"].append(sv_mean[0][f])
-                    feature_dict["type"].append(0)
-                    feature_dict["source"].append(
-                        f"{features[f]}_{curr_layer}")
-                    feature_dict["target"].append(f"{target}_{curr_layer + 1}")
-                    feature_dict["value"].append(sv_mean[1][f])
-                    feature_dict["type"].append(1)
-                    feature_dict["source layer"].append(curr_layer)
-                    feature_dict["source layer"].append(curr_layer)
-                    feature_dict["target layer"].append(curr_layer + 1)
-                    feature_dict["target layer"].append(curr_layer + 1)
+                    for curr_class in range(n_classes):
+                        feature_dict["source"].append(
+                            f"{features[f]}_{curr_layer}")
+                        feature_dict["target"].append(f"{target}_{curr_layer + 1}")
+                        feature_dict["value"].append(sv_mean[curr_class][f])
+                        feature_dict["type"].append(curr_class)
+                        feature_dict["source layer"].append(curr_layer)
+                        feature_dict["target layer"].append(curr_layer + 1)
             curr_layer += 1
         df = pd.DataFrame(data=feature_dict)
         return df
@@ -75,7 +72,7 @@ class BINNExplainer:
                         test_data: torch.Tensor,
                         background_data: torch.Tensor,
                         nr_iterations: int,
-                        trainer,
+                        max_epochs: int,
                         dataloader) -> pd.DataFrame:
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
@@ -94,6 +91,7 @@ class BINNExplainer:
         """
         dfs = {}
         for iteration in range(nr_iterations):
+            trainer = pytorch_lightning.Trainer(max_epochs=max_epochs)
             self.model.reset_params()
             self.model.init_weights()
             trainer.fit(self.model, dataloader)

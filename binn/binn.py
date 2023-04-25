@@ -50,8 +50,8 @@ class BINN(LightningModule):
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
         n_layers: int = 4,
-        scheduler="plateau",
-        optimizer="adam",
+        scheduler: str = "plateau",
+        optimizer: str = "adam",
         validate: bool = False,
         n_outputs: int = 2,
         dropout: float = 0,
@@ -251,6 +251,7 @@ class BINN(LightningModule):
 def _init_weights(m):
     if type(m) == nn.Linear:
         torch.nn.init.xavier_uniform_(m.weight)
+
 
 
 def _reset_params(m):

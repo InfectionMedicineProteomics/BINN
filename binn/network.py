@@ -1,7 +1,7 @@
 import itertools
 import re
 from typing import Union
-from binn.plot import shap_sankey
+from binn.plot import subgraph_sankey
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -576,7 +576,7 @@ class ImportanceNetwork:
             source_or_target = "target"
         nodes_in_SG = [n for n in SG.nodes]
         df = self.df[self.df[source_or_target].isin(nodes_in_SG)]
-        fig = shap_sankey(
+        fig = subgraph_sankey(
             df, final_node=final_node, val_col=val_col, cmap_name=cmap_name
         )
 
