@@ -14,8 +14,8 @@ nav:
       - reference/binn_ref.md
       - reference/net_ref.md
       - reference/explain_ref.md
+      - reference/import_ref.md
       - reference/sk_ref.md
-      - reference/plot_ref.md
 
 plugins:
   - mkdocstrings

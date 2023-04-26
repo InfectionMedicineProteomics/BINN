@@ -3,7 +3,6 @@ import numpy as np
 import torch
 from binn import BINN
 import pandas as pd
-import copy
 import pytorch_lightning
 
 
@@ -59,7 +58,8 @@ class BINNExplainer:
                     for curr_class in range(n_classes):
                         feature_dict["source"].append(
                             f"{features[f]}_{curr_layer}")
-                        feature_dict["target"].append(f"{target}_{curr_layer + 1}")
+                        feature_dict["target"].append(
+                            f"{target}_{curr_layer + 1}")
                         feature_dict["value"].append(sv_mean[curr_class][f])
                         feature_dict["type"].append(curr_class)
                         feature_dict["source layer"].append(curr_layer)
