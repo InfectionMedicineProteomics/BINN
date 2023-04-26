@@ -27,10 +27,10 @@ class ImportanceNetwork:
 
     def __init__(self, df: pd.DataFrame, val_col: str = "value"):
         self.complete_df = df
-        self.df = df
+        self.importance_df = df
         self.val_col = val_col
-        self.G = self.create_graph()
-        self.G_reverse = self.G.reverse()
+        self.importance_graph = self.create_graph()
+        self.importance_graph_reverse = self.importance_graph.reverse()
 
     def plot_subgraph_sankey(
         self,
@@ -39,7 +39,7 @@ class ImportanceNetwork:
         savename: str = "sankey.png",
         val_col: str = "value",
         cmap: str = "coolwarm",
-    ) -> plotly.graph_objs._figure.Figure:
+    ):
         """
         Generate a Sankey diagram using the provided query node.
 
@@ -61,14 +61,17 @@ class ImportanceNetwork:
         """
         if upstream == False:
             final_node = "root"
-            SG = self.get_downstream_subgraph(query_node, depth_limit=None)
+            subgraph = self.get_downstream_subgraph(
+                query_node, depth_limit=None)
             source_or_target = "source"
         else:
             final_node = query_node
-            SG = self.get_upstream_subgraph(query_node, depth_limit=None)
+            subgraph = self.get_upstream_subgraph(
+                query_node, depth_limit=None)
             source_or_target = "target"
-        nodes_in_SG = [n for n in SG.nodes]
-        df = self.df[self.df[source_or_target].isin(nodes_in_SG)]
+        nodes_in_subgraph = [n for n in subgraph.nodes]
+        df = self.importance_df[self.importance_df[source_or_target].isin(
+            nodes_in_subgraph)].copy()
         fig = subgraph_sankey(
             df, final_node=final_node, val_col=val_col, cmap_name=cmap
         )
@@ -83,7 +86,7 @@ class ImportanceNetwork:
         node_cmap: str = "Reds",
         edge_cmap: Union[str, list] = "Reds",
         savename="sankey.png",
-    ) -> plotly.graph_objs._figure.Figure:
+    ):
         """
         Plot a complete Sankey diagram for the importance network.
 
@@ -123,19 +126,21 @@ class ImportanceNetwork:
         Returns:
             G: a directed graph (DiGraph) object
         """
-        self.df["source"] = self.df["source"].apply(lambda x: x.split("_")[0])
-        self.df["target"] = self.df["target"].apply(lambda x: x.split("_")[0])
+        self.importance_df["source"] = self.importance_df["source"].apply(
+            lambda x: x.split("_")[0])
+        self.importance_df["target"] = self.importance_df["target"].apply(
+            lambda x: x.split("_")[0])
         G = nx.DiGraph()
-        for k in self.df.iterrows():
+        for k in self.importance_df.iterrows():
             source = k[1]["source"]
             value = k[1][self.val_col]
             source_layer = k[1]["source layer"] + 1
             G.add_node(source, weight=value, layer=source_layer)
-        for k in self.df.iterrows():
+        for k in self.importance_df.iterrows():
             source = k[1]["source"]
             target = k[1]["target"]
             G.add_edge(source, target)
-        root_layer = max(self.df["target layer"]) + 1
+        root_layer = max(self.importance_df["target layer"]) + 1
         G.add_node("root", weight=0, layer=root_layer)
         return G
 
@@ -148,27 +153,28 @@ class ImportanceNetwork:
             depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
 
         Returns:
-            SG: a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit
+            subgraph: a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit
         """
-        SG = nx.DiGraph()
+        subgraph = nx.DiGraph()
         nodes = [
             n
             for n in nx.traversal.bfs_successors(
-                self.G, query_node, depth_limit=depth_limit
+                self.importance_graph, query_node, depth_limit=depth_limit
             )
             if n != query_node
         ]
         for source, targets in nodes:
-            SG.add_node(source, **self.G.nodes()[source])
+            subgraph.add_node(source, **self.importance_graph.nodes()[source])
             for t in targets:
-                SG.add_node(t, **self.G.nodes()[t])
-        for node1 in SG.nodes():
-            for node2 in SG.nodes():
-                if self.G.has_edge(node1, node2):
-                    SG.add_edge(node1, node2)
+                subgraph.add_node(t, **self.importance_graph.nodes()[t])
+        for node1 in subgraph.nodes():
+            for node2 in subgraph.nodes():
+                if self.importance_graph.has_edge(node1, node2):
+                    subgraph.add_edge(node1, node2)
 
-        SG.add_node(query_node, **self.G.nodes()[query_node])
-        return SG
+        subgraph.add_node(
+            query_node, **self.importance_graph.nodes()[query_node])
+        return subgraph
 
     def get_upstream_subgraph(self, query_node: str, depth_limit=None):
         """
@@ -179,10 +185,11 @@ class ImportanceNetwork:
             depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
 
         Returns:
-            SG: a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit
+            subgraph: a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit
         """
-        SG = self.get_downstream_subgraph(query_node, depth_limit=depth_limit)
-        return SG
+        subgraph = self.get_downstream_subgraph(
+            query_node, depth_limit=depth_limit)
+        return subgraph
 
     def get_complete_subgraph(self, query_node: str, depth_limit=None):
         """
@@ -193,29 +200,33 @@ class ImportanceNetwork:
             depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)
 
         Returns:
-            SG: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit
+            subgraph: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit
         """
-        SG = self.get_downstream_subgraph(self.G, query_node)
+        subgraph = self.get_downstream_subgraph(
+            self.importance_graph, query_node)
         nodes = [
             n
             for n in nx.traversal.bfs_successors(
-                self.G_reverse, query_node, depth_limit=depth_limit
+                self.importance_graph_reverse, query_node, depth_limit=depth_limit
             )
             if n != query_node
         ]
         for source, targets in nodes:
-            SG.add_node(source, **self.G_reverse.nodes()[source])
+            subgraph.add_node(
+                source, **self.importance_graph_reverse.nodes()[source])
             for t in targets:
-                SG.add_node(t, **self.G_reverse.nodes()[t])
-        for node1 in SG.nodes():
-            for node2 in SG.nodes():
-                if self.G_reverse.has_edge(node1, node2):
-                    SG.add_edge(node1, node2)
+                subgraph.add_node(
+                    t, **self.importance_graph_reverse.nodes()[t])
+        for node1 in subgraph.nodes():
+            for node2 in subgraph.nodes():
+                if self.importance_graph_reverse.has_edge(node1, node2):
+                    subgraph.add_edge(node1, node2)
 
-        SG.add_node(query_node, **self.G_reverse.nodes()[query_node])
-        return SG
+        subgraph.add_node(
+            query_node, **self.importance_graph_reverse.nodes()[query_node])
+        return subgraph
 
-    def get_nr_nodes_in_upstream_SG(self, query_node: str):
+    def get_nr_nodes_in_upstream_subgraph(self, query_node: str):
         """
         Get the number of nodes in the upstream subgraph of the query node.
 
@@ -226,10 +237,11 @@ class ImportanceNetwork:
             the number of nodes in the upstream subgraph of the query node
         """
 
-        SG = self.get_upstream_subgraph(query_node, depth_limit=None)
-        return SG.number_of_nodes()
+        subgraph = self.get_upstream_subgraph(
+            query_node, depth_limit=None)
+        return subgraph.number_of_nodes()
 
-    def get_nr_nodes_in_downstream_SG(self, query_node: str):
+    def get_nr_nodes_in_downstream_subgraph(self, query_node: str):
         """
         Get the number of nodes in the downstream subgraph of the query node.
 
@@ -239,8 +251,9 @@ class ImportanceNetwork:
         Returns:
             the number of nodes in the downstream subgraph of the query node
         """
-        SG = self.get_downstream_subgraph(query_node, depth_limit=None)
-        return SG.number_of_nodes()
+        subgraph = self.get_downstream_subgraph(
+            query_node, depth_limit=None)
+        return subgraph.number_of_nodes()
 
     def get_fan_in(self, query_node: str):
         """
@@ -252,7 +265,7 @@ class ImportanceNetwork:
         Returns:
             the number of incoming edges (fan-in) for the query node
         """
-        return len([n for n in self.G.in_edges(query_node)])
+        return len([n for n in self.importance_graph.in_edges(query_node)])
 
     def get_fan_out(self, query_node: str):
         """
@@ -264,7 +277,7 @@ class ImportanceNetwork:
         Returns:
             the number of outgoing edges (fan-out) for the query node
         """
-        return len([n for n in self.G.out_edges(query_node)])
+        return len([n for n in self.importance_graph.out_edges(query_node)])
 
     def add_normalization(self):
         """
@@ -279,34 +292,37 @@ class ImportanceNetwork:
 
         - 'nodes_in_downstream': the number of nodes in the downstream subgraph for each node
 
-        - 'nodes_in_SG': the total number of nodes in the upstream and downstream subgraphs for each node
+        - 'nodes_in_subgraph': the total number of nodes in the upstream and downstream subgraphs for each node
 
-        - 'log(nodes_in_SG)': the logarithm (base 2) of 'nodes_in_SG'
+        - 'log(nodes_in_subgraph)': the logarithm (base 2) of 'nodes_in_subgraph'
 
-        - 'weighted_val_log': the 'value' column normalized by the logarithm of 'nodes_in_SG'
+        - 'weighted_val_log': the 'value' column normalized by the logarithm of 'nodes_in_subgraph'
 
         Returns:
             pd.DataFrame:
                 The input dataframe with the added normalization columns.
         """
-        self.df["fan_in"] = self.df.apply(
+        self.importance_df["fan_in"] = self.importance_df.apply(
             lambda x: self.get_fan_in(x["source"]), axis=1
         )
-        self.df["fan_out"] = self.df.apply(
+        self.importance_df["fan_out"] = self.importance_df.apply(
             lambda x: self.get_fan_out(x["source"]), axis=1
         )
-        self.df["fan_tot"] = self.df.apply(lambda x: x["fan_in"] + x["fan_out"], axis=1)
-        self.df["nodes_in_upstream"] = self.df.apply(
-            lambda x: self.get_nr_nodes_in_upstream_SG(x["source"]), axis=1
+        self.importance_df["fan_tot"] = self.importance_df.apply(
+            lambda x: x["fan_in"] + x["fan_out"], axis=1)
+        self.importance_df["nodes_in_upstream"] = self.importance_df.apply(
+            lambda x: self.get_nr_nodes_in_upstream_subgraph(x["source"]), axis=1
         )
-        self.df["nodes_in_downstream"] = self.df.apply(
-            lambda x: self.get_nr_nodes_in_downstream_SG(x["source"]), axis=1
+        self.importance_df["nodes_in_downstream"] = self.importance_df.apply(
+            lambda x: self.get_nr_nodes_in_downstream_subgraph(x["source"]), axis=1
         )
-        self.df["nodes_in_SG"] = (
-            self.df["nodes_in_downstream"] + self.df["nodes_in_upstream"]
+        self.importance_df["nodes_in_subgraph"] = (
+            self.importance_df["nodes_in_downstream"] +
+            self.importance_df["nodes_in_upstream"]
         )
-        self.df["log(nodes_in_SG)"] = np.log2(self.df["nodes_in_SG"])
-        self.df["weighted_val_log"] = self.df.apply(
-            lambda x: x["value"] / (np.log2(x["nodes_in_SG"])), axis=1
+        self.importance_df["log(nodes_in_subgraph)"] = np.log2(
+            self.importance_df["nodes_in_subgraph"])
+        self.importance_df["weighted_val_log"] = self.importance_df.apply(
+            lambda x: x["value"] / (np.log2(x["nodes_in_subgraph"])), axis=1
         )
-        return self.df
+        return self.importance_df
