@@ -6,9 +6,24 @@ The BINN-package allows you to create a sparse neural network in the PyTorch-fra
 
 ### Table Of Contents
 
-- [Introduction](#introduction)
 - [Install](#install)
+- [Introduction](#introduction)
 - [API Reference](reference.md)
+
+### Install
+
+BINN can be installed via `pip`
+
+```
+pip install binn
+```
+
+The package can also be built from source and installed with git.
+
+```
+git clone git@github.com:InfectionMedicineProteomics/BINN.git
+pip install -e BINN/
+```
 
 **Examples:**
 
@@ -16,6 +31,7 @@ In the [examples](binn_example.ipynb) we use proteins as the input layer and the
 
 - [BINN example](binn_example.ipynb)
 - [Interpretation example](shap_example.ipynb)
+- [Scikit-learn API](sklearn_api.ipynb)
 
 ### Introduction
 
@@ -35,21 +51,6 @@ We can also subset an importance-graph to generate visualizations for specific p
 | :-------------------------------------------------------------------------------------------: |
 |             Sankey plot showing the importance of nodes downstream from 'P02766'.             |
 
-### Install
-
-BINN can be installed via ```pip```
-
-```
-pip install binn
-```
-
-The package can also be built from source and installed with git.
-
-```
-git clone git@github.com:InfectionMedicineProteomics/BINN.git
-pip install -e BINN/
-```
-
 ### Contributors
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University
@@ -68,7 +69,7 @@ Erik Hartman - erik.hartman@hotmail.com
 
 The article presenting the BINN is currently avaiable on bioRXiv. Please cite:
 
-"Interpreting biologically informed neural networks for enhanced biomarker discovery and pathway analysis", Erik Hartman, Aaron Scott, Lars Malmström, Johan Malmström, bioRxiv 2023.02.16.528807; doi: https://doi.org/10.1101/2023.02.16.528807
+`Interpreting biologically informed neural networks for enhanced biomarker discovery and pathway analysis", Erik Hartman, Aaron Scott, Lars Malmström, Johan Malmström, bioRxiv 2023.02.16.528807; doi: https://doi.org/10.1101/2023.02.16.528807`
 
 <br><br><br><br>
 <img src="img/imp_logo.png" width="250" height="250" style="display:block;margin-left:auto;margin-right:auto;">
