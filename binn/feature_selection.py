@@ -18,9 +18,9 @@ class RecursivePathwayElimination():
         self.explainer = explainer
         self.input_data = self.network.input_data
 
-    def fit(self, protein_matrix, design_matrix, nr_iterations: int = 20, max_epochs: int = 50,  clip_threshold=1e-5, learning_rate=1e-2):
-        return_dict = {'model': [], 'val_res': [], 'iteration': []}
-        model = self.model
+    def fit(self, protein_matrix, design_matrix, nr_iterations: int = 20, max_epochs: int = 50,  clip_threshold=1e-5, constant_removal_rate=0.05, learning_rate=1e-2):
+        return_dict = {'models': [], 'val_acc': [], 'val_loss': [],
+                       'iteration': [], 'pathways': [], 'epochs': []}
         fitted_protein_matrix = self._fit_data_matrix_to_network_input(
             protein_matrix.reset_index(), features=self.network.inputs)
         X_train, X_test, y_train, y_test = self._generate_data(fitted_protein_matrix,
@@ -37,12 +37,14 @@ class RecursivePathwayElimination():
                                                                                       monitor="val_loss", mode="min")
             trainer = pytorch_lightning.Trainer(
                 max_epochs=max_epochs, log_every_n_steps=5, callbacks=[early_stopping])
-            trainer.fit(model, train_dataloader, val_dataloader)
-            val_dict = trainer.validate(model, val_dataloader)
-            return_dict['model'].append(model)
-            return_dict['val_res'].append(val_dict)
+            trainer.fit(self.model, train_dataloader, val_dataloader)
+            return_dict['epochs'].append(self.model.current_epoch)
+            val_dict = trainer.validate(self.model, val_dataloader)
+            return_dict['models'].append(self.model)
+            return_dict['val_acc'].append(val_dict[0]['val_acc'])
+            return_dict['val_loss'].append(val_dict[0]['val_loss'])
             return_dict['iteration'].append(iteration)
-            explainer = BINNExplainer(model)
+            explainer = BINNExplainer(self.model)
             test_data = torch.Tensor(
                 np.concatenate([X_train, X_test], axis=0))
             background_data = torch.Tensor(
@@ -57,12 +59,13 @@ class RecursivePathwayElimination():
                 shap_list = [(feature, value) for feature,
                              value in zip(shap_dict['features'], values)]
                 shap_list = sorted(shap_list, key=lambda x: x[1])
-                features_that_are_zero = [x[0]
-                                          for x in shap_list if x[1] < clip_threshold]
-                n_features_that_are_zero = len(features_that_are_zero)
-                shap_list = shap_list[n_features_that_are_zero:]
+                features_below_clip = [x[0]
+                                       for x in shap_list if x[1] < clip_threshold]
+                n_features_below_clip = len(features_below_clip)
+                shap_list = shap_list[n_features_below_clip:]
                 total_n_elements = len(shap_list)
-                n_features_to_remove = int(total_n_elements*0.05)
+                n_features_to_remove = int(
+                    total_n_elements*constant_removal_rate)
                 features_to_remove = [x[0]
                                       for x in shap_list[:n_features_to_remove]]
 
@@ -70,12 +73,15 @@ class RecursivePathwayElimination():
                     features_to_remove)]
                 self.pathways = self.pathways[~self.pathways['child'].isin(
                     features_to_remove)]
+                return_dict['pathways'].append(self.pathways)
                 print(f'Pathways in layer {wanted_layer} ', len(self.pathways))
+                print(f'Removd features in layer {wanted_layer} ',
+                      n_features_below_clip + n_features_to_remove)
 
             self.network = Network(input_data=self.input_data,
                                    pathways=self.pathways, mapping=self.mapping)
 
-            model = BINN(
+            self.model = BINN(
                 network=self.network,
                 n_layers=4,
                 dropout=0.2,
@@ -95,6 +101,7 @@ class RecursivePathwayElimination():
             val_dataloader = torch.utils.data.DataLoader(dataset=torch.utils.data.TensorDataset(torch.Tensor(X_test), torch.LongTensor(y_test)),
                                                          batch_size=8,
                                                          num_workers=12)
+        return return_dict
 
     def _fit_data_matrix_to_network_input(self, data_matrix: pd.DataFrame, features, feature_column="Protein") -> pd.DataFrame:
         nr_features_in_matrix = len(data_matrix.index)
