@@ -48,6 +48,7 @@ class Network:
         if isinstance(mapping, pd.DataFrame):
 
             self.mapping = mapping
+            self.unaltered_mapping = mapping
 
         else:
 
@@ -57,10 +58,12 @@ class Network:
                     "translation": input_data[input_data_column].values,
                 }
             )
+            self.unaltered_mapping = mapping
 
         if subset_pathways:
 
-            self.mapping = _subset_input(input_data, self.mapping, input_data_column)
+            self.mapping = _subset_input(
+                input_data, self.mapping, input_data_column)
 
             self.pathways = _subset_pathways_on_idx(pathways, self.mapping)
 
@@ -162,12 +165,13 @@ def _get_mapping_to_all_layers(pathways, mapping):
     for translation in mapping["input"]:
         ids = mapping[mapping["input"] == translation]["translation"]
         for id in ids:
-            connections = graph.subgraph(
-                nx.single_source_shortest_path(graph, id).keys()
-            ).nodes
-            for connection in connections:
-                components["input"].append(translation)
-                components["connections"].append(connection)
+            if graph.has_node(id):
+                connections = graph.subgraph(
+                    nx.single_source_shortest_path(graph, id).keys()
+                ).nodes
+                for connection in connections:
+                    components["input"].append(translation)
+                    components["connections"].append(connection)
     components = pd.DataFrame(components)
     components.drop_duplicates(inplace=True)
     return components

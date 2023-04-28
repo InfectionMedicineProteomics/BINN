@@ -45,7 +45,7 @@ class BINN(LightningModule):
 
     def __init__(
         self,
-        pathways: Network = None,
+        network: Network = None,
         activation: str = "tanh",
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
@@ -60,10 +60,10 @@ class BINN(LightningModule):
 
         super().__init__()
         self.residual = residual
-        self.pathways = pathways
+        self.network = network
         self.n_layers = n_layers
 
-        connectivity_matrices = self.pathways.get_connectivity_matrices(
+        connectivity_matrices = self.network.get_connectivity_matrices(
             n_layers)
         layer_sizes = []
         self.layer_names = []
@@ -71,12 +71,12 @@ class BINN(LightningModule):
         matrix = connectivity_matrices[0]
         i, _ = matrix.shape
         layer_sizes.append(i)
-        self.layer_names.append(matrix.index)
+        self.layer_names.append(matrix.index.tolist())
         self.features = matrix.index
         for matrix in connectivity_matrices[1:]:
             i, _ = matrix.shape
             layer_sizes.append(i)
-            self.layer_names.append(matrix.index)
+            self.layer_names.append(matrix.index.tolist())
 
         if self.residual:
             self.layers = _generate_residual(
@@ -199,7 +199,7 @@ class BINN(LightningModule):
         if self.scheduler == "plateau":
             scheduler = {
                 "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
-                    optimizer, patience=5, threshold=0.00001, mode="min", verbose=True
+                    optimizer, patience=5, threshold=0.01, mode="min", verbose=True
                 ),
                 "interval": "epoch",
                 "monitor": monitor,
@@ -233,7 +233,7 @@ class BINN(LightningModule):
         Returns:
             The connectivity matrices as a list of Pandas DataFrames.
         """
-        return self.pathways.get_connectivity_matrices(self.n_layers)
+        return self.network.get_connectivity_matrices(self.n_layers)
 
     def reset_params(self):
         """
@@ -251,7 +251,6 @@ class BINN(LightningModule):
 def _init_weights(m):
     if type(m) == nn.Linear:
         torch.nn.init.xavier_uniform_(m.weight)
-
 
 
 def _reset_params(m):

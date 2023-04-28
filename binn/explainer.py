@@ -1,7 +1,7 @@
 import shap
 import numpy as np
 import torch
-from binn import BINN
+from binn import BINN, RecursivePathwayElimination
 import pandas as pd
 import pytorch_lightning
 
@@ -111,8 +111,20 @@ class BINNExplainer:
         df['value'] = values_mean
         return df
 
+    def recursive_pathway_elimination(self, test_data, background_data, nr_iterations, max_epochs, dataloader):
+        """
+        Train the model
+        Rank features and pathways
+        Remove features and remove pathways that are not connected to these features
+        Create a new network
+        Create a new model
+        Repeat for n iterations
+        """
+
+        return None
+
     def explain_input(
-        self, test_data: torch.Tensor, background_data: torch.Tensor, layer: int
+        self, test_data: torch.Tensor, background_data: torch.Tensor
     ) -> dict:
         """
         Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the
@@ -168,6 +180,36 @@ class BINNExplainer:
                 shap_dict["shap_values"].append(shap_values)
                 feature_index += 1
 
+                intermediate_data = layer(intermediate_data)
+            if (
+                isinstance(layer, torch.nn.Tanh)
+                or isinstance(layer, torch.nn.ReLU)
+                or isinstance(layer, torch.nn.LeakyReLU)
+            ):
+                intermediate_data = layer(intermediate_data)
+        return shap_dict
+
+    def _explain_layer(
+        self, background_data: torch.Tensor, test_data: torch.Tensor, wanted_layer: int
+    ) -> dict:
+
+        intermediate_data = test_data
+
+        shap_dict = {"features": [], "shap_values": []}
+        layer_index = 0
+        for name, layer in self.model.layers.named_children():
+
+            if isinstance(layer, torch.nn.Linear) and (
+                not "Residual" in name or "final" in name
+            ):
+                if layer_index == wanted_layer:
+                    explainer = shap.DeepExplainer(
+                        (self.model, layer), background_data)
+                    shap_values = explainer.shap_values(test_data)
+                    shap_dict["features"] += self.model.layer_names[wanted_layer]
+                    shap_dict["shap_values"] += shap_values
+                    return shap_dict
+                layer_index += 1
                 intermediate_data = layer(intermediate_data)
             if (
                 isinstance(layer, torch.nn.Tanh)
