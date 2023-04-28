@@ -157,6 +157,7 @@ class BINN(LightningModule):
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         self.log("val_acc", accuracy, prog_bar=True,
                  on_step=False, on_epoch=True)
+        return {"val_loss": loss, "val_acc": accuracy}
 
     def test_step(self, batch, _):
         """

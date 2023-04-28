@@ -1,7 +1,7 @@
 import shap
 import numpy as np
 import torch
-from binn import BINN, RecursivePathwayElimination
+from binn import BINN
 import pandas as pd
 import pytorch_lightning
 
