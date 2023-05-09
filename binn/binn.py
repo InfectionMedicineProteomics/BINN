@@ -46,6 +46,7 @@ class BINN(LightningModule):
     def __init__(
         self,
         network: Network = None,
+        connectivity_matrices: list = None,
         activation: str = "tanh",
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
@@ -59,20 +60,25 @@ class BINN(LightningModule):
     ):
         super().__init__()
         self.residual = residual
-        self.network = network
+        if not connectivity_matrices:
+            self.network = network
+            self.connectivity_matrices = self.network.get_connectivity_matrices(
+                n_layers
+            )
+        else:
+            self.connectivity_matrices = connectivity_matrices
         self.n_layers = n_layers
 
-        connectivity_matrices = self.network.get_connectivity_matrices(n_layers)
         layer_sizes = []
         self.layer_names = []
 
-        matrix = connectivity_matrices[0]
+        matrix = self.connectivity_matrices[0]
         i, _ = matrix.shape
         layer_sizes.append(i)
         self.layer_names.append(matrix.index.tolist())
         self.features = matrix.index
         self.trainable_params = matrix.to_numpy().sum()
-        for matrix in connectivity_matrices[1:]:
+        for matrix in self.connectivity_matrices[1:]:
             self.trainable_params += matrix.to_numpy().sum()
             i, _ = matrix.shape
             layer_sizes.append(i)
@@ -81,7 +87,7 @@ class BINN(LightningModule):
         if self.residual:
             self.layers = _generate_residual(
                 layer_sizes,
-                connectivity_matrices=connectivity_matrices,
+                connectivity_matrices=self.connectivity_matrices,
                 activation="tanh",
                 bias=True,
                 n_outputs=2,
@@ -89,7 +95,7 @@ class BINN(LightningModule):
         else:
             self.layers = _generate_sequential(
                 layer_sizes,
-                connectivity_matrices=connectivity_matrices,
+                connectivity_matrices=self.connectivity_matrices,
                 activation=activation,
                 bias=True,
                 n_outputs=n_outputs,
@@ -230,7 +236,7 @@ class BINN(LightningModule):
         Returns:
             The connectivity matrices as a list of Pandas DataFrames.
         """
-        return self.network.get_connectivity_matrices(self.n_layers)
+        return self.connectivity_matrices
 
     def reset_params(self):
         """

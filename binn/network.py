@@ -44,14 +44,12 @@ class Network:
         input_data_column: str = "Protein",
         subset_pathways: bool = True,
     ):
-
+        self.input_data_column = input_data_column
         if isinstance(mapping, pd.DataFrame):
-
             self.mapping = mapping
             self.unaltered_mapping = mapping
 
         else:
-
             self.mapping = pd.DataFrame(
                 {
                     "input": input_data[input_data_column].values,
@@ -61,14 +59,11 @@ class Network:
             self.unaltered_mapping = mapping
 
         if subset_pathways:
-
-            self.mapping = _subset_input(
-                input_data, self.mapping, input_data_column)
+            self.mapping = _subset_input(input_data, self.mapping, input_data_column)
 
             self.pathways = _subset_pathways_on_idx(pathways, self.mapping)
 
         else:
-
             self.pathways = pathways
 
         self.mapping = _get_mapping_to_all_layers(self.pathways, self.mapping)
