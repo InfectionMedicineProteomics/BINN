@@ -1,6 +1,6 @@
 from sklearn import preprocessing
 from sklearn.model_selection import StratifiedKFold, train_test_split
-from binn import BINN, Network, BINNExplainer
+from binn import BINN
 import numpy as np
 import torch
 import pandas as pd
@@ -9,7 +9,23 @@ import networkx as nx
 
 
 class RecursivePathwayElimination:
-    def __init__(self, model: BINN, explainer: BINNExplainer):
+    """
+        RecursivePathwayElimination is a class that performs recursive pathway elimination
+        using a specified model and explainer.
+
+        Args:
+            model (BINN): The model used for pathway elimination.
+            explainer: The explainer used to interpret the model.
+            
+        Attributes:
+            model (BINN): The model used for pathway elimination.
+            n_layers (int): The number of layers in the model.
+            learning_rate: The learning rate of the model.
+            weight: The weight used in the model.
+            explainer: The explainer used to interpret the model.
+            connectivity_matrices: The connectivity matrices of the model.
+    """
+    def __init__(self, model: BINN, explainer):
         self.model = model
         self.n_layers = model.n_layers
         self.learning_rate = model.learning_rate
@@ -20,14 +36,37 @@ class RecursivePathwayElimination:
 
     def fit(
         self,
-        protein_matrix,
+        input_data,
         design_matrix,
         nr_iterations: int = 20,
         max_epochs: int = 50,
         clip_threshold=1e-5,
         constant_removal_rate=0.05,
         min_features_per_layer=3,
+        early_stopping=True,
     ):
+        """
+        Fits the model using the input data and design matrix, and performs recursive
+        pathway elimination to identify important features.
+
+        Args:
+            input_data: The input data for training the model.
+            design_matrix: The design matrix for the input data.
+            nr_iterations (int): The number of iterations for the elimination process.
+            max_epochs (int): The maximum number of epochs for training the model.
+            clip_threshold: The threshold for clipping feature importance values.
+            constant_removal_rate: The rate of constant feature removal per iteration.
+            min_features_per_layer: The minimum number of features required per layer.
+            early_stopping (bool): Flag indicating whether to use early stopping during training.
+
+        Returns:
+            dict: A dictionary containing the results of the elimination process, including
+                validation accuracy, validation loss, iteration number, trainable parameters,
+                trained models, and connectivity matrices.
+        """
+        if early_stopping:
+            print(f"Will apply early stopping")
+
         return_dict = {
             "models": [],
             "val_acc": [],
@@ -41,17 +80,18 @@ class RecursivePathwayElimination:
         for iteration in range(nr_iterations):
             print(f"---------------- Iteration: {iteration} ----------------")
 
-            self.fitted_protein_matrix = self._fit_data_matrix_to_network_input(
-                protein_matrix.reset_index(),
+            self.fitted_input_data = self._fit_data_matrix_to_network_input(
+                input_data.reset_index(),
                 features=self.connectivity_matrices[0].index.values.tolist(),
             )
 
             splits = self._generate_k_folds(
-                self.fitted_protein_matrix, design_matrix=design_matrix
+                self.fitted_input_data, design_matrix=design_matrix
             )
 
             val_accs = []
             val_losses = []
+            epochs = []
             for split in splits:
                 self.model = BINN(
                     connectivity_matrices=self.connectivity_matrices,
@@ -79,26 +119,34 @@ class RecursivePathwayElimination:
                     batch_size=8,
                     num_workers=12,
                 )
-
-                early_stopping = (
-                    pytorch_lightning.callbacks.early_stopping.EarlyStopping(
-                        patience=10, min_delta=0.001, monitor="val_loss", mode="min"
+                callbacks = []
+                if early_stopping:
+                    callbacks.append(
+                        early_stopping=(
+                            pytorch_lightning.callbacks.early_stopping.EarlyStopping(
+                                patience=10,
+                                min_delta=0.001,
+                                monitor="val_loss",
+                                mode="min",
+                            )
+                        )
                     )
-                )
+
                 trainer = pytorch_lightning.Trainer(
                     max_epochs=max_epochs,
                     enable_progress_bar=False,
                     enable_model_summary=False,
-                    callbacks=[early_stopping],
+                    callbacks=callbacks,
                 )
                 trainer.fit(self.model, train_dataloader, val_dataloader)
                 val_dict = trainer.validate(self.model, val_dataloader)
                 val_accs.append(val_dict[0]["val_acc"])
                 val_losses.append(val_dict[0]["val_loss"])
+                epochs.append(self.model.current_epoch)
 
             return_dict["val_acc"].append(val_accs)
             return_dict["val_loss"].append(val_losses)
-            return_dict["epochs"].append(self.model.current_epoch)
+            return_dict["epochs"].append(epochs)
             return_dict["trainable_params"].append(self.model.trainable_params)
             return_dict["models"].append(self.model)
             return_dict["iteration"].append(iteration)
@@ -107,11 +155,9 @@ class RecursivePathwayElimination:
             self.background_data = torch.Tensor(
                 np.concatenate([X_train, X_val], axis=0)
             )
-
-            explainer = BINNExplainer(self.model)
-
+            self.explainer.update_model(self.model)
             for wanted_layer in range(self.n_layers + 1):
-                shap_dict = explainer._explain_layer(
+                shap_dict = self.explainer._explain_layer(
                     self.test_data, self.background_data, wanted_layer
                 )
                 values = shap_dict["shap_values"]
@@ -153,8 +199,8 @@ class RecursivePathwayElimination:
     def get_final_model(self):
         return self.model
 
-    def get_protein_matrix(self):
-        return self.fitted_protein_matrix
+    def get_input_data(self):
+        return self.fitted_input_data
 
     def _fit_data_matrix_to_network_input(
         self, data_matrix: pd.DataFrame, features, feature_column="Protein"

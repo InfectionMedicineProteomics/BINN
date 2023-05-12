@@ -4,6 +4,7 @@ import torch
 from binn import BINN
 import pandas as pd
 import pytorch_lightning
+from .feature_selection import RecursivePathwayElimination
 
 
 class BINNExplainer:
@@ -15,7 +16,9 @@ class BINNExplainer:
     """
 
     def __init__(self, model: BINN):
-
+        self.model = model
+        
+    def update_model(self, model : BINN):
         self.model = model
 
     def explain(self, test_data: torch.Tensor, background_data: torch.Tensor):
@@ -56,10 +59,8 @@ class BINNExplainer:
                 ]  # get targets and append to target
                 for target in connections:
                     for curr_class in range(n_classes):
-                        feature_dict["source"].append(
-                            f"{features[f]}_{curr_layer}")
-                        feature_dict["target"].append(
-                            f"{target}_{curr_layer + 1}")
+                        feature_dict["source"].append(f"{features[f]}_{curr_layer}")
+                        feature_dict["target"].append(f"{target}_{curr_layer + 1}")
                         feature_dict["value"].append(sv_mean[curr_class][f])
                         feature_dict["type"].append(curr_class)
                         feature_dict["source layer"].append(curr_layer)
@@ -68,12 +69,14 @@ class BINNExplainer:
         df = pd.DataFrame(data=feature_dict)
         return df
 
-    def explain_average(self,
-                        test_data: torch.Tensor,
-                        background_data: torch.Tensor,
-                        nr_iterations: int,
-                        max_epochs: int,
-                        dataloader) -> pd.DataFrame:
+    def explain_average(
+        self,
+        test_data: torch.Tensor,
+        background_data: torch.Tensor,
+        nr_iterations: int,
+        max_epochs: int,
+        dataloader,
+    ) -> pd.DataFrame:
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
         For each iteration, the model's parameters are randomly initialized and trained on the provided data using
@@ -98,30 +101,46 @@ class BINNExplainer:
             df = self.explain(test_data, background_data)
             dfs[iteration] = df
 
-        col_names = [f'value_{n}' for n in range(len(list(dfs.keys())))]
+        col_names = [f"value_{n}" for n in range(len(list(dfs.keys())))]
         values = [df.value.values for df in dfs.values()]
         values = np.array(values)
         values_mean = np.mean(values, axis=0)
         values_std = np.std(values, axis=0)
         df = dfs[0].copy()
-        df.drop(columns=['value'], inplace=True)
+        df.drop(columns=["value"], inplace=True)
         df[col_names] = values.T
-        df['value_mean'] = values_mean
-        df['values_std'] = values_std
-        df['value'] = values_mean
+        df["value_mean"] = values_mean
+        df["values_std"] = values_std
+        df["value"] = values_mean
         return df
 
-    def recursive_pathway_elimination(self, test_data, background_data, nr_iterations, max_epochs, dataloader):
-        """
-        Train the model
-        Rank features and pathways
-        Remove features and remove pathways that are not connected to these features
-        Create a new network
-        Create a new model
-        Repeat for n iterations
-        """
+    def recursive_pathway_elimination(
+        self,
+        input_data,
+        design_matrix,
+        nr_iterations: int = 20,
+        max_epochs: int = 50,
+        clip_threshold=1e-5,
+        constant_removal_rate=0.05,
+        min_features_per_layer=3,
+        early_stopping=True,
+    ):
+        rpe = RecursivePathwayElimination(self.model, self)
+        return_dict = rpe.fit(
+            input_data=input_data,
+            design_matrix=design_matrix,
+            nr_iterations=nr_iterations,
+            max_epochs=max_epochs,
+            clip_threshold=clip_threshold,
+            constant_removal_rate=constant_removal_rate,
+            min_features_per_layer=min_features_per_layer,
+            early_stopping=early_stopping,
+        )
 
-        return None
+        self.rpe_model = rpe.get_final_model()
+        self.rpe_data = rpe.get_final_data()
+
+        return return_dict
 
     def explain_input(
         self, test_data: torch.Tensor, background_data: torch.Tensor
@@ -143,8 +162,7 @@ class BINNExplainer:
         explainer = shap.DeepExplainer(self.model, background_data)
         shap_values = explainer.shap_values(test_data)
 
-        shap_dict = {
-            "features": self.model.column_names[0], "shap_values": shap_values}
+        shap_dict = {"features": self.model.column_names[0], "shap_values": shap_values}
 
         return shap_dict
 
@@ -168,15 +186,12 @@ class BINNExplainer:
         shap_dict = {"features": [], "shap_values": []}
 
         for name, layer in self.model.layers.named_children():
-
             if isinstance(layer, torch.nn.Linear) and (
                 not "Residual" in name or "final" in name
             ):
-                explainer = shap.DeepExplainer(
-                    (self.model, layer), background_data)
+                explainer = shap.DeepExplainer((self.model, layer), background_data)
                 shap_values = explainer.shap_values(test_data)
-                shap_dict["features"].append(
-                    self.model.layer_names[feature_index])
+                shap_dict["features"].append(self.model.layer_names[feature_index])
                 shap_dict["shap_values"].append(shap_values)
                 feature_index += 1
 
@@ -192,19 +207,16 @@ class BINNExplainer:
     def _explain_layer(
         self, background_data: torch.Tensor, test_data: torch.Tensor, wanted_layer: int
     ) -> dict:
-
         intermediate_data = test_data
 
         shap_dict = {"features": [], "shap_values": []}
         layer_index = 0
         for name, layer in self.model.layers.named_children():
-
             if isinstance(layer, torch.nn.Linear) and (
                 not "Residual" in name or "final" in name
             ):
                 if layer_index == wanted_layer:
-                    explainer = shap.DeepExplainer(
-                        (self.model, layer), background_data)
+                    explainer = shap.DeepExplainer((self.model, layer), background_data)
                     shap_values = explainer.shap_values(test_data)
                     shap_dict["features"] += self.model.layer_names[wanted_layer]
                     shap_dict["shap_values"] += shap_values

@@ -104,6 +104,7 @@ class BINN(LightningModule):
         self.apply(_init_weights)
         self.weight = weight
         self.loss = nn.CrossEntropyLoss(weight=weight)
+        self.loss_val = nn.CrossEntropyLoss()
         self.learning_rate = learning_rate
         self.scheduler = scheduler
         self.optimizer = optimizer
@@ -156,7 +157,7 @@ class BINN(LightningModule):
 
         x, y = batch
         y_hat = self(x)
-        loss = self.loss(y_hat, y)
+        loss = self.loss_val(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
@@ -173,7 +174,7 @@ class BINN(LightningModule):
         """
         x, y = batch
         y_hat = self(x)
-        loss = self.loss(y_hat, y)
+        loss = self.loss_val(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
