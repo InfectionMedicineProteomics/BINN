@@ -314,5 +314,5 @@ class ImportanceNetwork:
             )
             nr_tot = upstream_nodes + downstream_nodes
 
-        self.importance_df["value"] = np.log2(nr_tot)
+        self.importance_df["value"] = self.importance_df["value"] / np.log2(nr_tot)
         return self.importance_df
