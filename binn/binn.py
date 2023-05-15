@@ -10,10 +10,10 @@ from binn.network import Network
 
 class BINN(LightningModule):
     """
-    Implements a Biologically Informed Neural Network (BINN). The BINN 
+    Implements a Biologically Informed Neural Network (BINN). The BINN
     is implemented using the PyTorch Lightning-framework.
-    If you are unfamiliar with PyTorch, we suggest visiting 
-    their website: https://pytorch.org/ 
+    If you are unfamiliar with PyTorch, we suggest visiting
+    their website: https://pytorch.org/
 
 
     Args:
@@ -45,7 +45,8 @@ class BINN(LightningModule):
 
     def __init__(
         self,
-        pathways: Network = None,
+        network: Network = None,
+        connectivity_matrices: list = None,
         activation: str = "tanh",
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
@@ -57,31 +58,36 @@ class BINN(LightningModule):
         dropout: float = 0,
         residual: bool = False,
     ):
-
         super().__init__()
         self.residual = residual
-        self.pathways = pathways
+        if not connectivity_matrices:
+            self.network = network
+            self.connectivity_matrices = self.network.get_connectivity_matrices(
+                n_layers
+            )
+        else:
+            self.connectivity_matrices = connectivity_matrices
         self.n_layers = n_layers
 
-        connectivity_matrices = self.pathways.get_connectivity_matrices(
-            n_layers)
         layer_sizes = []
         self.layer_names = []
 
-        matrix = connectivity_matrices[0]
+        matrix = self.connectivity_matrices[0]
         i, _ = matrix.shape
         layer_sizes.append(i)
-        self.layer_names.append(matrix.index)
+        self.layer_names.append(matrix.index.tolist())
         self.features = matrix.index
-        for matrix in connectivity_matrices[1:]:
+        self.trainable_params = matrix.to_numpy().sum()
+        for matrix in self.connectivity_matrices[1:]:
+            self.trainable_params += matrix.to_numpy().sum()
             i, _ = matrix.shape
             layer_sizes.append(i)
-            self.layer_names.append(matrix.index)
+            self.layer_names.append(matrix.index.tolist())
 
         if self.residual:
             self.layers = _generate_residual(
                 layer_sizes,
-                connectivity_matrices=connectivity_matrices,
+                connectivity_matrices=self.connectivity_matrices,
                 activation="tanh",
                 bias=True,
                 n_outputs=2,
@@ -89,14 +95,16 @@ class BINN(LightningModule):
         else:
             self.layers = _generate_sequential(
                 layer_sizes,
-                connectivity_matrices=connectivity_matrices,
+                connectivity_matrices=self.connectivity_matrices,
                 activation=activation,
                 bias=True,
                 n_outputs=n_outputs,
                 dropout=dropout,
             )
         self.apply(_init_weights)
+        self.weight = weight
         self.loss = nn.CrossEntropyLoss(weight=weight)
+        self.loss_val = nn.CrossEntropyLoss()
         self.learning_rate = learning_rate
         self.scheduler = scheduler
         self.optimizer = optimizer
@@ -134,10 +142,8 @@ class BINN(LightningModule):
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("train_loss", loss, prog_bar=True,
-                 on_step=False, on_epoch=True)
-        self.log("train_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, _):
@@ -151,12 +157,12 @@ class BINN(LightningModule):
 
         x, y = batch
         y_hat = self(x)
-        loss = self.loss(y_hat, y)
+        loss = self.loss_val(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("val_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("val_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        return {"val_loss": loss, "val_acc": accuracy}
 
     def test_step(self, batch, _):
         """
@@ -168,13 +174,11 @@ class BINN(LightningModule):
         """
         x, y = batch
         y_hat = self(x)
-        loss = self.loss(y_hat, y)
+        loss = self.loss_val(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
-        self.log("test_loss", loss, prog_bar=True,
-                 on_step=False, on_epoch=True)
-        self.log("test_acc", accuracy, prog_bar=True,
-                 on_step=False, on_epoch=True)
+        self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         """
@@ -199,7 +203,7 @@ class BINN(LightningModule):
         if self.scheduler == "plateau":
             scheduler = {
                 "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
-                    optimizer, patience=5, threshold=0.00001, mode="min", verbose=True
+                    optimizer, patience=5, threshold=0.01, mode="min", verbose=True
                 ),
                 "interval": "epoch",
                 "monitor": monitor,
@@ -233,7 +237,7 @@ class BINN(LightningModule):
         Returns:
             The connectivity matrices as a list of Pandas DataFrames.
         """
-        return self.pathways.get_connectivity_matrices(self.n_layers)
+        return self.connectivity_matrices
 
     def reset_params(self):
         """
@@ -251,7 +255,6 @@ class BINN(LightningModule):
 def _init_weights(m):
     if type(m) == nn.Linear:
         torch.nn.init.xavier_uniform_(m.weight)
-
 
 
 def _reset_params(m):
@@ -283,14 +286,11 @@ def _generate_sequential(
     n_outputs=2,
     dropout=0,
 ):
-
     layers = []
     for n in range(len(layer_sizes) - 1):
         linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
         layers.append((f"Layer_{n}", linear_layer))  # linear layer
-        layers.append(
-            (f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1]))
-        )
+        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1])))
         if connectivity_matrices is not None:
             prune.custom_from_mask(
                 linear_layer,
@@ -305,9 +305,7 @@ def _generate_sequential(
             layers.append((f"Activation_{n}", activation[n]))
         else:
             _append_activation(layers, activation, n)
-    layers.append(
-        ("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias))
-    )
+    layers.append(("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias)))
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
 
@@ -331,17 +329,14 @@ def _generate_residual(
             )
         layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
         layers.append(
-            (f"Residual_out_{n}", nn.Linear(
-                layer_sizes[n + 1], n_outputs, bias=bias))
+            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outputs, bias=bias))
         )
         layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
         return layers
 
     for res_index in range(len(layer_sizes)):
         if res_index == len(layer_sizes) - 1:
-            layers.append(
-                (f"BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1]))
-            )
+            layers.append((f"BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1])))
             layers.append((f"Dropout_final", nn.Dropout(0.2)))
             layers.append(
                 (
@@ -377,9 +372,7 @@ def _forward_residual(model: nn.Sequential, x):
         if name.startswith("Residual"):
             if "out" in name:
                 x_temp = layer(x)
-            if _is_activation(
-                layer
-            ):
+            if _is_activation(layer):
                 x_temp = layer(x_temp)
                 x_final = x_final + x_temp
                 residual_counter = residual_counter + 1
