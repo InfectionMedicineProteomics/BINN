@@ -1,5 +1,6 @@
 # mkdocs.yml
 site_name: BINN
+repo_url: https://github.com/InfectionMedicineProteomics/BINN
 
 theme:
   name: gitbook

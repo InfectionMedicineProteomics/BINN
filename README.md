@@ -2,12 +2,28 @@
 
 [![Docs](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://badge.fury.io/py/binn.svg)](https://badge.fury.io/py/binn)
 
 BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
 
 The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found at [bioRxiv](https://doi.org/10.1101/2023.02.16.528807).
 
 ---
+
+## Installation
+
+BINN can be installed via `pip`
+
+```
+pip install binn
+```
+
+The package can also be built from source and installed with git.
+
+```
+git clone git@github.com:InfectionMedicineProteomics/BINN.git
+pip install -e BINN/
+```
 
 ## Usage
 
@@ -119,21 +135,6 @@ Plotting a subgraph starting from a node generates the plot:
 ![Pathway sankey!](docs/img/subgraph_sankey.png "Pathway sankey")
 A compelte sankey may look like this:
 ![Complete sankey!](docs/img/complete_sankey.png "Complete sankey")
-
-## Installation
-
-BINN can be installed via ```pip```
-
-```
-pip install binn
-```
-
-The package can also be built from source and installed with git.
-
-```
-git clone git@github.com:InfectionMedicineProteomics/BINN.git
-pip install -e BINN/
-```
 
 ## Testing
 
