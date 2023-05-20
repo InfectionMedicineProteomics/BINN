@@ -62,19 +62,21 @@ class BINNExplainer:
             sv = abs(sv)
             sv_mean = np.mean(sv, axis=1)
 
-            for f in range(sv_mean.shape[-1]):
+            for feature in range(sv_mean.shape[-1]):
                 n_classes = sv_mean.shape[0]
-                connections = cm[cm.index == features[f]]
+                connections = cm[cm.index == features[feature]]
                 connections = connections.loc[
                     :, (connections != 0).any(axis=0)
                 ]  # get targets and append to target
                 for target in connections:
                     for curr_class in range(n_classes):
-                        feature_dict["source"].append(feature_id_mapping[features[f]])
+                        feature_dict["source"].append(
+                            feature_id_mapping[features[feature]]
+                        )
                         feature_dict["target"].append(feature_id_mapping[target])
-                        feature_dict["source name"].append(features[f])
+                        feature_dict["source name"].append(features[feature])
                         feature_dict["target name"].append(target)
-                        feature_dict["value"].append(sv_mean[curr_class][f])
+                        feature_dict["value"].append(sv_mean[curr_class][feature])
                         feature_dict["type"].append(curr_class)
                         feature_dict["source layer"].append(curr_layer)
                         feature_dict["target layer"].append(curr_layer + 1)

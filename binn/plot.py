@@ -7,7 +7,11 @@ import plotly.graph_objects as go
 
 
 def subgraph_sankey(
-    df: pd.DataFrame, final_node: str = "root", val_col="value", cmap_name="coolwarm"
+    df: pd.DataFrame,
+    final_node: str = 0,
+    val_col="value",
+    cmap_name="coolwarm",
+    root_id: int = 0,
 ):
     """
     Create a Sankey diagram using Plotly and Seaborn.
@@ -30,6 +34,13 @@ def subgraph_sankey(
     unique_features += df["target"].unique().tolist()
     code_map, feature_labels = _encode_features(list(set(unique_features)))
     sources = df["source"].unique().tolist()
+    name_map = _create_name_map(df, 1, root_id, -1)
+    new_labels = []
+    for label in feature_labels:
+        if label in name_map.keys():
+            new_labels.append(name_map[label])
+        else:
+            new_labels.append(label)
 
     def normalize_layer_values(df):
         new_df = pd.DataFrame()
@@ -96,13 +107,22 @@ def subgraph_sankey(
 
     df, node_colors = get_node_colors(feature_labels, df)
     encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
+
+    new_labels = []
+    for label in feature_labels:
+        if label in name_map.keys():
+            new_labels.append(name_map[label])
+        else:
+            new_labels.append(label)
+
     nodes = dict(
         pad=20,
         thickness=20,
         line=dict(color="white", width=2),
-        label=feature_labels,
+        label=new_labels,
         color=node_colors,
     )
+
     links = dict(
         source=encoded_source, target=encoded_target, value=value, color=link_colors
     )
@@ -128,7 +148,7 @@ def complete_sankey(
     show_top_n: int = 10,
     val_col: str = "value",
     node_cmap: str = "Reds",
-    edge_cmap: Union[str, list] = "Reds",
+    edge_cmap: Union[str, list] = "coolwarm",
     root_id: int = 0,
     other_id: int = -1,
 ):
@@ -152,15 +172,15 @@ def complete_sankey(
         )
 
     def set_to_other(row, top_n: dict, source_or_target: str):
-        s = row[source_or_target]
+        node = row[source_or_target]
         layer = row["source layer"] + 1
         if source_or_target == "target":
             layer = layer + 1
         for top_layer_values in top_n.values():
-            if s in top_layer_values:
-                return s
-        if s == root_id:
-            return s
+            if node in top_layer_values:
+                return node
+        if node == root_id:
+            return node
         return other_id * layer  # All other nodes are multiples of other_id
 
     def remove_other_to_other(df: pd.DataFrame):

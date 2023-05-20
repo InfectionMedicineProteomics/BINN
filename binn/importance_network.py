@@ -69,11 +69,12 @@ class ImportanceNetwork:
 
         """
         if upstream == False:
-            final_node = self.root_node
+            final_node = self._get_node("root")
+
             subgraph = self.get_downstream_subgraph(query_node, depth_limit=None)
             source_or_target = "source"
         else:
-            final_node = query_node
+            final_node = self._get_node(query_node)
             subgraph = self.get_upstream_subgraph(query_node, depth_limit=None)
             source_or_target = "target"
         nodes_in_subgraph = [n for n in subgraph.nodes]
@@ -136,16 +137,21 @@ class ImportanceNetwork:
         """
         importance_graph = nx.DiGraph()
         for k in self.importance_df.iterrows():
+            source_name = k[1]["source name"]
             source = k[1]["source"]
             value = k[1][self.val_col]
             source_layer = k[1]["source layer"] + 1
-            importance_graph.add_node(source, weight=value, layer=source_layer)
+            importance_graph.add_node(
+                source, weight=value, layer=source_layer, name=source_name
+            )
         for k in self.importance_df.iterrows():
             source = k[1]["source"]
             target = k[1]["target"]
             importance_graph.add_edge(source, target)
         root_layer = max(self.importance_df["target layer"]) + 1
-        importance_graph.add_node(self.root_node, weight=0, layer=root_layer)
+        importance_graph.add_node(
+            self.root_node, weight=0, layer=root_layer, name="root"
+        )
         return importance_graph
 
     def get_downstream_subgraph(self, query_node: str, depth_limit=None):
@@ -311,3 +317,9 @@ class ImportanceNetwork:
 
         self.importance_df["value"] = self.importance_df["value"] / np.log2(nr_tot)
         return self.importance_df
+
+    def _get_node(self, name):
+        for node, d in self.importance_graph.nodes(data=True):
+            if d["name"] == name:
+                return node
+        raise ValueError(f"Could not find node {name}")
