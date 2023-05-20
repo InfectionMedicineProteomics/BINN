@@ -95,8 +95,7 @@ def subgraph_sankey(
         return new_df, colors
 
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(
-        sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
     nodes = dict(
         pad=20,
         thickness=20,
@@ -130,15 +129,18 @@ def complete_sankey(
     val_col: str = "value",
     node_cmap: str = "Reds",
     edge_cmap: Union[str, list] = "Reds",
+    root_id: int = 0,
+    other_id: int = -1,
 ):
-
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
     df = _remove_loops(df)
     n_layers = max(df["target layer"].values)
     df["value"] = df[val_col]
+    name_map = _create_name_map(df, n_layers, root_id, other_id)
 
     top_n = {}
+
     for layer in range(n_layers):
         top_n[layer] = (
             df.loc[df["source layer"] == layer]
@@ -149,19 +151,19 @@ def complete_sankey(
             .index.tolist()
         )
 
-    def set_to_other(row, top_n, source_or_target):
+    def set_to_other(row, top_n: dict, source_or_target: str):
         s = row[source_or_target]
-        layer = row["source layer"]
+        layer = row["source layer"] + 1
         if source_or_target == "target":
             layer = layer + 1
-        for t in top_n.values():
-            if s in t:
+        for top_layer_values in top_n.values():
+            if s in top_layer_values:
                 return s
-            if "root" in s:
-                return "root"
-        return f"Other connections {layer}"
+        if s == root_id:
+            return s
+        return other_id * layer  # All other nodes are multiples of other_id
 
-    def remove_other_to_other(df):
+    def remove_other_to_other(df: pd.DataFrame):
         df["source_w_other"] = df.apply(
             lambda x: set_to_other(x, top_n, "source"), axis=1
         )
@@ -169,16 +171,16 @@ def complete_sankey(
             lambda x: set_to_other(x, top_n, "target"), axis=1
         )
         return df[
-            ~(
-                (df["source_w_other"].str.contains("Other connections"))
-                & (df["target_w_other"].str.contains("Other connections"))
-            )
+            ~((df["source_w_other"] <= other_id) & (df["target_w_other"] <= other_id))
         ].copy()
 
-    def normalize_layer_values(df):
+    def normalize_layer_values(df: pd.DataFrame):
         new_df = pd.DataFrame()
-        df["Other"] = df["source_w_other"].apply(
-            lambda x: True if "Other connections" in x else False).copy()
+        df["Other"] = (
+            df["source_w_other"]
+            .apply(lambda x: True if x <= other_id else False)
+            .copy()
+        )
 
         other_df = df[df["Other"] == True]
         df = df[df["Other"] == False]
@@ -190,19 +192,17 @@ def complete_sankey(
         for layer in other_df["source layer"].unique():
             layer_df = other_df[other_df["source layer"] == layer].copy()
             layer_total = layer_df["value"].sum()
-            layer_df["normalized value"] = 0.1 * \
-                layer_df["value"] / layer_total
+            layer_df["normalized value"] = 0.1 * layer_df["value"] / layer_total
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
-    def get_connections(sources, df):
+    def get_connections(sources: list, df: pd.DataFrame):
         conn = df[df["source_w_other"].isin(sources)].copy()
         source_code = [_get_code(s, code_map) for s in conn["source_w_other"]]
         target_code = [_get_code(s, code_map) for s in conn["target_w_other"]]
         values = [v for v in conn["normalized value"]]
         if multiclass == False:
-            temp_df, _ = get_node_colors(
-                feature_labels, df, curr_cmap=edge_cmap)
+            temp_df, _ = get_node_colors(feature_labels, df, curr_cmap=edge_cmap)
             link_colors = (
                 temp_df["node_color"]
                 .apply(lambda x: x.split(", 0.75)")[0] + ", 0.3)")
@@ -211,21 +211,20 @@ def complete_sankey(
         else:
             link_colors = conn.apply(
                 lambda x: "rgba(236,236,236, 0.75)"
-                if "Other connections" in x["source_w_other"]
+                if x["source_w_other"] <= other_id
                 else edge_cmap[x["type"]],
                 axis=1,
             ).values.tolist()
         return source_code, target_code, values, link_colors
 
-    def get_node_colors(sources, df, curr_cmap=node_cmap):
+    def get_node_colors(sources: list, df: pd.DataFrame, curr_cmap=node_cmap):
         cmaps = {}
         for layer in df["source layer"].unique():
             c_df = df[df["source layer"] == layer].copy()
-            c_df = c_df[~c_df["source_w_other"].str.startswith("Other")]
+            c_df = c_df[~c_df["source_w_other"] <= other_id]
             cmap = plt.cm.ScalarMappable(
                 norm=matplotlib.colors.Normalize(
-                    vmin=c_df.groupby("source_w_other").mean()[
-                        "normalized value"].min()
+                    vmin=c_df.groupby("source_w_other").mean()["normalized value"].min()
                     * 0.8,
                     vmax=c_df.groupby("source_w_other")
                     .mean()["normalized value"]
@@ -239,10 +238,10 @@ def complete_sankey(
         new_df = pd.DataFrame()
         for source in sources:
             source_df = df[df["source_w_other"] == source].copy()
-            if "Other connections" in source:
+            if source <= other_id:
                 colors.append("rgb(236,236,236, 0.75)")
                 source_df["node_color"] = "rgb(236,236,236, 0.75)"
-            elif "root" in source:
+            elif source == root_id:
                 colors.append("rgba(0,0,0,1)")
                 source_df["node_color"] = "rgb(0,0,0,1)"
             else:
@@ -258,7 +257,7 @@ def complete_sankey(
             new_df = pd.concat([new_df, source_df])
         return new_df, colors
 
-    def get_node_positions(feature_labels, df):
+    def get_node_positions(feature_labels: list, df: pd.DataFrame):
         x = []
         y = []
         grouped_df = df.groupby("source_w_other", as_index=False).agg(
@@ -267,15 +266,17 @@ def complete_sankey(
         layers = range(n_layers)
         final_df = pd.DataFrame()
         for layer in layers:
-            other_df = grouped_df[
-                grouped_df["source_w_other"].str.startswith("Other")
-            ].copy()
-            other_value = other_df.groupby("source_w_other").mean().value[0]
-            layer_df = grouped_df[grouped_df["source layer"] == layer].sort_values(
-                ["value"], ascending=True
-            ).copy()
-            layer_df = layer_df[~layer_df["source_w_other"].str.startswith(
-                "Other")].copy()
+            layer_df = (
+                grouped_df[grouped_df["source layer"] == layer]
+                .sort_values(["value"], ascending=True)
+                .copy()
+            )
+
+            other_df = layer_df[layer_df["source_w_other"] <= other_id].copy()
+            layer_df = layer_df[layer_df["source_w_other"] > other_id].copy()
+
+            other_value = other_df["value"]  # maybe this should be sum and not mean
+
             layer_df["rank"] = range(len(layer_df.index))
             layer_df["value"] = layer_df["value"] / layer_df["value"].sum()
             layer_df["y"] = (
@@ -288,7 +289,7 @@ def complete_sankey(
             other_df = pd.DataFrame(
                 [
                     [
-                        f"Other connections {layer}",
+                        other_id * (layer + 1),
                         layer,
                         other_value,
                         10,
@@ -296,41 +297,43 @@ def complete_sankey(
                         (0.01 + layer) / (len(layers) + 1),
                     ]
                 ],
-                columns=["source_w_other", "source layer",
-                         "value", "rank", "y", "x"],
+                columns=["source_w_other", "source layer", "value", "rank", "y", "x"],
             )
             final_df = pd.concat([final_df, layer_df, other_df])
 
         for f in feature_labels:
-            if f == "root":
+            if f == root_id:
                 x.append(0.85)
                 y.append(0.5)
             else:
-                x.append(
-                    final_df[final_df["source_w_other"] == f]["x"].values[0])
-                y.append(
-                    final_df[final_df["source_w_other"] == f]["y"].values[0])
+                x.append(final_df[final_df["source_w_other"] == f]["x"].values)
+                y.append(final_df[final_df["source_w_other"] == f]["y"].values)
         return x, y
 
     df = remove_other_to_other(df)
     df = normalize_layer_values(df)
     unique_features = (
-        df["source_w_other"].unique().tolist(
-        ) + df["target_w_other"].unique().tolist()
+        df["source_w_other"].unique().tolist() + df["target_w_other"].unique().tolist()
     )
     code_map, feature_labels = _encode_features(list(set(unique_features)))
     sources = df["source_w_other"].unique().tolist()
+
     df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(
-        sources, df)
+    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
     x, y = get_node_positions(feature_labels, df)
 
-    feature_labels = [f.split("_")[0] for f in feature_labels]
+    new_labels = []
+    for label in feature_labels:
+        if label in name_map.keys():
+            new_labels.append(name_map[label])
+        else:
+            new_labels.append(label)
+
     nodes = dict(
         pad=15,
         thickness=15,
         line=dict(color="white", width=0),
-        label=feature_labels,
+        label=new_labels,
         color=node_colors,
         x=x,
         y=y,
@@ -356,18 +359,28 @@ def complete_sankey(
 # ----------------------------------------------------------------
 
 
-def _encode_features(features):
+def _encode_features(features: list):
     feature_map = {"feature": features, "code": list(range(len(features)))}
     feature_map = pd.DataFrame(data=feature_map)
     return feature_map, features
 
 
-def _get_code(feature, feature_map):
+def _get_code(feature: list, feature_map: pd.DataFrame):
     code = feature_map[feature_map["feature"] == feature]["code"].values[0]
     return code
 
 
-def _remove_loops(df):
-    df.loc[:, "loop"] = df.apply(lambda x: x["source"] == x["target"], axis=1)
+def _remove_loops(df: pd.DataFrame):
+    df.loc[:, "loop"] = df.apply(lambda x: x["source name"] == x["target name"], axis=1)
     df = df[df["loop"] == False].copy()
     return df
+
+
+def _create_name_map(df: pd.DataFrame, n_layers: int, root_id: int, other_id: int):
+    name_map = dict(
+        zip(df["source"].values.tolist(), df["source name"].values.tolist())
+    )
+    name_map[root_id] = "Output"
+    for i in range(1, n_layers + 1):
+        name_map[other_id * i] = f"Other connections {i}"
+    return name_map

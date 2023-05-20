@@ -17,8 +17,8 @@ class BINNExplainer:
 
     def __init__(self, model: BINN):
         self.model = model
-        
-    def update_model(self, model : BINN):
+
+    def update_model(self, model: BINN):
         self.model = model
 
     def explain(self, test_data: torch.Tensor, background_data: torch.Tensor):
@@ -37,12 +37,23 @@ class BINNExplainer:
         feature_dict = {
             "source": [],
             "target": [],
+            "source name": [],
+            "target name": [],
             "value": [],
             "type": [],
             "source layer": [],
             "target layer": [],
         }
         connectivity_matrices = self.model.get_connectivity_matrices()
+        feature_id_mapping = {}
+
+        feature_id = 0
+        feature_id_mapping["root"] = feature_id
+        for layer_features in shap_dict["features"]:
+            for feature in layer_features:
+                feature_id += 1
+                feature_id_mapping[feature] = feature_id
+
         curr_layer = 0
         for sv, features, cm in zip(
             shap_dict["shap_values"], shap_dict["features"], connectivity_matrices
@@ -59,8 +70,10 @@ class BINNExplainer:
                 ]  # get targets and append to target
                 for target in connections:
                     for curr_class in range(n_classes):
-                        feature_dict["source"].append(f"{features[f]}_{curr_layer}")
-                        feature_dict["target"].append(f"{target}_{curr_layer + 1}")
+                        feature_dict["source"].append(feature_id_mapping[features[f]])
+                        feature_dict["target"].append(feature_id_mapping[target])
+                        feature_dict["source name"].append(features[f])
+                        feature_dict["target name"].append(target)
                         feature_dict["value"].append(sv_mean[curr_class][f])
                         feature_dict["type"].append(curr_class)
                         feature_dict["source layer"].append(curr_layer)

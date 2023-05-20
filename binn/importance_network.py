@@ -31,6 +31,7 @@ class ImportanceNetwork:
         norm_method: str = "subgraph",
         val_col: str = "value",
     ):
+        self.root_node = 0
         self.complete_df = df
         self.importance_df = df
         self.val_col = val_col
@@ -68,7 +69,7 @@ class ImportanceNetwork:
 
         """
         if upstream == False:
-            final_node = "root"
+            final_node = self.root_node
             subgraph = self.get_downstream_subgraph(query_node, depth_limit=None)
             source_or_target = "source"
         else:
@@ -133,12 +134,6 @@ class ImportanceNetwork:
         Returns:
             importance_graph: a directed graph (DiGraph) object
         """
-        self.importance_df["source"] = self.importance_df["source"].apply(
-            lambda x: x.split("_")[0]
-        )
-        self.importance_df["target"] = self.importance_df["target"].apply(
-            lambda x: x.split("_")[0]
-        )
         importance_graph = nx.DiGraph()
         for k in self.importance_df.iterrows():
             source = k[1]["source"]
@@ -150,7 +145,7 @@ class ImportanceNetwork:
             target = k[1]["target"]
             importance_graph.add_edge(source, target)
         root_layer = max(self.importance_df["target layer"]) + 1
-        importance_graph.add_node("root", weight=0, layer=root_layer)
+        importance_graph.add_node(self.root_node, weight=0, layer=root_layer)
         return importance_graph
 
     def get_downstream_subgraph(self, query_node: str, depth_limit=None):
