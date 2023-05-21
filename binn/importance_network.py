@@ -10,30 +10,33 @@ class ImportanceNetwork:
     A class for building and analyzing a directed graph representing the importance network of a system.
 
     Parameters:
-        df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,
+        importance_df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,
             and layer for each node. This dataframe should represent the complete importance network of the system.
         val_col (str, optional): The name of the column in the DataFrame that represents the value flow between
             nodes. Defaults to "value".
+        normalize (bool, optional): Whether or not to normalize the value column. Defaults to True.
+        norm_method (str, optional): Method to normalie the value column with. Options are 'subgraph' and 'fan'.
+            If 'subgraph', normalizes on the log(nodes in subgraph) from each node. If 'fan', normalizes on the
+            log(fan in + fan out) for each node.
 
     Attributes:
-        complete_df (pandas.DataFrame): The original dataframe containing the complete importance network of the system.
-        df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.
+        importance_df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.
         val_col (str): The name of the column in the DataFrame that represents the value flow between nodes.
         G (networkx.DiGraph): A directed graph object representing the importance network of the system.
         G_reverse (networkx.DiGraph): A directed graph object representing the importance network of the system in reverse.
+        norm_method (str): The normalization method.
 
     """
 
     def __init__(
         self,
-        df: pd.DataFrame,
+        importance_df: pd.DataFrame,
         normalize: bool = True,
         norm_method: str = "subgraph",
         val_col: str = "value",
     ):
         self.root_node = 0
-        self.complete_df = df
-        self.importance_df = df
+        self.importance_df = importance_df
         self.val_col = val_col
         self.importance_graph = self.create_graph()
         self.importance_graph_reverse = self.importance_graph.reverse()
@@ -64,8 +67,7 @@ class ImportanceNetwork:
                 to "coolwarm".
 
         Returns:
-            plotly.graph_objs._figure.Figure:
-                The plotly Figure object representing the Sankey diagram.
+            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.
 
         """
         if upstream == False:
@@ -112,12 +114,11 @@ class ImportanceNetwork:
                 The filename to save the plot. Defaults to "sankey.png".
 
         Returns:
-            plotly.graph_objs._figure.Figure
-                The plotly Figure object representing the Sankey diagram.
+            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.
         """
 
         fig = complete_sankey(
-            self.complete_df,
+            self.importance_df,
             multiclass=multiclass,
             val_col=self.val_col,
             show_top_n=show_top_n,
