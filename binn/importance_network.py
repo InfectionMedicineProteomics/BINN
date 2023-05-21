@@ -71,12 +71,12 @@ class ImportanceNetwork:
 
         """
         if upstream == False:
-            final_node = self._get_node("root")
+            final_node = self.get_node("root")
 
             subgraph = self.get_downstream_subgraph(query_node, depth_limit=None)
             source_or_target = "source"
         else:
-            final_node = self._get_node(query_node)
+            final_node = self.get_node(query_node)
             subgraph = self.get_upstream_subgraph(query_node, depth_limit=None)
             source_or_target = "target"
         nodes_in_subgraph = [n for n in subgraph.nodes]
@@ -319,7 +319,7 @@ class ImportanceNetwork:
         self.importance_df["value"] = self.importance_df["value"] / np.log2(nr_tot)
         return self.importance_df
 
-    def _get_node(self, name):
+    def get_node(self, name):
         for node, d in self.importance_graph.nodes(data=True):
             if d["name"] == name:
                 return node
