@@ -116,9 +116,11 @@ class Network:
         missing_pathways = []
         for p in terminal_nodes:
             pathway_name = re.sub("_copy.*", "", p)
-            inputs = mapping_df[mapping_df["connections"] == pathway_name][
-                "input"
-            ].unique()
+            inputs = (
+                mapping_df[mapping_df["connections"] == pathway_name]["input"]
+                .unique()
+                .tolist()
+            )
             if len(inputs) == 0:
                 missing_pathways.append(pathway_name)
             dict[pathway_name] = inputs
