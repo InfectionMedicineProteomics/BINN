@@ -10,29 +10,33 @@ class ImportanceNetwork:
     A class for building and analyzing a directed graph representing the importance network of a system.
 
     Parameters:
-        df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,
+        importance_df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,
             and layer for each node. This dataframe should represent the complete importance network of the system.
         val_col (str, optional): The name of the column in the DataFrame that represents the value flow between
             nodes. Defaults to "value".
+        normalize (bool, optional): Whether or not to normalize the value column. Defaults to True.
+        norm_method (str, optional): Method to normalie the value column with. Options are 'subgraph' and 'fan'.
+            If 'subgraph', normalizes on the log(nodes in subgraph) from each node. If 'fan', normalizes on the
+            log(fan in + fan out) for each node.
 
     Attributes:
-        complete_df (pandas.DataFrame): The original dataframe containing the complete importance network of the system.
-        df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.
+        importance_df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.
         val_col (str): The name of the column in the DataFrame that represents the value flow between nodes.
         G (networkx.DiGraph): A directed graph object representing the importance network of the system.
         G_reverse (networkx.DiGraph): A directed graph object representing the importance network of the system in reverse.
+        norm_method (str): The normalization method.
 
     """
 
     def __init__(
         self,
-        df: pd.DataFrame,
+        importance_df: pd.DataFrame,
         normalize: bool = True,
         norm_method: str = "subgraph",
         val_col: str = "value",
     ):
-        self.complete_df = df
-        self.importance_df = df
+        self.root_node = 0
+        self.importance_df = importance_df
         self.val_col = val_col
         self.importance_graph = self.create_graph()
         self.importance_graph_reverse = self.importance_graph.reverse()
@@ -63,16 +67,16 @@ class ImportanceNetwork:
                 to "coolwarm".
 
         Returns:
-            plotly.graph_objs._figure.Figure:
-                The plotly Figure object representing the Sankey diagram.
+            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.
 
         """
         if upstream == False:
-            final_node = "root"
+            final_node = self.get_node("root")
+
             subgraph = self.get_downstream_subgraph(query_node, depth_limit=None)
             source_or_target = "source"
         else:
-            final_node = query_node
+            final_node = self.get_node(query_node)
             subgraph = self.get_upstream_subgraph(query_node, depth_limit=None)
             source_or_target = "target"
         nodes_in_subgraph = [n for n in subgraph.nodes]
@@ -110,12 +114,11 @@ class ImportanceNetwork:
                 The filename to save the plot. Defaults to "sankey.png".
 
         Returns:
-            plotly.graph_objs._figure.Figure
-                The plotly Figure object representing the Sankey diagram.
+            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.
         """
 
         fig = complete_sankey(
-            self.complete_df,
+            self.importance_df,
             multiclass=multiclass,
             val_col=self.val_col,
             show_top_n=show_top_n,
@@ -133,24 +136,23 @@ class ImportanceNetwork:
         Returns:
             importance_graph: a directed graph (DiGraph) object
         """
-        self.importance_df["source"] = self.importance_df["source"].apply(
-            lambda x: x.split("_")[0]
-        )
-        self.importance_df["target"] = self.importance_df["target"].apply(
-            lambda x: x.split("_")[0]
-        )
         importance_graph = nx.DiGraph()
         for k in self.importance_df.iterrows():
+            source_name = k[1]["source name"]
             source = k[1]["source"]
             value = k[1][self.val_col]
             source_layer = k[1]["source layer"] + 1
-            importance_graph.add_node(source, weight=value, layer=source_layer)
+            importance_graph.add_node(
+                source, weight=value, layer=source_layer, name=source_name
+            )
         for k in self.importance_df.iterrows():
             source = k[1]["source"]
             target = k[1]["target"]
             importance_graph.add_edge(source, target)
         root_layer = max(self.importance_df["target layer"]) + 1
-        importance_graph.add_node("root", weight=0, layer=root_layer)
+        importance_graph.add_node(
+            self.root_node, weight=0, layer=root_layer, name="root"
+        )
         return importance_graph
 
     def get_downstream_subgraph(self, query_node: str, depth_limit=None):
@@ -316,3 +318,9 @@ class ImportanceNetwork:
 
         self.importance_df["value"] = self.importance_df["value"] / np.log2(nr_tot)
         return self.importance_df
+
+    def get_node(self, name):
+        for node, d in self.importance_graph.nodes(data=True):
+            if d["name"] == name:
+                return node
+        raise ValueError(f"Could not find node {name}")

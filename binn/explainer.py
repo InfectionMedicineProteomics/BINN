@@ -17,8 +17,8 @@ class BINNExplainer:
 
     def __init__(self, model: BINN):
         self.model = model
-        
-    def update_model(self, model : BINN):
+
+    def update_model(self, model: BINN):
         self.model = model
 
     def explain(self, test_data: torch.Tensor, background_data: torch.Tensor):
@@ -37,12 +37,23 @@ class BINNExplainer:
         feature_dict = {
             "source": [],
             "target": [],
+            "source name": [],
+            "target name": [],
             "value": [],
             "type": [],
             "source layer": [],
             "target layer": [],
         }
         connectivity_matrices = self.model.get_connectivity_matrices()
+        feature_id_mapping = {}
+
+        feature_id = 0
+        feature_id_mapping["root"] = feature_id
+        for layer_features in shap_dict["features"]:
+            for feature in layer_features:
+                feature_id += 1
+                feature_id_mapping[feature] = feature_id
+
         curr_layer = 0
         for sv, features, cm in zip(
             shap_dict["shap_values"], shap_dict["features"], connectivity_matrices
@@ -51,17 +62,21 @@ class BINNExplainer:
             sv = abs(sv)
             sv_mean = np.mean(sv, axis=1)
 
-            for f in range(sv_mean.shape[-1]):
+            for feature in range(sv_mean.shape[-1]):
                 n_classes = sv_mean.shape[0]
-                connections = cm[cm.index == features[f]]
+                connections = cm[cm.index == features[feature]]
                 connections = connections.loc[
                     :, (connections != 0).any(axis=0)
                 ]  # get targets and append to target
                 for target in connections:
                     for curr_class in range(n_classes):
-                        feature_dict["source"].append(f"{features[f]}_{curr_layer}")
-                        feature_dict["target"].append(f"{target}_{curr_layer + 1}")
-                        feature_dict["value"].append(sv_mean[curr_class][f])
+                        feature_dict["source"].append(
+                            feature_id_mapping[features[feature]]
+                        )
+                        feature_dict["target"].append(feature_id_mapping[target])
+                        feature_dict["source name"].append(features[feature])
+                        feature_dict["target name"].append(target)
+                        feature_dict["value"].append(sv_mean[curr_class][feature])
                         feature_dict["type"].append(curr_class)
                         feature_dict["source layer"].append(curr_layer)
                         feature_dict["target layer"].append(curr_layer + 1)
