@@ -1,7 +1,6 @@
 import pytest
 import pandas as pd
 from binn import Network
-import numpy as np
 
 
 def test_build_network():
