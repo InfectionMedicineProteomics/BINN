@@ -3,7 +3,8 @@ import pandas as pd
 from binn import Network
 
 
-def test_build_network():
+@pytest.fixture
+def network():
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
         {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
@@ -12,7 +13,10 @@ def test_build_network():
         {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
     )
     network = Network(input_data=input_data, pathways=pathways, mapping=translation)
+    return network
 
+
+def test_build_network(network):
     expected_nodes = ["root", "A", "B", "C", "path1", "path2"]
     expected_edges = [
         ("path1", "A"),
@@ -25,17 +29,7 @@ def test_build_network():
     assert sorted(network.netx.edges) == sorted(expected_edges)
 
 
-def test_get_layers():
-    input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
-    pathways = pd.DataFrame(
-        {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
-    )
-    translation = pd.DataFrame(
-        {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
-    )
-
-    network = Network(input_data=input_data, pathways=pathways, mapping=translation)
-
+def test_get_layers(network):
     expected_layers = [
         {"root": ["path1", "path2"]},
         {"path1": ["A", "B"], "path2": ["C"]},
@@ -50,17 +44,7 @@ def test_get_layers():
     assert network.get_layers(3) == expected_layers
 
 
-def test_get_connectivity_matrices():
-    input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
-    pathways = pd.DataFrame(
-        {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
-    )
-    translation = pd.DataFrame(
-        {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
-    )
-
-    network = Network(input_data=input_data, pathways=pathways, mapping=translation)
-
+def test_get_connectivity_matrices(network):
     expected_matrices = [
         pd.DataFrame(
             data=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
