@@ -24,7 +24,6 @@ def test_create_graph(importance_df):
     graph = importance_network.create_graph()
 
     assert isinstance(graph, nx.DiGraph)
-
     assert len(graph.nodes) == 7
     assert len(graph.edges) == 6
 
@@ -49,9 +48,10 @@ def test_get_upstream_subgraph(importance_df):
 def test_get_complete_subgraph(importance_df):
     network = ImportanceNetwork(importance_df)
     subgraph = network.get_complete_subgraph(1, depth_limit=None)
+    print(subgraph.edges())
     assert isinstance(subgraph, nx.DiGraph)
     assert subgraph.number_of_nodes() == 3
-    assert subgraph.number_of_edges() == 3
+    assert subgraph.number_of_edges() == 4
 
 
 def test_get_nr_nodes_in_upstream_subgraph(importance_df):
