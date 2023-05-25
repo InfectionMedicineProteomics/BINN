@@ -144,11 +144,13 @@ class Network:
             layer_map = _get_map_from_layer(layer)
             if i == 0:
                 inputs = list(layer_map.index)
-                self.inputs = inputs
+                self.inputs = sorted(inputs)
             filter_df = pd.DataFrame(index=inputs)
             all = filter_df.merge(
                 layer_map, right_index=True, left_index=True, how="inner"
             )
+            all = all.reindex(sorted(all.columns), axis=1)
+            all = all.sort_index()
             inputs = list(layer_map.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices
