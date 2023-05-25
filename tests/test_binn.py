@@ -14,7 +14,7 @@ def binn_model():
         {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
     )
     network = Network(input_data=input_data, pathways=pathways, mapping=translation)
-    model = BINN(network=network)
+    model = BINN(n_layers=2, network=network)
     return model
 
 
@@ -61,12 +61,23 @@ def test_calculate_accuracy(binn_model):
 
 def test_get_connectivity_matrices(binn_model):
     matrices = binn_model.get_connectivity_matrices()
+    expected_matrices = [
+        pd.DataFrame(
+            data=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            columns=["A", "B", "C"],
+            index=["a", "b", "c"],
+        ),
+        pd.DataFrame(
+            data=[[1, 0], [1, 0], [0, 1]],
+            columns=["path1", "path2"],
+            index=["A", "B", "C"],
+        ),
+        pd.DataFrame(
+            data=[[1], [1]],
+            columns=["root"],
+            index=["path1", "path2"],
+        ),
+    ]
     assert isinstance(matrices, list)
-
-
-def test_reset_params(binn_model):
-    binn_model.reset_params()
-
-
-def test_init_weights(binn_model):
-    binn_model.init_weights()
+    for ix in range(len(matrices)):
+        assert matrices[ix].equals(expected_matrices[ix])
