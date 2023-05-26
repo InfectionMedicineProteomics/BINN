@@ -177,7 +177,7 @@ class BINNExplainer:
         explainer = shap.DeepExplainer(self.model, background_data)
         shap_values = explainer.shap_values(test_data)
 
-        shap_dict = {"features": self.model.column_names[0], "shap_values": shap_values}
+        shap_dict = {"features": self.model.layer_names[0], "shap_values": shap_values}
 
         return shap_dict
 
