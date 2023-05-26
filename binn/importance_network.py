@@ -211,7 +211,7 @@ class ImportanceNetwork:
         Returns:
             subgraph: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit
         """
-        subgraph = self.get_downstream_subgraph(self.importance_graph, query_node)
+        subgraph = self.get_downstream_subgraph(query_node, depth_limit=depth_limit)
         nodes = [
             n
             for n in nx.traversal.bfs_successors(

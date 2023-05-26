@@ -116,9 +116,11 @@ class Network:
         missing_pathways = []
         for p in terminal_nodes:
             pathway_name = re.sub("_copy.*", "", p)
-            inputs = mapping_df[mapping_df["connections"] == pathway_name][
-                "input"
-            ].unique()
+            inputs = (
+                mapping_df[mapping_df["connections"] == pathway_name]["input"]
+                .unique()
+                .tolist()
+            )
             if len(inputs) == 0:
                 missing_pathways.append(pathway_name)
             dict[pathway_name] = inputs
@@ -142,11 +144,13 @@ class Network:
             layer_map = _get_map_from_layer(layer)
             if i == 0:
                 inputs = list(layer_map.index)
-                self.inputs = inputs
+                self.inputs = sorted(inputs)
             filter_df = pd.DataFrame(index=inputs)
             all = filter_df.merge(
                 layer_map, right_index=True, left_index=True, how="inner"
             )
+            all = all.reindex(sorted(all.columns), axis=1)
+            all = all.sort_index()
             inputs = list(layer_map.columns)
             connectivity_matrices.append(all)
         return connectivity_matrices
