@@ -4,7 +4,7 @@ requirements = [
     "numpy",
     "networkx",
     "pandas<=1.5.3",
-    "torch<=1.12.1",
+    "torch<=1.13",
     "pytorch-lightning<=1.9.5",
     "shap",
     "matplotlib",
