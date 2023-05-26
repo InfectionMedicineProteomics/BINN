@@ -70,7 +70,7 @@ class ImportanceNetwork:
             plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.
 
         """
-        if upstream == False:
+        if not upstream:
             final_node = self.get_node("root")
 
             subgraph = self.get_downstream_subgraph(query_node, depth_limit=None)

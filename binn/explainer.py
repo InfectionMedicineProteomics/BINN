@@ -202,7 +202,7 @@ class BINNExplainer:
 
         for name, layer in self.model.layers.named_children():
             if isinstance(layer, torch.nn.Linear) and (
-                not "Residual" in name or "final" in name
+                "Residual" not in name or "final" in name
             ):
                 explainer = shap.DeepExplainer((self.model, layer), background_data)
                 shap_values = explainer.shap_values(test_data)
@@ -228,7 +228,7 @@ class BINNExplainer:
         layer_index = 0
         for name, layer in self.model.layers.named_children():
             if isinstance(layer, torch.nn.Linear) and (
-                not "Residual" in name or "final" in name
+                "Residual" not in name or "final" in name
             ):
                 if layer_index == wanted_layer:
                     explainer = shap.DeepExplainer((self.model, layer), background_data)

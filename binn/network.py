@@ -190,8 +190,8 @@ def _get_map_from_layer(layer_dict):
 def _add_edges(G, node, n_levels):
     edges = []
     source = node
-    for l in range(n_levels):
-        target = node + "_copy" + str(l + 1)
+    for level in range(n_levels):
+        target = node + "_copy" + str(level + 1)
         edge = (source, target)
         source = target
         edges.append(edge)

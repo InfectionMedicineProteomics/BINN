@@ -96,7 +96,7 @@ def subgraph_sankey(
                 r, g, b, a = cmap.to_rgba(w, alpha=0.5)
                 weight_dict[n] = w
                 node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
-        node_dict[final_node] = f"rgba(0,0,0,1)"
+        node_dict[final_node] = "rgba(0,0,0,1)"
         weight_dict[final_node] = 1
         colors = [node_dict[n] for n in sources]
         new_df = new_df.assign(
@@ -202,8 +202,8 @@ def complete_sankey(
             .copy()
         )
 
-        other_df = df[df["Other"] == True]
-        df = df[df["Other"] == False]
+        other_df = df[df["Other"] is True]
+        df = df[df["Other"] is False]
         for layer in df["source layer"].unique():
             layer_df = df[df["source layer"] == layer].copy()
             layer_total = layer_df["value"].sum()

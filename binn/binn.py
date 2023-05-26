@@ -187,7 +187,7 @@ class BINN(LightningModule):
         Returns:
             A list of optimizers and a list of learning rate schedulers.
         """
-        if self.validate == True:
+        if self.validate:
             monitor = "val_loss"
         else:
             monitor = "train_loss"
@@ -274,7 +274,7 @@ def _append_activation(layers, activation, n):
     elif activation == "elu":
         layers.append((f"Elu {n}", nn.ELU()))
     elif activation == "hardsigmoid":
-        layers.append((f"HardSigmoid", nn.Hardsigmoid()))
+        layers.append((f"HardSigmoid {n}", nn.Hardsigmoid()))
     return layers
 
 
@@ -336,15 +336,15 @@ def _generate_residual(
 
     for res_index in range(len(layer_sizes)):
         if res_index == len(layer_sizes) - 1:
-            layers.append((f"BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1])))
-            layers.append((f"Dropout_final", nn.Dropout(0.2)))
+            layers.append(("BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1])))
+            layers.append(("Dropout_final", nn.Dropout(0.2)))
             layers.append(
                 (
-                    f"Residual_out_final",
+                    "Residual_out_final",
                     nn.Linear(layer_sizes[-1], n_outputs, bias=bias),
                 )
             )
-            layers.append((f"Residual_sigmoid_final", nn.Sigmoid()))
+            layers.append(("Residual_sigmoid_final", nn.Sigmoid()))
         else:
             layers = generate_block(res_index, layers)
             _append_activation(layers, activation, res_index)
