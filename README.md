@@ -3,6 +3,7 @@
 [![Docs](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/binn.svg)](https://badge.fury.io/py/binn)
+[![Python application](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml)
 
 BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
 
