@@ -2,7 +2,6 @@ from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 
 
 class SuperLogger:
-
     def __init__(
         self,
         save_dir="",
@@ -19,9 +18,9 @@ class SuperLogger:
         self.save_dir = save_dir
 
     def get_logger_list(self):
-        l = []
+        loggers = []
         if self.tensorboard:
-            l.append(self.logger_dict["tb"])
+            loggers.append(self.logger_dict["tb"])
         if self.csv:
-            l.append(self.logger_dict["csv"])
-        return l
+            loggers.append(self.logger_dict["csv"])
+        return loggers
