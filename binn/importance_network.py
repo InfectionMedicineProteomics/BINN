@@ -51,6 +51,9 @@ class ImportanceNetwork:
         savename: str = "sankey.png",
         val_col: str = "value",
         cmap: str = "coolwarm",
+        width = 1200,
+        scale = 2.5, 
+        height = 500
     ):
         """
         Generate a Sankey diagram using the provided query node.
@@ -87,7 +90,7 @@ class ImportanceNetwork:
             df, final_node=final_node, val_col=val_col, cmap_name=cmap
         )
 
-        fig.write_image(f"{savename}", width=1200, scale=2.5, height=500)
+        fig.write_image(f"{savename}", width=width, scale=scale, height=height)
         return fig
 
     def plot_complete_sankey(
@@ -97,6 +100,9 @@ class ImportanceNetwork:
         node_cmap: str = "Reds",
         edge_cmap: Union[str, list] = "Reds",
         savename="sankey.png",
+        width:int=1900,
+        scale:int = 2,
+        height:int = 800
     ):
         """
         Plot a complete Sankey diagram for the importance network.
@@ -126,7 +132,7 @@ class ImportanceNetwork:
             node_cmap=node_cmap,
         )
 
-        fig.write_image(f"{savename}", width=1900, scale=2, height=800)
+        fig.write_image(f"{savename}", width=width, scale=scale, height=height)
         return fig
 
     def create_graph(self):

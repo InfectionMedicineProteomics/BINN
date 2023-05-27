@@ -165,7 +165,7 @@ def complete_sankey(
         top_n[layer] = (
             df.loc[df["source layer"] == layer]
             .groupby("source")
-            .mean()
+            .mean(numeric_only=True)
             .sort_values("value", ascending=False)
             .iloc[:show_top_n]
             .index.tolist()
@@ -201,9 +201,8 @@ def complete_sankey(
             .apply(lambda x: True if x <= other_id else False)
             .copy()
         )
-
-        other_df = df[df["Other"] is True]
-        df = df[df["Other"] is False]
+        other_df = df[df["Other"] == True]
+        df = df[df["Other"] == False]
         for layer in df["source layer"].unique():
             layer_df = df[df["source layer"] == layer].copy()
             layer_total = layer_df["value"].sum()
@@ -244,10 +243,10 @@ def complete_sankey(
             c_df = c_df[~c_df["source_w_other"] <= other_id]
             cmap = plt.cm.ScalarMappable(
                 norm=matplotlib.colors.Normalize(
-                    vmin=c_df.groupby("source_w_other").mean()["normalized value"].min()
+                    vmin=c_df.groupby("source_w_other").mean(numeric_only=True)["normalized value"].min()
                     * 0.8,
                     vmax=c_df.groupby("source_w_other")
-                    .mean()["normalized value"]
+                    .mean(numeric_only=True)["normalized value"]
                     .max(),
                 ),
                 cmap=curr_cmap,
@@ -267,7 +266,7 @@ def complete_sankey(
             else:
                 intensity = (
                     source_df.groupby("source_w_other")
-                    .mean()["normalized value"]
+                    .mean(numeric_only=True)["normalized value"]
                     .values[0]
                 )
                 cmap = cmaps[source_df["source layer"].unique()[0]]
@@ -291,7 +290,6 @@ def complete_sankey(
                 .sort_values(["value"], ascending=True)
                 .copy()
             )
-
             other_df = layer_df[layer_df["source_w_other"] <= other_id].copy()
             layer_df = layer_df[layer_df["source_w_other"] > other_id].copy()
 
