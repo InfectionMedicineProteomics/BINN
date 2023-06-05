@@ -91,7 +91,7 @@ class Network:
             return self.netx
 
         net = nx.from_pandas_edgelist(
-            self.pathways, source="source", target="target", create_using=nx.DiGraph()
+            self.pathways, source="target", target="source", create_using=nx.DiGraph()
         )
         roots = [n for n, d in net.in_degree() if d == 0]
         root_node = "root"

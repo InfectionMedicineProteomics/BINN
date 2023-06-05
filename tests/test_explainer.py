@@ -8,7 +8,7 @@ import pandas as pd
 def binn_explainer():
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
-        {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
+        {"source": ["A", "B", "C"], "target": ["path1", "path1", "path2"]}
     )
     translation = pd.DataFrame(
         {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
@@ -25,7 +25,7 @@ def test_binn_explainer_init(binn_explainer):
 def test_binn_explainer_update_model(binn_explainer):
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
-        {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
+        {"source": ["A", "B", "C"], "target": ["path1", "path1", "path2"]}
     )
     translation = pd.DataFrame(
         {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
