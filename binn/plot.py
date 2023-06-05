@@ -346,7 +346,14 @@ def complete_sankey(
     df = normalize_layer_values(df)
     df = df.groupby(
         by=["source_w_other", "target_w_other", "type"], sort=False, as_index=False
-    ).mean(numeric_only=True)
+    ).agg(
+        {
+            "normalized value": "sum",
+            "value": "sum",
+            "source layer": "mean",
+            "target layer": "mean",
+        }
+    )
     unique_features = (
         df["source_w_other"].unique().tolist() + df["target_w_other"].unique().tolist()
     )
