@@ -8,7 +8,7 @@ import torch
 def binn_model():
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
-        {"child": ["A", "B", "C"], "parent": ["path1", "path1", "path2"]}
+        {"source": ["A", "B", "C"], "target": ["path1", "path1", "path2"]}
     )
     translation = pd.DataFrame(
         {"input": ["a", "b", "c"], "translation": ["A", "B", "C"]}
