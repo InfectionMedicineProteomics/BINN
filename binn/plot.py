@@ -152,6 +152,11 @@ def complete_sankey(
     root_id: int = 0,
     other_id: int = -1,
 ):
+    if not multiclass:
+        df = df.groupby(
+            by=["source", "target", "source name", "target name"], as_index=False
+        ).agg({"value": "sum", "source layer": "mean", "target layer": "mean"})
+
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
     df = _remove_loops(df)
@@ -243,7 +248,9 @@ def complete_sankey(
             c_df = c_df[~c_df["source_w_other"] <= other_id]
             cmap = plt.cm.ScalarMappable(
                 norm=matplotlib.colors.Normalize(
-                    vmin=c_df.groupby("source_w_other").mean(numeric_only=True)["normalized value"].min()
+                    vmin=c_df.groupby("source_w_other")
+                    .mean(numeric_only=True)["normalized value"]
+                    .min()
                     * 0.8,
                     vmax=c_df.groupby("source_w_other")
                     .mean(numeric_only=True)["normalized value"]
