@@ -51,9 +51,9 @@ class ImportanceNetwork:
         savename: str = "sankey.png",
         val_col: str = "value",
         cmap: str = "coolwarm",
-        width = 1200,
-        scale = 2.5, 
-        height = 500
+        width=1200,
+        scale=2.5,
+        height=500,
     ):
         """
         Generate a Sankey diagram using the provided query node.
@@ -100,9 +100,9 @@ class ImportanceNetwork:
         node_cmap: str = "Reds",
         edge_cmap: Union[str, list] = "Reds",
         savename="sankey.png",
-        width:int=1900,
-        scale:int = 2,
-        height:int = 800
+        width: int = 1900,
+        scale: int = 2,
+        height: int = 800,
     ):
         """
         Plot a complete Sankey diagram for the importance network.

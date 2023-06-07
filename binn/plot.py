@@ -42,7 +42,7 @@ def subgraph_sankey(
         else:
             new_labels.append(label)
 
-    def normalize_layer_values(df):
+    def normalize_layer_values(df: pd.DataFrame):
         new_df = pd.DataFrame()
         total_value_sum = df[val_col].sum()
         for layer in df["source layer"].unique():
@@ -57,7 +57,7 @@ def subgraph_sankey(
     df = _remove_loops(df)
     df = normalize_layer_values(df)
 
-    def get_connections(sources, source_target_df):
+    def get_connections(sources: list, source_target_df: pd.DataFrame):
         conn = source_target_df[source_target_df["source"].isin(sources)]
         source_code = [_get_code(s, code_map) for s in conn["source"]]
         target_code = [_get_code(s, code_map) for s in conn["target"]]
@@ -65,7 +65,7 @@ def subgraph_sankey(
         link_colors = conn["node_color"].values.tolist()
         return source_code, target_code, values, link_colors
 
-    def get_node_colors(sources, df):
+    def get_node_colors(sources: list, df: pd.DataFrame):
         cmap = plt.cm.ScalarMappable(
             norm=matplotlib.colors.Normalize(vmin=0, vmax=1), cmap=cmap_name
         )
