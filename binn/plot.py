@@ -42,7 +42,7 @@ def subgraph_sankey(
         else:
             new_labels.append(label)
 
-    def normalize_layer_values(df):
+    def normalize_layer_values(df: pd.DataFrame):
         new_df = pd.DataFrame()
         total_value_sum = df[val_col].sum()
         for layer in df["source layer"].unique():
@@ -57,7 +57,7 @@ def subgraph_sankey(
     df = _remove_loops(df)
     df = normalize_layer_values(df)
 
-    def get_connections(sources, source_target_df):
+    def get_connections(sources: list, source_target_df: pd.DataFrame):
         conn = source_target_df[source_target_df["source"].isin(sources)]
         source_code = [_get_code(s, code_map) for s in conn["source"]]
         target_code = [_get_code(s, code_map) for s in conn["target"]]
@@ -65,7 +65,7 @@ def subgraph_sankey(
         link_colors = conn["node_color"].values.tolist()
         return source_code, target_code, values, link_colors
 
-    def get_node_colors(sources, df):
+    def get_node_colors(sources: list, df: pd.DataFrame):
         cmap = plt.cm.ScalarMappable(
             norm=matplotlib.colors.Normalize(vmin=0, vmax=1), cmap=cmap_name
         )
@@ -152,6 +152,18 @@ def complete_sankey(
     root_id: int = 0,
     other_id: int = -1,
 ):
+    if not multiclass:
+        df = df.groupby(
+            by=["source", "target", "source name", "target name"], as_index=False
+        ).agg(
+            {
+                "value": "sum",
+                "source layer": "mean",
+                "target layer": "mean",
+                "type": "mean",
+            }
+        )
+
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
     df = _remove_loops(df)
@@ -165,7 +177,7 @@ def complete_sankey(
         top_n[layer] = (
             df.loc[df["source layer"] == layer]
             .groupby("source")
-            .mean()
+            .mean(numeric_only=True)
             .sort_values("value", ascending=False)
             .iloc[:show_top_n]
             .index.tolist()
@@ -201,9 +213,8 @@ def complete_sankey(
             .apply(lambda x: True if x <= other_id else False)
             .copy()
         )
-
-        other_df = df[df["Other"] is True]
-        df = df[df["Other"] is False]
+        other_df = df[df["Other"] == True]
+        df = df[df["Other"] == False]
         for layer in df["source layer"].unique():
             layer_df = df[df["source layer"] == layer].copy()
             layer_total = layer_df["value"].sum()
@@ -244,10 +255,12 @@ def complete_sankey(
             c_df = c_df[~c_df["source_w_other"] <= other_id]
             cmap = plt.cm.ScalarMappable(
                 norm=matplotlib.colors.Normalize(
-                    vmin=c_df.groupby("source_w_other").mean()["normalized value"].min()
+                    vmin=c_df.groupby("source_w_other")
+                    .mean(numeric_only=True)["normalized value"]
+                    .min()
                     * 0.8,
                     vmax=c_df.groupby("source_w_other")
-                    .mean()["normalized value"]
+                    .mean(numeric_only=True)["normalized value"]
                     .max(),
                 ),
                 cmap=curr_cmap,
@@ -267,7 +280,7 @@ def complete_sankey(
             else:
                 intensity = (
                     source_df.groupby("source_w_other")
-                    .mean()["normalized value"]
+                    .mean(numeric_only=True)["normalized value"]
                     .values[0]
                 )
                 cmap = cmaps[source_df["source layer"].unique()[0]]
@@ -291,7 +304,6 @@ def complete_sankey(
                 .sort_values(["value"], ascending=True)
                 .copy()
             )
-
             other_df = layer_df[layer_df["source_w_other"] <= other_id].copy()
             layer_df = layer_df[layer_df["source_w_other"] > other_id].copy()
 
@@ -332,6 +344,16 @@ def complete_sankey(
 
     df = remove_other_to_other(df)
     df = normalize_layer_values(df)
+    df = df.groupby(
+        by=["source_w_other", "target_w_other", "type"], sort=False, as_index=False
+    ).agg(
+        {
+            "normalized value": "sum",
+            "value": "sum",
+            "source layer": "mean",
+            "target layer": "mean",
+        }
+    )
     unique_features = (
         df["source_w_other"].unique().tolist() + df["target_w_other"].unique().tolist()
     )
