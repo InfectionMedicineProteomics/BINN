@@ -43,8 +43,14 @@ class Network:
         mapping: Union[pd.DataFrame, None] = None,
         input_data_column: str = "Protein",
         subset_pathways: bool = True,
+        source_column: str = "source",
+        target_column: str = "target",
     ):
         self.input_data_column = input_data_column
+        pathways = pathways.rename(
+            columns={source_column: "source", target_column: "target"}
+        )
+
         if isinstance(mapping, pd.DataFrame):
             self.mapping = mapping
             self.unaltered_mapping = mapping
@@ -85,7 +91,7 @@ class Network:
             return self.netx
 
         net = nx.from_pandas_edgelist(
-            self.pathways, "parent", "child", create_using=nx.DiGraph()
+            self.pathways, source="target", target="source", create_using=nx.DiGraph()
         )
         roots = [n for n, d in net.in_degree() if d == 0]
         root_node = "root"
@@ -158,7 +164,7 @@ class Network:
 
 def _get_mapping_to_all_layers(pathways, mapping):
     graph = nx.from_pandas_edgelist(
-        pathways, source="child", target="parent", create_using=nx.DiGraph()
+        pathways, source="source", target="target", create_using=nx.DiGraph()
     )
     components = {"input": [], "connections": []}
     for translation in mapping["input"]:
@@ -244,17 +250,17 @@ def _subset_input(
 
 
 def _subset_pathways_on_idx(pathways, translation):
-    def add_pathways(idx_list, parent):
-        if len(parent) == 0:
+    def add_pathways(idx_list, target):
+        if len(target) == 0:
             return idx_list
         else:
-            idx_list = idx_list + parent
-            subsetted_pathway = pathways[pathways["child"].isin(parent)]
-            new_parent = list(subsetted_pathway["parent"].unique())
-            return add_pathways(idx_list, new_parent)
+            idx_list = idx_list + target
+            subsetted_pathway = pathways[pathways["source"].isin(target)]
+            new_target = list(subsetted_pathway["target"].unique())
+            return add_pathways(idx_list, new_target)
 
-    original_parent = list(translation["translation"].unique())
+    original_target = list(translation["translation"].unique())
     idx_list = []
-    idx_list = add_pathways(idx_list, original_parent)
-    pathways = pathways[pathways["child"].isin(idx_list)]
+    idx_list = add_pathways(idx_list, original_target)
+    pathways = pathways[pathways["source"].isin(idx_list)]
     return pathways
