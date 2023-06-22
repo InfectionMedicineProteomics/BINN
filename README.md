@@ -100,23 +100,23 @@ Sequential(
 
 Test data - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein")
 
-| PeptideSequence                    | Protein (this is our input column) |
-| ---------------------------------- | ---------------------------------- |
-| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746                             |
-| VDRDVAPGTLC(UniMod:4)DVAGWGIVNHAGR | P00746                             |
-| VDTVDPPYPR                         | P04004                             |
-| AVTEQGAELSNEER                     | P27348                             |
-| VDVIPVNLPGEHGQR                    | P02751                             |
+| Protein |
+| ------- |
+| P00746  |
+| P00746  |
+| P04004  |
+| P27348  |
+| P02751  |
 
 Pathways file - this file should contain the mapping used to create the connectivity in the hidden layers.
 
-| parent (target) | child (source) |
-| --------------- | -------------- |
-| R-BTA-109581    | R-BTA-109606   |
-| R-BTA-109581    | R-BTA-169911   |
-| R-BTA-109581    | R-BTA-5357769  |
-| R-BTA-109581    | R-BTA-75153    |
-| R-BTA-109582    | R-BTA-140877   |
+| target       | source        |
+| ------------ | ------------- |
+| R-BTA-109581 | R-BTA-109606  |
+| R-BTA-109581 | R-BTA-169911  |
+| R-BTA-109581 | R-BTA-5357769 |
+| R-BTA-109581 | R-BTA-75153   |
+| R-BTA-109582 | R-BTA-140877  |
 
 Translation file - this file is alternative, but is useful if some translation is needed to map the input features to the pathways in the hiddenn layers. In this case, it is used to map proteins (UniProt IDs) to pathways (Reactome IDs).
 

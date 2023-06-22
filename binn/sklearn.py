@@ -63,7 +63,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(
         self,
-        pathways: Network = None,
+        network: Network = None,
         activation: str = "tanh",
         weight: torch.Tensor = torch.Tensor([1, 1]),
         learning_rate: float = 1e-4,
@@ -76,10 +76,10 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         threads: int = 1,
         epochs: int = 100,
         logger: Union[SuperLogger, None] = None,
-        log_steps: int = 50
+        log_steps: int = 50,
     ):
         self.clf = BINN(
-            pathways=pathways,
+            network=network,
             activation=activation,
             weight=weight,
             learning_rate=learning_rate,
@@ -119,8 +119,10 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         )
 
         trainer = Trainer(
-            callbacks=[], logger=self.logger.get_logger_list(), max_epochs=self.epochs,
-            log_every_n_steps=self.log_steps
+            callbacks=[],
+            logger=self.logger.get_logger_list(),
+            max_epochs=self.epochs,
+            log_every_n_steps=self.log_steps,
         )
 
         trainer.fit(self.clf, dataloader)
