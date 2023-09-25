@@ -1,13 +1,12 @@
 <p align="center">
     <img src="img/logo.png", width="150" />
-<p>
+</p>
 
 
 # Welcome to the BINN documentation
 
 The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874).
 
-<a style="color:red">Note that the docs are still stabilizing!</a>
 
 ### Table Of Contents
 

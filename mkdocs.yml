@@ -21,3 +21,4 @@ nav:
 plugins:
   - mkdocstrings
   - mkdocs-jupyter
+  
