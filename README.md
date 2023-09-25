@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="docs/img/logo.png", width="100" />
+<p>
+
 # Biologically Informed Neural Network (BINN)
 
 [![Docs](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/pages/pages-build-deployment)
@@ -142,6 +146,12 @@ A compelte sankey may look like this:
 
 The software has been tested on desktop machines running Windows 10/Linux (Ubuntu). Small networks are not RAM-intensive and all experiments have been run comfortably with 16 GB RAM.
 
+## Cite 
+Please cite: 
+
+Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
+
+if you use this package.
 ## Contributors
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University

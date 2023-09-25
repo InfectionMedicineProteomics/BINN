@@ -26,3 +26,4 @@ var/
 .idea/*
 
 site
+.DS_Store
