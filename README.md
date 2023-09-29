@@ -103,6 +103,8 @@ Sequential(
 
 ### Example input
 
+![data](docs/img/data_explanation.png)
+
 **Data** - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein"). These *need* to map to the input layer of the BINN, either directly or by providing a translation file. 
 
 | Protein |
