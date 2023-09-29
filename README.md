@@ -12,7 +12,7 @@
 
 BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
 
-The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found at [bioRxiv](https://doi.org/10.1101/2023.02.16.528807).
+The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found [here](https://doi.org/10.1038/s41467-023-41146-4).
 
 ---
 
@@ -39,7 +39,7 @@ First, a network is created. This is the network that will be used to create the
 from binn import BINN, Network
 import pandas as pd
 
-input_data = pd.read_csv("../data/test_data.tsv", sep="\t")
+input_data = pd.read_csv("../data/test_qm.tsv", sep="\t")
 translation = pd.read_csv("../data/translation.tsv", sep="\t")
 pathways = pd.read_csv("../data/pathways.tsv", sep="\t")
 
@@ -103,7 +103,9 @@ Sequential(
 
 ### Example input
 
-Test data - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein")
+![data](docs/img/data_explanation.png)
+
+**Data** - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein"). These *need* to map to the input layer of the BINN, either directly or by providing a translation file. 
 
 | Protein |
 | ------- |
@@ -112,8 +114,9 @@ Test data - this file should contain a column with the feature names (quantmatri
 | P04004  |
 | P27348  |
 | P02751  |
+...
 
-Pathways file - this file should contain the mapping used to create the connectivity in the hidden layers.
+**Pathways file** - this file should contain the mapping used to create the connectivity in the hidden layers.
 
 | target       | source        |
 | ------------ | ------------- |
@@ -122,16 +125,18 @@ Pathways file - this file should contain the mapping used to create the connecti
 | R-BTA-109581 | R-BTA-5357769 |
 | R-BTA-109581 | R-BTA-75153   |
 | R-BTA-109582 | R-BTA-140877  |
+...
 
-Translation file - this file is alternative, but is useful if some translation is needed to map the input features to the pathways in the hiddenn layers. In this case, it is used to map proteins (UniProt IDs) to pathways (Reactome IDs).
+**Translation file** - this file is alternative, but is useful if some translation is needed to map the input features to the pathways in the hiddenn layers. In this case, it is used to map proteins (UniProt IDs) to pathways (Reactome IDs).
 
-| input (UniProd IDs) | translation (Reactome IDs) |
+| input | translation  |
 | ------------------- | -------------------------- |
 | A0A075B6P5          | R-HSA-166663               |
 | A0A075B6P5          | R-HSA-173623               |
 | A0A075B6P5          | R-HSA-198933               |
 | A0A075B6P5          | R-HSA-202733               |
 | A0A075B6P5          | R-HSA-2029481              |
+...
 
 ---
 
@@ -139,7 +144,7 @@ Translation file - this file is alternative, but is useful if some translation i
 
 Plotting a subgraph starting from a node generates the plot:
 ![Pathway sankey!](docs/img/subgraph_sankey.png "Pathway sankey")
-A compelte sankey may look like this:
+A complete sankey may look like this:
 ![Complete sankey!](docs/img/complete_sankey.png "Complete sankey")
 
 ## Testing
@@ -162,4 +167,6 @@ if you use this package.
 
 Erik Hartman - erik.hartman@hotmail.com
 
-![imp](docs/img/imp_logo.png "imp")
+<p align="center">
+    <img src="docs/img/imp_logo.png", width="200" />
+<p>

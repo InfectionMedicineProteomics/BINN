@@ -1,14 +1,18 @@
+<p align="center">
+    <img src="img/logo.png", width="150" />
+</p>
+
+
 # Welcome to the BINN documentation
 
-The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874).
+The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874). The package is hosted on [GitHub](https://github.com/InfectionMedicineProteomics/BINN).
 
-<a style="color:red">Note that the docs are still stabilizing!</a>
 
 ### Table Of Contents
 
 - [Install](#install)
 - [Introduction](#introduction)
-- [API Reference](reference.md)
+- [API Reference](reference/binn_ref.md)
 
 ### Install
 
@@ -67,9 +71,12 @@ Erik Hartman - erik.hartman@hotmail.com
 
 ### Cite
 
-The article presenting the BINN is currently avaiable on bioRXiv. Please cite:
+Please cite: 
 
-`Interpreting biologically informed neural networks for enhanced biomarker discovery and pathway analysis", Erik Hartman, Aaron Scott, Lars Malmström, Johan Malmström, bioRxiv 2023.02.16.528807; doi: https://doi.org/10.1101/2023.02.16.528807`
+Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
+
+if you use this package.
+
 
 <br><br><br><br>
 <img src="img/imp_logo.png" width="250" height="250" style="display:block;margin-left:auto;margin-right:auto;">

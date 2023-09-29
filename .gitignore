@@ -3,6 +3,7 @@ __pycache__/
 lightning_logs/
 logs/
 .vscode
+.venv
 
 # Distribution / packaging
 .Python
