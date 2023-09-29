@@ -5,7 +5,7 @@
 
 # Welcome to the BINN documentation
 
-The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874).
+The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874). The package is hosted on [GitHub](https://github.com/InfectionMedicineProteomics/BINN).
 
 
 ### Table Of Contents
