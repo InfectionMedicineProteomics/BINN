@@ -8,10 +8,9 @@ import plotly.graph_objects as go
 
 def subgraph_sankey(
     df: pd.DataFrame,
-    final_node: str = 0,
+    final_node: int = 0,
     val_col="value",
     cmap_name="coolwarm",
-    root_id: int = 0,
 ):
     """
     Create a Sankey diagram using Plotly and Seaborn.
@@ -34,13 +33,7 @@ def subgraph_sankey(
     unique_features += df["target"].unique().tolist()
     code_map, feature_labels = _encode_features(list(set(unique_features)))
     sources = df["source"].unique().tolist()
-    name_map = _create_name_map(df, 1, root_id, -1)
-    new_labels = []
-    for label in feature_labels:
-        if label in name_map.keys():
-            new_labels.append(name_map[label])
-        else:
-            new_labels.append(label)
+    name_map = _create_subgraph_name_map(df)
 
     def normalize_layer_values(df: pd.DataFrame):
         new_df = pd.DataFrame()
@@ -65,7 +58,7 @@ def subgraph_sankey(
         link_colors = conn["node_color"].values.tolist()
         return source_code, target_code, values, link_colors
 
-    def get_node_colors(sources: list, df: pd.DataFrame):
+    def get_node_colors(sources, df: pd.DataFrame):
         cmap = plt.cm.ScalarMappable(
             norm=matplotlib.colors.Normalize(vmin=0, vmax=1), cmap=cmap_name
         )
@@ -425,4 +418,11 @@ def _create_name_map(df: pd.DataFrame, n_layers: int, root_id: int, other_id: in
     name_map[root_id] = "Output"
     for i in range(1, n_layers + 1):
         name_map[other_id * i] = f"Other connections {i}"
+    return name_map
+
+def _create_subgraph_name_map(df: pd.DataFrame):
+    name_map = dict(
+        zip(df["source"].values.tolist(), df["source name"].values.tolist())
+    )
+    name_map.update(zip(df["target"].values.tolist(), df["target name"].values.tolist()))
     return name_map
