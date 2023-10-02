@@ -30,7 +30,8 @@ def test_create_graph(importance_df):
 
 def test_get_downstream_subgraph(importance_df):
     importance_network = ImportanceNetwork(importance_df)
-    subgraph = importance_network.get_downstream_subgraph(1)
+
+    subgraph = importance_network.get_downstream_subgraph(importance_network.importance_graph, 1)
 
     assert isinstance(subgraph, nx.DiGraph)
     assert len(subgraph.nodes) == 3
