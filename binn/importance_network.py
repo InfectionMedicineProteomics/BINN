@@ -312,8 +312,8 @@ class ImportanceNetwork:
             pd.DataFrame: The importance dataframe with the normalized values added.
         """
         if method == "fan":
-            fan_in = np.array([self.get_fan_in(x) for x in self.importance["source"]])
-            fan_out = np.array([self.get_fan_out(x) for x in self.importance["source"]])
+            fan_in = np.array([self.get_fan_in(x) for x in self.importance_df["source"]])
+            fan_out = np.array([self.get_fan_out(x) for x in self.importance_df["source"]])
             nr_tot = fan_in + fan_out
         if method == "subgraph":
             upstream_nodes = np.array(
