@@ -222,7 +222,7 @@ class BINN(L.pytorch.LightningModule):
         return [optimizer], [scheduler]
 
     def calculate_accuracy(self, y, prediction) -> float:
-        return torch.div(torch.sum(y == prediction).item(), (float(len(y))))
+        return torch.sum(y == prediction).item() / float(len(y))
 
     def get_connectivity_matrices(self) -> list:
         """
