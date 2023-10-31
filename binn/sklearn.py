@@ -2,7 +2,7 @@ from typing import Union
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-from pytorch_lightning import Trainer
+from lightning.pytorch import Trainer
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 from binn import BINN, Network, SuperLogger

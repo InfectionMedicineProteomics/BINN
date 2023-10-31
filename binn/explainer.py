@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from binn import BINN
 import pandas as pd
-import pytorch_lightning
+import lightning as L
 from .feature_selection import RecursivePathwayElimination
 
 
@@ -21,7 +21,7 @@ class BINNExplainer:
     def update_model(self, model: BINN):
         self.model = model
 
-    def explain(self, test_data: torch.Tensor, background_data: torch.Tensor):
+    def explain(self, test_data: torch.tensor, background_data: torch.tensor):
         """
         Generates SHAP explanations for a given test_data by computing the Shapley values for each feature using
         the provided background_data. The feature importances are then aggregated and returned in a pandas dataframe.
@@ -109,7 +109,7 @@ class BINNExplainer:
         """
         dfs = {}
         for iteration in range(nr_iterations):
-            trainer = pytorch_lightning.Trainer(max_epochs=max_epochs)
+            trainer = L.pytorch.Trainer(max_epochs=max_epochs)
             self.model.reset_params()
             self.model.init_weights()
             trainer.fit(self.model, dataloader)
@@ -182,7 +182,7 @@ class BINNExplainer:
         return shap_dict
 
     def _explain_layers(
-        self, background_data: torch.Tensor, test_data: torch.Tensor
+        self, background_data: torch.tensor, test_data: torch.tensor
     ) -> dict:
         """
         Helper method to compute SHAP explanations for each layer in the model.
@@ -220,7 +220,7 @@ class BINNExplainer:
         return shap_dict
 
     def _explain_layer(
-        self, background_data: torch.Tensor, test_data: torch.Tensor, wanted_layer: int
+        self, background_data: torch.tensor, test_data: torch.tensor, wanted_layer: int
     ) -> dict:
         intermediate_data = test_data
 
