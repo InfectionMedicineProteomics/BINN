@@ -4,7 +4,7 @@ from binn import BINN
 import numpy as np
 import torch
 import pandas as pd
-import lightning as L
+import lightning.pytorch as pl
 import networkx as nx
 
 
@@ -123,7 +123,7 @@ class RecursivePathwayElimination:
                 if early_stopping:
                     callbacks.append(
                         early_stopping=(
-                            L.pytorch.callbacks.early_stopping.EarlyStopping(
+                            pl.callbacks.early_stopping.EarlyStopping(
                                 patience=10,
                                 min_delta=0.001,
                                 monitor="val_loss",
@@ -132,7 +132,7 @@ class RecursivePathwayElimination:
                         )
                     )
 
-                trainer = L.pytorch.Trainer(
+                trainer = pl.Trainer(
                     max_epochs=max_epochs,
                     enable_progress_bar=False,
                     enable_model_summary=False,

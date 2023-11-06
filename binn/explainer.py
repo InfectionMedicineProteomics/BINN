@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from binn import BINN
 import pandas as pd
-import lightning as L
+import lightning.pytorch as pl
 from .feature_selection import RecursivePathwayElimination
 
 
@@ -109,7 +109,7 @@ class BINNExplainer:
         """
         dfs = {}
         for iteration in range(nr_iterations):
-            trainer = L.pytorch.Trainer(max_epochs=max_epochs)
+            trainer = pl.Trainer(max_epochs=max_epochs)
             self.model.reset_params()
             self.model.init_weights()
             trainer.fit(self.model, dataloader)

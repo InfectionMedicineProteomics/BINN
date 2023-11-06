@@ -2,7 +2,7 @@ from typing import Union
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-from lightning.pytorch import Trainer
+import lightning.pytorch as pl
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 from binn import BINN, Network, SuperLogger
@@ -118,7 +118,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
             shuffle=True,
         )
 
-        trainer = Trainer(
+        trainer = pl.Trainer(
             callbacks=[],
             logger=self.logger.get_logger_list(),
             max_epochs=self.epochs,

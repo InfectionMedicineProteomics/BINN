@@ -1,14 +1,14 @@
 import collections
 
 import torch
-import lightning as L
+import lightning.pytorch as pl
 from torch import nn as nn
 from torch.nn.utils import prune as prune
 
 from binn.network import Network
 
 
-class BINN(L.pytorch.LightningModule):
+class BINN(pl.LightningModule):
     """
     Implements a Biologically Informed Neural Network (BINN). The BINN
     is implemented using the Lightning-framework.
