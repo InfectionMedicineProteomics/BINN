@@ -4,6 +4,7 @@ lightning_logs/
 logs/
 .vscode
 .venv
+.fresh-venv
 
 # Distribution / packaging
 .Python

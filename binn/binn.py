@@ -1,17 +1,17 @@
 import collections
 
 import torch
-from pytorch_lightning import LightningModule
+import lightning.pytorch as pl
 from torch import nn as nn
 from torch.nn.utils import prune as prune
 
 from binn.network import Network
 
 
-class BINN(LightningModule):
+class BINN(pl.LightningModule):
     """
     Implements a Biologically Informed Neural Network (BINN). The BINN
-    is implemented using the PyTorch Lightning-framework.
+    is implemented using the Lightning-framework.
     If you are unfamiliar with PyTorch, we suggest visiting
     their website: https://pytorch.org/
 
@@ -48,7 +48,7 @@ class BINN(LightningModule):
         network: Network = None,
         connectivity_matrices: list = None,
         activation: str = "tanh",
-        weight: torch.Tensor = torch.Tensor([1, 1]),
+        weight: torch.tensor = torch.tensor([1, 1]),
         learning_rate: float = 1e-4,
         n_layers: int = 4,
         scheduler: str = "plateau",
@@ -57,8 +57,10 @@ class BINN(LightningModule):
         n_outputs: int = 2,
         dropout: float = 0,
         residual: bool = False,
+        device: str = "cpu",
     ):
         super().__init__()
+        self.to(device)
         self.residual = residual
         if not connectivity_matrices:
             self.network = network
@@ -103,15 +105,15 @@ class BINN(LightningModule):
             )
         self.apply(_init_weights)
         self.weight = weight
-        self.loss = nn.CrossEntropyLoss(weight=weight)
-        self.loss_val = nn.CrossEntropyLoss()
+        self.loss = nn.CrossEntropyLoss()
         self.learning_rate = learning_rate
         self.scheduler = scheduler
         self.optimizer = optimizer
         self.validate = validate
         self.save_hyperparameters()
+        print("\nBINN is on the device:", self.device, end="\n")
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.tensor) -> torch.tensor:
         """
         Performs a forward pass through the BINN.
 
@@ -122,11 +124,11 @@ class BINN(LightningModule):
             torch.Tensor: The output tensor of the BINN.
         """
         if self.residual:
-            return _forward_residual(self.layers, x)
+            return self._forward_residual(x)
         else:
             return self.layers(x)
 
-    def training_step(self, batch, _) -> float:
+    def training_step(self, batch, _):
         """
         Performs a single training step for the BINN.
 
@@ -138,7 +140,9 @@ class BINN(LightningModule):
             torch.Tensor: The loss tensor for the training step.
         """
         x, y = batch
-        y_hat = self(x)
+        x = x.to(self.device)
+        y = y.to(self.device)
+        y_hat = self(x).to(self.device)
         loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
@@ -157,7 +161,7 @@ class BINN(LightningModule):
 
         x, y = batch
         y_hat = self(x)
-        loss = self.loss_val(y_hat, y)
+        loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
@@ -174,7 +178,7 @@ class BINN(LightningModule):
         """
         x, y = batch
         y_hat = self(x)
-        loss = self.loss_val(y_hat, y)
+        loss = self.loss(y_hat, y)
         prediction = torch.argmax(y_hat, dim=1)
         accuracy = self.calculate_accuracy(y, prediction)
         self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
@@ -218,17 +222,7 @@ class BINN(LightningModule):
         return [optimizer], [scheduler]
 
     def calculate_accuracy(self, y, prediction) -> float:
-        """
-        Calculates the accuracy of the BINN predictions for a given batch.
-
-        Args:
-            y: The ground-truth labels for the batch.
-            prediction: The predicted labels for the batch.
-
-        Returns:
-            The calculated accuracy as a float.
-        """
-        return torch.sum(y == prediction).item() / (float(len(y)))
+        return torch.sum(y == prediction).item() / float(len(y))
 
     def get_connectivity_matrices(self) -> list:
         """
@@ -250,6 +244,23 @@ class BINN(LightningModule):
         Initializes the trainable parameters of the BINN.
         """
         self.apply(_init_weights)
+
+
+    def _forward_residual(self, x: torch.tensor):
+        x_final = torch.tensor([0, 0], device=self.device)
+        residual_counter: int = 0
+        for name, layer in self.layers.named_children():
+            if name.startswith("Residual"):
+                if "out" in name:
+                    x_temp = layer(x)
+                if _is_activation(layer):
+                    x_temp = layer(x_temp)
+                    x_final = x_temp + x_final
+                    residual_counter = residual_counter + 1
+            else:
+                x = layer(x)
+        x_final = x_final / residual_counter
+        return x_final
 
 
 def _init_weights(m):
@@ -281,10 +292,10 @@ def _append_activation(layers, activation, n):
 def _generate_sequential(
     layer_sizes,
     connectivity_matrices=None,
-    activation="tanh",
-    bias=True,
-    n_outputs=2,
-    dropout=0,
+    activation: str = "tanh",
+    bias: bool = True,
+    n_outputs: int = 2,
+    dropout: int = 0,
 ):
     layers = []
     for n in range(len(layer_sizes) - 1):
@@ -317,10 +328,8 @@ def _generate_residual(
 
     def generate_block(n, layers):
         linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
-        layers.append((f"Layer_{n}", linear_layer))  # linear layer
-        layers.append(
-            (f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1]))
-        )  # batch normalization
+        layers.append((f"Layer_{n}", linear_layer))
+        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1])))
         if connectivity_matrices is not None:
             prune.custom_from_mask(
                 linear_layer,
@@ -363,21 +372,3 @@ def _is_activation(layer):
     elif isinstance(layer, nn.Sigmoid):
         return True
     return False
-
-
-def _forward_residual(model: nn.Sequential, x):
-    x_final = torch.Tensor([0, 0])
-    residual_counter = 0
-    for name, layer in model.named_children():
-        if name.startswith("Residual"):
-            if "out" in name:
-                x_temp = layer(x)
-            if _is_activation(layer):
-                x_temp = layer(x_temp)
-                x_final = x_final + x_temp
-                residual_counter = residual_counter + 1
-        else:
-            x = layer(x)
-    x_final = x_final / (residual_counter)
-
-    return x_final

@@ -5,15 +5,16 @@ import numpy as np
 
 
 def fit_data_matrix_to_network_input(data_matrix: pd.DataFrame, features, feature_column="Protein") -> pd.DataFrame:
-    nr_features_in_matrix = len(data_matrix.index)
+    dm = data_matrix.copy()
+    nr_features_in_matrix = len(dm.index)
     if len(features) > nr_features_in_matrix:
         features_df = pd.DataFrame(features, columns=[feature_column])
-        data_matrix = data_matrix.merge(
+        dm = dm.merge(
             features_df, how='right', on=feature_column)
     if len(features) > 0:
-        data_matrix.set_index(feature_column, inplace=True)
-        data_matrix = data_matrix.loc[features]
-    return data_matrix
+        dm.set_index(feature_column, inplace=True)
+        dm = dm.loc[features]
+    return dm
 
 
 def generate_data(data_matrix: pd.DataFrame, design_matrix: pd.DataFrame):

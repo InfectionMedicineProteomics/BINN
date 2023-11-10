@@ -3,12 +3,14 @@ from distutils.core import setup
 requirements = [
     "numpy",
     "networkx",
-    "pandas<=1.5.3",
-    "torch<=2.0",
-    "pytorch-lightning<=1.9.5",
+    "pandas",
+    "torch",
+    "lightning",
     "shap",
     "matplotlib",
     "plotly",
+    "nbformat>=4.2.0",
+    "kaleido",
 ]
 
 setup(

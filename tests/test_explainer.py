@@ -37,8 +37,8 @@ def test_binn_explainer_update_model(binn_explainer):
 
 
 def test_binn_explainer_explain(binn_explainer):
-    test_data = torch.Tensor([[1, 2, 3], [4, 5, 6]])
-    background_data = torch.Tensor([[7, 8, 9], [10, 11, 12]])
+    test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+    background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
 
     result = binn_explainer.explain(test_data, background_data)
     assert isinstance(result, pd.DataFrame)
@@ -46,16 +46,17 @@ def test_binn_explainer_explain(binn_explainer):
 
 
 def test_binn_explainer_explain_input(binn_explainer):
-    test_data = torch.Tensor([[1, 2, 3], [4, 5, 6]])
-    background_data = torch.Tensor([[7, 8, 9], [10, 11, 12]])
+    test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+    
+    background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
 
     result = binn_explainer.explain_input(test_data, background_data)
     assert isinstance(result, dict)
 
 
 def test_binn_explainer_explain_layers(binn_explainer):
-    test_data = torch.Tensor([[1, 2, 3], [4, 5, 6]])
-    background_data = torch.Tensor([[7, 8, 9], [10, 11, 12]])
+    test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+    background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
     result = binn_explainer._explain_layers(background_data, test_data)
     assert isinstance(result, dict)
     assert "features" in result
@@ -63,8 +64,8 @@ def test_binn_explainer_explain_layers(binn_explainer):
 
 
 def test_binn_explainer_explain_layer(binn_explainer):
-    test_data = torch.Tensor([[1, 2, 3], [4, 5, 6]])
-    background_data = torch.Tensor([[7, 8, 9], [10, 11, 12]])
+    test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+    background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
     wanted_layer = 0
 
     result = binn_explainer._explain_layer(background_data, test_data, wanted_layer)
