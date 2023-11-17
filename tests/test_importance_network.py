@@ -80,7 +80,7 @@ def test_get_fan_out(importance_df):
 
 
 def test_add_normalization(importance_df):
-    network = ImportanceNetwork(importance_df, normalize=False)
+    network = ImportanceNetwork(importance_df, norm_method=None)
     assert network.importance_df["value"].sum() == 90
     network.add_normalization()
     assert network.importance_df["value"].sum() < 90
