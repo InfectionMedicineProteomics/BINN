@@ -188,17 +188,6 @@ def complete_sankey(
             return node
         return other_id * layer  # All other nodes are multiples of other_id
 
-    def remove_other_to_other(df: pd.DataFrame):
-        df["source_w_other"] = df.apply(
-            lambda x: set_to_other(x, top_n, "source"), axis=1
-        )
-        df["target_w_other"] = df.apply(
-            lambda x: set_to_other(x, top_n, "target"), axis=1
-        )
-        return df[
-            ~((df["source_w_other"] <= other_id) & (df["target_w_other"] <= other_id))
-        ].copy()
-
     def normalize_layer_values(df: pd.DataFrame):
         new_df = pd.DataFrame()
         df["Other"] = (
@@ -300,7 +289,7 @@ def complete_sankey(
             other_df = layer_df[layer_df["source_w_other"] <= other_id].copy()
             layer_df = layer_df[layer_df["source_w_other"] > other_id].copy()
 
-            other_value = other_df["value"]  # maybe this should be sum and not mean
+            other_value = other_df["value"]
 
             layer_df["rank"] = range(len(layer_df.index))
             layer_df["value"] = layer_df["value"] / layer_df["value"].sum()
@@ -324,6 +313,7 @@ def complete_sankey(
                 ],
                 columns=["source_w_other", "source layer", "value", "rank", "y", "x"],
             )
+
             final_df = pd.concat([final_df, layer_df, other_df])
 
         for f in feature_labels:
@@ -335,7 +325,11 @@ def complete_sankey(
                 y.append(final_df[final_df["source_w_other"] == f]["y"].values)
         return x, y
 
-    df = remove_other_to_other(df)
+    df["source_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "source"), axis=1)
+    df["target_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "target"), axis=1)
+    df = df[
+        ~((df["source_w_other"] <= other_id) & (df["target_w_other"] <= other_id))
+    ].copy()
     df = normalize_layer_values(df)
     df = df.groupby(
         by=["source_w_other", "target_w_other", "type"], sort=False, as_index=False
@@ -420,9 +414,12 @@ def _create_name_map(df: pd.DataFrame, n_layers: int, root_id: int, other_id: in
         name_map[other_id * i] = f"Other connections {i}"
     return name_map
 
+
 def _create_subgraph_name_map(df: pd.DataFrame):
     name_map = dict(
         zip(df["source"].values.tolist(), df["source name"].values.tolist())
     )
-    name_map.update(zip(df["target"].values.tolist(), df["target name"].values.tolist()))
+    name_map.update(
+        zip(df["target"].values.tolist(), df["target name"].values.tolist())
+    )
     return name_map
