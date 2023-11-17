@@ -31,7 +31,6 @@ class ImportanceNetwork:
     def __init__(
         self,
         importance_df: pd.DataFrame,
-        normalize: bool = True,
         norm_method: str = "subgraph",
         val_col: str = "value",
     ):
@@ -41,7 +40,7 @@ class ImportanceNetwork:
         self.importance_graph = self.create_graph()
         self.importance_graph_reverse = self.importance_graph.reverse()
         self.norm_method = norm_method
-        if normalize:
+        if norm_method:
             self.importance_df = self.add_normalization(method=norm_method)
 
     def plot_subgraph_sankey(
@@ -314,7 +313,7 @@ class ImportanceNetwork:
         if method == "fan":
             fan_in = np.array([self.get_fan_in(x) for x in self.importance_df["source"]])
             fan_out = np.array([self.get_fan_out(x) for x in self.importance_df["source"]])
-            nr_tot = fan_in + fan_out
+            nr_tot = fan_in + fan_out + 1
         if method == "subgraph":
             upstream_nodes = np.array(
                 [
