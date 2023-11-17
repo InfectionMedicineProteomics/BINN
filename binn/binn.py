@@ -198,7 +198,7 @@ class BINN(pl.LightningModule):
 
         if isinstance(self.optimizer, str):
             if self.optimizer == "adam":
-                optimizer = torch.optim.Adam(
+                self.optimizer = torch.optim.Adam(
                     self.parameters(), lr=self.learning_rate, weight_decay=1e-3
                 )
         else:
@@ -260,7 +260,8 @@ class BINN(pl.LightningModule):
             else:
                 x = layer(x)
         x_final = x_final / residual_counter
-        return x_final
+        final_sig = nn.Sigmoid()  
+        return final_sig(x_final)
 
 
 def _init_weights(m):

@@ -83,6 +83,28 @@ class BINNExplainer:
             curr_layer += 1
         df = pd.DataFrame(data=feature_dict)
         return df
+    
+    def fast_train(self, dataloader, num_epochs, optimizer):
+        for epoch in range(num_epochs):
+            self.model.train() 
+            total_loss = 0.0
+            total_accuracy = 0
+
+            for _, (inputs, targets) in enumerate(dataloader):
+                inputs = inputs.to(self.model.device)
+                targets = targets.to(self.model.device).type(torch.LongTensor)
+                optimizer.zero_grad()
+                outputs = self.model(inputs).to(self.model.device)
+                loss = torch.nn.functional.cross_entropy(outputs, targets)
+                loss.backward()
+                optimizer.step()
+                total_loss += loss.item()
+                total_accuracy += torch.sum(torch.argmax(outputs, axis=1) == targets) / len(targets)
+
+            avg_loss = total_loss / len(dataloader)
+            avg_accuracy = total_accuracy / len(dataloader)
+        print(f'Final epoch: Average Accuracy {avg_accuracy:.2f}, Average Loss: {avg_loss:.2f}')
+        return self.model
 
     def explain_average(
         self,
@@ -91,6 +113,7 @@ class BINNExplainer:
         nr_iterations: int,
         max_epochs: int,
         dataloader,
+        fast_train : bool
     ) -> pd.DataFrame:
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
@@ -109,10 +132,14 @@ class BINNExplainer:
         """
         dfs = {}
         for iteration in range(nr_iterations):
-            trainer = pl.Trainer(max_epochs=max_epochs)
             self.model.reset_params()
             self.model.init_weights()
-            trainer.fit(self.model, dataloader)
+            if fast_train:
+                optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+                self.model = self.fast_train(dataloader, max_epochs, optimizer)
+            else:
+                trainer = pl.Trainer(max_epochs=max_epochs)
+                trainer.fit(self.model, dataloader)
             df = self.explain(test_data, background_data)
             dfs[iteration] = df
 
