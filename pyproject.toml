@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "binn"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Erik Hartman", email="erik.hartman@hotmail.com" },
   { name="Aaron Scott", email="aaron.scott@med.lu.se" }
