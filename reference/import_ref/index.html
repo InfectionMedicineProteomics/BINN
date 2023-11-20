@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Importance Network & Visualization - BINN</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="generator" content="mkdocs-1.5.3, mkdocs-gitbook-1.0.7">
+
+<link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="../../css/style.min.css" rel="stylesheet">
+<link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
+</head>
+
+<body>
+<div class="book">
+<div class="book-summary">
+
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href="../.." target="_blank" class="custom-link">BINN</a>
+</li>
+<li class="divider"></li>
+<li class="chapter" data-path="">
+<a href="../..">Home</a>
+<li class="header">Examples & tutorials</li>
+
+<li>
+<a href="../../binn_example/" class="">BINN - Biologically Informed Neural Network</a>
+</li>
+
+<li>
+<a href="../../shap_example/" class="">Shap example</a>
+</li>
+
+<li>
+<a href="../../sklearn_api/" class="">Scikit-learn API</a>
+</li>
+
+<li>
+<a href="../../robustness/" class="">Robustness</a>
+</li>
+
+<li class="header">API Reference</li>
+
+<li>
+<a href="../binn_ref/" class="">BINN</a>
+</li>
+
+<li>
+<a href="../net_ref/" class="">Network</a>
+</li>
+
+<li>
+<a href="../explain_ref/" class="">Explain</a>
+</li>
+
+<li>
+<a href="./" class="active">Importance Network & Visualization</a>
+</li>
+
+<li>
+<a href="../sk_ref/" class="">Scikit-learn API</a>
+</li>
+
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+
+<section class="normal markdown-section">
+
+
+
+<h1 id="importance-network-visualization">Importance Network &amp; Visualization</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="binn.importance_network"></a>
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+
+<h2 id="binn.importance_network.ImportanceNetwork" class="doc doc-heading">
+          <code>ImportanceNetwork</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+
+  
+      <p>A class for building and analyzing a directed graph representing the importance network of a system.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>importance_df</code></td>
+          <td>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dataframe with columns for the source node, target node, value flow between nodes,
+and layer for each node. This dataframe should represent the complete importance network of the system.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>val_col</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The name of the column in the DataFrame that represents the value flow between
+nodes. Defaults to "value".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;value&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>norm_method</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Method to normalie the value column with. Options are 'subgraph' and 'fan'.
+If 'subgraph', normalizes on the log(nodes in subgraph) from each node. If 'fan', normalizes on the
+log(fan in + fan out) for each node.</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;subgraph&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>importance_df</code></td>
+          <td>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The dataframe used for downstream/upstream subgraph construction and plotting.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>val_col</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The name of the column in the DataFrame that represents the value flow between nodes.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>G</code></td>
+          <td>
+                <code><span title="networkx.DiGraph">DiGraph</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A directed graph object representing the importance network of the system.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>G_reverse</code></td>
+          <td>
+                <code><span title="networkx.DiGraph">DiGraph</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A directed graph object representing the importance network of the system in reverse.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>norm_method</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The normalization method.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+            <details class="quote">
+              <summary>Source code in <code>binn/importance_network.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ImportanceNetwork</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for building and analyzing a directed graph representing the importance network of a system.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        importance_df (pandas.DataFrame): A dataframe with columns for the source node, target node, value flow between nodes,</span>
+<span class="sd">            and layer for each node. This dataframe should represent the complete importance network of the system.</span>
+<span class="sd">        val_col (str, optional): The name of the column in the DataFrame that represents the value flow between</span>
+<span class="sd">            nodes. Defaults to &quot;value&quot;.</span>
+<span class="sd">        norm_method (str, optional): Method to normalie the value column with. Options are &#39;subgraph&#39; and &#39;fan&#39;.</span>
+<span class="sd">            If &#39;subgraph&#39;, normalizes on the log(nodes in subgraph) from each node. If &#39;fan&#39;, normalizes on the</span>
+<span class="sd">            log(fan in + fan out) for each node.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        importance_df (pandas.DataFrame): The dataframe used for downstream/upstream subgraph construction and plotting.</span>
+<span class="sd">        val_col (str): The name of the column in the DataFrame that represents the value flow between nodes.</span>
+<span class="sd">        G (networkx.DiGraph): A directed graph object representing the importance network of the system.</span>
+<span class="sd">        G_reverse (networkx.DiGraph): A directed graph object representing the importance network of the system in reverse.</span>
+<span class="sd">        norm_method (str): The normalization method.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">importance_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">norm_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+        <span class="n">val_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span> <span class="o">=</span> <span class="n">importance_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_col</span> <span class="o">=</span> <span class="n">val_col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_graph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_method</span> <span class="o">=</span> <span class="n">norm_method</span>
+        <span class="k">if</span> <span class="n">norm_method</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_normalization</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">norm_method</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot_subgraph_sankey</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">upstream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">savename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sankey.png&quot;</span><span class="p">,</span>
+        <span class="n">val_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a Sankey diagram using the provided query node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node (str): The node to use as the starting point for the Sankey diagram.</span>
+<span class="sd">            upstream (bool, optional): If True, the Sankey diagram will show the upstream flow of the</span>
+<span class="sd">                query_node. If False (default), the Sankey diagram will show the downstream flow of the</span>
+<span class="sd">                query_node.</span>
+<span class="sd">            savename (str, optional): The file name to save the Sankey diagram as. Defaults to &quot;sankey.png&quot;.</span>
+<span class="sd">            val_col (str, optional): The column in the DataFrame that represents the value flow between</span>
+<span class="sd">                nodes. Defaults to &quot;value&quot;.</span>
+<span class="sd">            cmap_name (str, optional): The name of the color map to use for the Sankey diagram. Defaults</span>
+<span class="sd">                to &quot;coolwarm&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">upstream</span><span class="p">:</span>
+            <span class="n">final_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span>
+            <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_upstream_subgraph</span><span class="p">(</span><span class="n">final_node_id</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">source_or_target</span> <span class="o">=</span> <span class="s2">&quot;target&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">query_node</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You cannot look downstream from root&quot;</span><span class="p">)</span>
+            <span class="n">final_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+            <span class="n">query_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span>
+            <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node_id</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">source_or_target</span> <span class="o">=</span> <span class="s2">&quot;source&quot;</span>
+
+        <span class="n">nodes_in_subgraph</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="n">source_or_target</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nodes_in_subgraph</span><span class="p">)</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are no nodes in the specified subgraph&quot;</span><span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">subgraph_sankey</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span> <span class="n">final_node</span><span class="o">=</span><span class="n">final_node_id</span><span class="p">,</span> <span class="n">val_col</span><span class="o">=</span><span class="n">val_col</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="n">cmap</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span>
+
+    <span class="k">def</span> <span class="nf">plot_complete_sankey</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">multiclass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_top_n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">node_cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+        <span class="n">edge_cmap</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+        <span class="n">savename</span><span class="o">=</span><span class="s2">&quot;sankey.png&quot;</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1900</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot a complete Sankey diagram for the importance network.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            multiclass : bool, optional</span>
+<span class="sd">                If True, plot multiclass Sankey diagram. Defaults to False.</span>
+<span class="sd">            show_top_n : int, optional</span>
+<span class="sd">                Show only the top N nodes in the Sankey diagram. Defaults to 10.</span>
+<span class="sd">            node_cmap : str, optional</span>
+<span class="sd">                The color map for the nodes. Defaults to &quot;Reds&quot;.</span>
+<span class="sd">            edge_cmap : str or list, optional</span>
+<span class="sd">                The color map for the edges. Defaults to &quot;Reds&quot;.</span>
+<span class="sd">            savename : str, optional</span>
+<span class="sd">                The filename to save the plot. Defaults to &quot;sankey.png&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">complete_sankey</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">,</span>
+            <span class="n">multiclass</span><span class="o">=</span><span class="n">multiclass</span><span class="p">,</span>
+            <span class="n">val_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_col</span><span class="p">,</span>
+            <span class="n">show_top_n</span><span class="o">=</span><span class="n">show_top_n</span><span class="p">,</span>
+            <span class="n">edge_cmap</span><span class="o">=</span><span class="n">edge_cmap</span><span class="p">,</span>
+            <span class="n">node_cmap</span><span class="o">=</span><span class="n">node_cmap</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span>
+
+    <span class="k">def</span> <span class="nf">create_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a directed graph (DiGraph) from the source and target nodes in the input dataframe.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            importance_graph: a directed graph (DiGraph) object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">importance_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">source_name</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source name&quot;</span><span class="p">]</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">val_col</span><span class="p">]</span>
+            <span class="n">source_layer</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+                <span class="n">source</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">source_layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">source_name</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+            <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">root_layer</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;target layer&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">root_layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;root&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">importance_graph</span>
+
+    <span class="k">def</span> <span class="nf">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a subgraph that contains all nodes downstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node from which the downstream subgraph is constructed</span>
+<span class="sd">            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            subgraph: a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">n</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">traversal</span><span class="o">.</span><span class="n">bfs_successors</span><span class="p">(</span>
+                <span class="n">graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">query_node</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">source</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+                <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">t</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">node1</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">node2</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">graph</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">):</span>
+                    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
+
+        <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">query_node</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">subgraph</span>
+
+    <span class="k">def</span> <span class="nf">get_upstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a subgraph that contains all nodes upstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node from which the upstream subgraph is constructed</span>
+<span class="sd">            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            subgraph: a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subgraph</span>
+
+    <span class="k">def</span> <span class="nf">get_complete_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a subgraph that contains all nodes both upstream and downstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node from which the complete subgraph is constructed</span>
+<span class="sd">            depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            subgraph: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span><span class="p">)</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">n</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">traversal</span><span class="o">.</span><span class="n">bfs_successors</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">query_node</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">source</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+                <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">t</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">node1</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">node2</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">):</span>
+                    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
+
+        <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+            <span class="n">query_node</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">query_node</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">subgraph</span>
+
+    <span class="k">def</span> <span class="nf">get_nr_nodes_in_upstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of nodes in the upstream subgraph of the query node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node from which the upstream subgraph is constructed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the number of nodes in the upstream subgraph of the query node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_upstream_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_nr_nodes_in_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of nodes in the downstream subgraph of the query node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node from which the downstream subgraph is constructed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the number of nodes in the downstream subgraph of the query node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_fan_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of incoming edges (fan-in) for the query node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the number of incoming edges (fan-in) for the query node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">in_edges</span><span class="p">(</span><span class="n">query_node</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">get_fan_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of outgoing edges (fan-out) for the query node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_node: a string representing the name of the node</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the number of outgoing edges (fan-out) for the query node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">out_edges</span><span class="p">(</span><span class="n">query_node</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">add_normalization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds normalization to the importance values based on the specified method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method (str): The normalization method to use. Options are &quot;fan&quot; and &quot;subgraph&quot;.</span>
+<span class="sd">                &quot;fan&quot; normalizes based on fan-in and fan-out values.</span>
+<span class="sd">                &quot;subgraph&quot; normalizes based on the number of nodes in the upstream and</span>
+<span class="sd">                downstream subgraphs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: The importance dataframe with the normalized values added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+            <span class="n">fan_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fan_in</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]])</span>
+            <span class="n">fan_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fan_out</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]])</span>
+            <span class="n">nr_tot</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">:</span>
+            <span class="n">upstream_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_nr_nodes_in_upstream_subgraph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">downstream_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_nr_nodes_in_downstream_subgraph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">nr_tot</span> <span class="o">=</span> <span class="n">upstream_nodes</span> <span class="o">+</span> <span class="n">downstream_nodes</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">nr_tot</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span>
+
+    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find node </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.add_normalization" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">add_normalization</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;subgraph&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Adds normalization to the importance values based on the specified method.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>method</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The normalization method to use. Options are "fan" and "subgraph".
+"fan" normalizes based on fan-in and fan-out values.
+"subgraph" normalizes based on the number of nodes in the upstream and
+downstream subgraphs.</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;subgraph&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>pd.DataFrame: The importance dataframe with the normalized values added.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_normalization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds normalization to the importance values based on the specified method.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        method (str): The normalization method to use. Options are &quot;fan&quot; and &quot;subgraph&quot;.</span>
+<span class="sd">            &quot;fan&quot; normalizes based on fan-in and fan-out values.</span>
+<span class="sd">            &quot;subgraph&quot; normalizes based on the number of nodes in the upstream and</span>
+<span class="sd">            downstream subgraphs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: The importance dataframe with the normalized values added.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+        <span class="n">fan_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fan_in</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]])</span>
+        <span class="n">fan_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fan_out</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]])</span>
+        <span class="n">nr_tot</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">:</span>
+        <span class="n">upstream_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_nr_nodes_in_upstream_subgraph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">downstream_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_nr_nodes_in_downstream_subgraph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">nr_tot</span> <span class="o">=</span> <span class="n">upstream_nodes</span> <span class="o">+</span> <span class="n">downstream_nodes</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">nr_tot</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.create_graph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">create_graph</span><span class="p">()</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Create a directed graph (DiGraph) from the source and target nodes in the input dataframe.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>importance_graph</code></td>          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a directed graph (DiGraph) object</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a directed graph (DiGraph) from the source and target nodes in the input dataframe.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        importance_graph: a directed graph (DiGraph) object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">importance_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">source_name</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source name&quot;</span><span class="p">]</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">val_col</span><span class="p">]</span>
+        <span class="n">source_layer</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+            <span class="n">source</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">source_layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">source_name</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+        <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">root_layer</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;target layer&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">importance_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">root_layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;root&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">importance_graph</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_complete_subgraph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_complete_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get a subgraph that contains all nodes both upstream and downstream of the query node up to the given depth limit (if provided).</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node from which the complete subgraph is constructed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>depth_limit</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>an integer representing the maximum depth to which the subgraph is constructed (optional)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>subgraph</code></td>          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_complete_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a subgraph that contains all nodes both upstream and downstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node from which the complete subgraph is constructed</span>
+<span class="sd">        depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        subgraph: a directed graph (DiGraph) object containing all nodes both upstream and downstream of the query node, up to the given depth limit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">n</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">traversal</span><span class="o">.</span><span class="n">bfs_successors</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">query_node</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">source</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">t</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">node1</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">node2</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">):</span>
+                <span class="n">subgraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
+
+    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+        <span class="n">query_node</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">query_node</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">subgraph</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_downstream_subgraph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get a subgraph that contains all nodes downstream of the query node up to the given depth limit (if provided).</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node from which the downstream subgraph is constructed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>depth_limit</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>an integer representing the maximum depth to which the subgraph is constructed (optional)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>subgraph</code></td>          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a subgraph that contains all nodes downstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node from which the downstream subgraph is constructed</span>
+<span class="sd">        depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        subgraph: a directed graph (DiGraph) object containing all nodes downstream of the query node, up to the given depth limit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">n</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">traversal</span><span class="o">.</span><span class="n">bfs_successors</span><span class="p">(</span>
+            <span class="n">graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">query_node</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">source</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">t</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">node1</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">node2</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">graph</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">):</span>
+                <span class="n">subgraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
+
+    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="o">**</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[</span><span class="n">query_node</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">subgraph</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_fan_in" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_fan_in</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get the number of incoming edges (fan-in) for the query node.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of incoming edges (fan-in) for the query node</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_fan_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the number of incoming edges (fan-in) for the query node.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the number of incoming edges (fan-in) for the query node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">in_edges</span><span class="p">(</span><span class="n">query_node</span><span class="p">)])</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_fan_out" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_fan_out</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get the number of outgoing edges (fan-out) for the query node.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of outgoing edges (fan-out) for the query node</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_fan_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the number of outgoing edges (fan-out) for the query node.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the number of outgoing edges (fan-out) for the query node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="o">.</span><span class="n">out_edges</span><span class="p">(</span><span class="n">query_node</span><span class="p">)])</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_nr_nodes_in_downstream_subgraph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_nr_nodes_in_downstream_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get the number of nodes in the downstream subgraph of the query node.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node from which the downstream subgraph is constructed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of nodes in the downstream subgraph of the query node</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nr_nodes_in_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the number of nodes in the downstream subgraph of the query node.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node from which the downstream subgraph is constructed</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the number of nodes in the downstream subgraph of the query node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_nr_nodes_in_upstream_subgraph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_nr_nodes_in_upstream_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get the number of nodes in the upstream subgraph of the query node.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node from which the upstream subgraph is constructed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of nodes in the upstream subgraph of the query node</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nr_nodes_in_upstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the number of nodes in the upstream subgraph of the query node.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node from which the upstream subgraph is constructed</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the number of nodes in the upstream subgraph of the query node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_upstream_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.get_upstream_subgraph" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_upstream_subgraph</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get a subgraph that contains all nodes upstream of the query node up to the given depth limit (if provided).</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string representing the name of the node from which the upstream subgraph is constructed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>depth_limit</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>an integer representing the maximum depth to which the subgraph is constructed (optional)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>subgraph</code></td>          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_upstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a subgraph that contains all nodes upstream of the query node up to the given depth limit (if provided).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node: a string representing the name of the node from which the upstream subgraph is constructed</span>
+<span class="sd">        depth_limit: an integer representing the maximum depth to which the subgraph is constructed (optional)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        subgraph: a directed graph (DiGraph) object containing all nodes upstream of the query node, up to the given depth limit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph_reverse</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="n">depth_limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">subgraph</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.plot_complete_sankey" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">plot_complete_sankey</span><span class="p">(</span><span class="n">multiclass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">node_cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">edge_cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">savename</span><span class="o">=</span><span class="s1">&#39;sankey.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1900</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Plot a complete Sankey diagram for the importance network.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>multiclass</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>bool, optional
+If True, plot multiclass Sankey diagram. Defaults to False.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>show_top_n</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>int, optional
+Show only the top N nodes in the Sankey diagram. Defaults to 10.</p>
+            </div>
+          </td>
+          <td>
+                <code>10</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>node_cmap</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>str, optional
+The color map for the nodes. Defaults to "Reds".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;Reds&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>edge_cmap</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>str or list, optional
+The color map for the edges. Defaults to "Reds".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;Reds&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>savename</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>str, optional
+The filename to save the plot. Defaults to "sankey.png".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;sankey.png&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot_complete_sankey</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">multiclass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">show_top_n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">node_cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+    <span class="n">edge_cmap</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+    <span class="n">savename</span><span class="o">=</span><span class="s2">&quot;sankey.png&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1900</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a complete Sankey diagram for the importance network.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        multiclass : bool, optional</span>
+<span class="sd">            If True, plot multiclass Sankey diagram. Defaults to False.</span>
+<span class="sd">        show_top_n : int, optional</span>
+<span class="sd">            Show only the top N nodes in the Sankey diagram. Defaults to 10.</span>
+<span class="sd">        node_cmap : str, optional</span>
+<span class="sd">            The color map for the nodes. Defaults to &quot;Reds&quot;.</span>
+<span class="sd">        edge_cmap : str or list, optional</span>
+<span class="sd">            The color map for the edges. Defaults to &quot;Reds&quot;.</span>
+<span class="sd">        savename : str, optional</span>
+<span class="sd">            The filename to save the plot. Defaults to &quot;sankey.png&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">complete_sankey</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">,</span>
+        <span class="n">multiclass</span><span class="o">=</span><span class="n">multiclass</span><span class="p">,</span>
+        <span class="n">val_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_col</span><span class="p">,</span>
+        <span class="n">show_top_n</span><span class="o">=</span><span class="n">show_top_n</span><span class="p">,</span>
+        <span class="n">edge_cmap</span><span class="o">=</span><span class="n">edge_cmap</span><span class="p">,</span>
+        <span class="n">node_cmap</span><span class="o">=</span><span class="n">node_cmap</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="binn.importance_network.ImportanceNetwork.plot_subgraph_sankey" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">plot_subgraph_sankey</span><span class="p">(</span><span class="n">query_node</span><span class="p">,</span> <span class="n">upstream</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">savename</span><span class="o">=</span><span class="s1">&#39;sankey.png&#39;</span><span class="p">,</span> <span class="n">val_col</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Generate a Sankey diagram using the provided query node.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>query_node</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The node to use as the starting point for the Sankey diagram.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>upstream</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>If True, the Sankey diagram will show the upstream flow of the
+query_node. If False (default), the Sankey diagram will show the downstream flow of the
+query_node.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>savename</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The file name to save the Sankey diagram as. Defaults to "sankey.png".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;sankey.png&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>val_col</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The column in the DataFrame that represents the value flow between
+nodes. Defaults to "value".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;value&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>cmap_name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The name of the color map to use for the Sankey diagram. Defaults
+to "coolwarm".</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>binn/importance_network.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot_subgraph_sankey</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">query_node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">upstream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">savename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sankey.png&quot;</span><span class="p">,</span>
+    <span class="n">val_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a Sankey diagram using the provided query node.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_node (str): The node to use as the starting point for the Sankey diagram.</span>
+<span class="sd">        upstream (bool, optional): If True, the Sankey diagram will show the upstream flow of the</span>
+<span class="sd">            query_node. If False (default), the Sankey diagram will show the downstream flow of the</span>
+<span class="sd">            query_node.</span>
+<span class="sd">        savename (str, optional): The file name to save the Sankey diagram as. Defaults to &quot;sankey.png&quot;.</span>
+<span class="sd">        val_col (str, optional): The column in the DataFrame that represents the value flow between</span>
+<span class="sd">            nodes. Defaults to &quot;value&quot;.</span>
+<span class="sd">        cmap_name (str, optional): The name of the color map to use for the Sankey diagram. Defaults</span>
+<span class="sd">            to &quot;coolwarm&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        plotly.graph_objs._figure.Figure: The plotly Figure object representing the Sankey diagram.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">upstream</span><span class="p">:</span>
+        <span class="n">final_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_upstream_subgraph</span><span class="p">(</span><span class="n">final_node_id</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">source_or_target</span> <span class="o">=</span> <span class="s2">&quot;target&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">query_node</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You cannot look downstream from root&quot;</span><span class="p">)</span>
+        <span class="n">final_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+        <span class="n">query_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">query_node</span><span class="p">)</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downstream_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">importance_graph</span><span class="p">,</span> <span class="n">query_node_id</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">source_or_target</span> <span class="o">=</span> <span class="s2">&quot;source&quot;</span>
+
+    <span class="n">nodes_in_subgraph</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance_df</span><span class="p">[</span><span class="n">source_or_target</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nodes_in_subgraph</span><span class="p">)</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are no nodes in the specified subgraph&quot;</span><span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">subgraph_sankey</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span> <span class="n">final_node</span><span class="o">=</span><span class="n">final_node_id</span><span class="p">,</span> <span class="n">val_col</span><span class="o">=</span><span class="n">val_col</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="n">cmap</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+</section>
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="../../js/main.js"></script>
+<script src="../../js/gitbook.min.js"></script>
+<script src="../../js/theme.min.js"></script>
+</body>
+</html>

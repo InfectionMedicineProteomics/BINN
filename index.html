@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Home - BINN</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="generator" content="mkdocs-1.5.3, mkdocs-gitbook-1.0.7">
+
+<link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="./css/style.min.css" rel="stylesheet">
+<link href="assets/_mkdocstrings.css" rel="stylesheet"> 
+</head>
+
+<body>
+<div class="book">
+<div class="book-summary">
+
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href="." target="_blank" class="custom-link">BINN</a>
+</li>
+<li class="divider"></li>
+<li class="chapter active" data-path="">
+<a href=".">Home</a>
+<li class="header">Examples & tutorials</li>
+
+<li>
+<a href="binn_example/" class="">BINN - Biologically Informed Neural Network</a>
+</li>
+
+<li>
+<a href="shap_example/" class="">Shap example</a>
+</li>
+
+<li>
+<a href="sklearn_api/" class="">Scikit-learn API</a>
+</li>
+
+<li>
+<a href="robustness/" class="">Robustness</a>
+</li>
+
+<li class="header">API Reference</li>
+
+<li>
+<a href="reference/binn_ref/" class="">BINN</a>
+</li>
+
+<li>
+<a href="reference/net_ref/" class="">Network</a>
+</li>
+
+<li>
+<a href="reference/explain_ref/" class="">Explain</a>
+</li>
+
+<li>
+<a href="reference/import_ref/" class="">Importance Network & Visualization</a>
+</li>
+
+<li>
+<a href="reference/sk_ref/" class="">Scikit-learn API</a>
+</li>
+
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+
+<section class="normal markdown-section">
+
+
+
+<p align="center">
+    <img src="img/logo.png", width="150" />
+</p>
+
+<h1 id="welcome-to-the-binn-documentation">Welcome to the BINN documentation</h1>
+<p>The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using <a href="https://arxiv.org/abs/1705.07874">SHAP</a>. The package is hosted on <a href="https://github.com/InfectionMedicineProteomics/BINN">GitHub</a>.</p>
+<h3 id="table-of-contents">Table Of Contents</h3>
+<ul>
+<li><a href="#install">Install</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="reference/binn_ref/">API Reference</a></li>
+</ul>
+<h3 id="install">Install</h3>
+<p>BINN can be installed via <code>pip</code></p>
+<pre><code>pip install binn
+</code></pre>
+<p>The package can also be built from source and installed with git.</p>
+<pre><code>git clone git@github.com:InfectionMedicineProteomics/BINN.git
+pip install -e BINN/
+</code></pre>
+<p><strong>Examples:</strong></p>
+<p>In the <a href="binn_example/">examples</a> we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on mass-spec intensity values.</p>
+<ul>
+<li><a href="binn_example/">BINN example</a></li>
+<li><a href="shap_example/">Interpretation example</a></li>
+<li><a href="sklearn_api/">Scikit-learn API</a></li>
+<li><a href="robustness/">Robustness analysis</a></li>
+</ul>
+<h3 id="introduction">Introduction</h3>
+<p>Biological systems are highly complex and require tools which are capable of capturing that complexity while at the same time making the systems understandable. Here, we have created a package which generates <strong>BINNs (<em>Biologically Informed Neural Networks</em>)</strong>. A BINN is generated using an underlying graph which determines the connecitivty between its layers and the annotations for each node. The implementation is agnostic to the input graph and can be provided with e.g., <a href="https://reactome.org/">Reactome pathways</a>, <a href="https://www.genome.jp/kegg/">KEGG pathways</a>, <a href="http://geneontology.org/">Gene Ontology pathways</a> or your own curated pathways.</p>
+<p>The initial layer of the BINN contain the input features, and should connect to the chosen graph. This could be genes, proteins or any other entities which map correctly to the input graph. The network is then trained and interpreted using SHAP. This results in importance values for each node in the network, allowing you to identify which biological entities and pathways are important for the classification you trained the network on.</p>
+<p>We also include some plotting functionalities which allow you to visualize the importance of each node in the network.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><img src="img/complete_sankey.png" style="display:block;margin-left:auto;margin-right:auto;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Sankey plot showing the importance of a of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database.</td>
+</tr>
+</tbody>
+</table>
+<p>We can also subset an importance-graph to generate visualizations for specific parts of the network, e.g., originating from a certain node and looking downstream. In the example below we subset the BINN by choosing node 'P02766' and looking at what nodes it influences downstream:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><img src="img/subgraph_sankey.png" style="display:block;margin-left:auto;margin-right:auto;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Sankey plot showing the importance of nodes downstream from 'P02766'.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="contributors">Contributors</h3>
+<p><a href="https://orcid.org/0000-0001-9997-2405">Erik Hartman</a>, infection medicine proteomics, Lund University</p>
+<p><a href="https://orcid.org/0000-0002-2391-6914">Aaron Scott</a>, infection medicine proteomics, Lund University</p>
+<h3 id="contact">Contact</h3>
+<p>Erik Hartman - erik.hartman@hotmail.com</p>
+<h3 id="github-repo">GitHub repo</h3>
+<p><a href="https://github.com/InfectionMedicineProteomics/BINN">github.com/InfectionMedicineProteomics/BINN</a></p>
+<h3 id="cite">Cite</h3>
+<p>Please cite: </p>
+<p>Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4</p>
+<p>if you use this package.</p>
+<p><br><br><br><br>
+<img src="img/imp_logo.png" width="250" height="250" style="display:block;margin-left:auto;margin-right:auto;"></p>
+
+
+</section>
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="./js/main.js"></script>
+<script src="./js/gitbook.min.js"></script>
+<script src="./js/theme.min.js"></script>
+</body>
+</html>
