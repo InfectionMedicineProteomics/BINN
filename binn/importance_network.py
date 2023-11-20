@@ -14,7 +14,6 @@ class ImportanceNetwork:
             and layer for each node. This dataframe should represent the complete importance network of the system.
         val_col (str, optional): The name of the column in the DataFrame that represents the value flow between
             nodes. Defaults to "value".
-        normalize (bool, optional): Whether or not to normalize the value column. Defaults to True.
         norm_method (str, optional): Method to normalie the value column with. Options are 'subgraph' and 'fan'.
             If 'subgraph', normalizes on the log(nodes in subgraph) from each node. If 'fan', normalizes on the
             log(fan in + fan out) for each node.

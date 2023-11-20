@@ -36,6 +36,7 @@ In the [examples](binn_example.ipynb) we use proteins as the input layer and the
 - [BINN example](binn_example.ipynb)
 - [Interpretation example](shap_example.ipynb)
 - [Scikit-learn API](sklearn_api.ipynb)
+- [Robustness analysis](robustness.ipynb)
 
 ### Introduction
 

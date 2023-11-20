@@ -90,9 +90,9 @@ class BINN(pl.LightningModule):
             self.layers = _generate_residual(
                 layer_sizes,
                 connectivity_matrices=self.connectivity_matrices,
-                activation="tanh",
+                activation=activation,
                 bias=True,
-                n_outputs=2,
+                n_outputs=n_outputs,
             )
         else:
             self.layers = _generate_sequential(
@@ -198,9 +198,10 @@ class BINN(pl.LightningModule):
 
         if isinstance(self.optimizer, str):
             if self.optimizer == "adam":
-                self.optimizer = torch.optim.Adam(
+                optimizer = torch.optim.Adam(
                     self.parameters(), lr=self.learning_rate, weight_decay=1e-3
                 )
+                self.optimizer = optimizer
         else:
             optimizer = self.optimizer
 
@@ -245,7 +246,6 @@ class BINN(pl.LightningModule):
         """
         self.apply(_init_weights)
 
-
     def _forward_residual(self, x: torch.tensor):
         x_final = torch.tensor([0, 0], device=self.device)
         residual_counter: int = 0
@@ -260,8 +260,7 @@ class BINN(pl.LightningModule):
             else:
                 x = layer(x)
         x_final = x_final / residual_counter
-        final_sig = nn.Sigmoid()  
-        return final_sig(x_final)
+        return x_final
 
 
 def _init_weights(m):

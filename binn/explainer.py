@@ -132,10 +132,11 @@ class BINNExplainer:
         """
         dfs = {}
         for iteration in range(nr_iterations):
+            print(f"Iteration {iteration}")
             self.model.reset_params()
             self.model.init_weights()
             if fast_train:
-                optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+                optimizer = self.model.configure_optimizers()[0][0]
                 self.model = self.fast_train(dataloader, max_epochs, optimizer)
             else:
                 trainer = pl.Trainer(max_epochs=max_epochs)
