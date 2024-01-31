@@ -79,9 +79,9 @@ class BINN(pl.LightningModule):
         layer_sizes.append(i)
         self.layer_names.append(matrix.index.tolist())
         self.features = matrix.index
-        self.trainable_params = matrix.to_numpy().sum()
+        self.trainable_params = matrix.to_numpy().sum() + len(matrix.index)
         for matrix in self.connectivity_matrices[1:]:
-            self.trainable_params += matrix.to_numpy().sum()
+            self.trainable_params += matrix.to_numpy().sum() + len(matrix.index)
             i, _ = matrix.shape
             layer_sizes.append(i)
             self.layer_names.append(matrix.index.tolist())
