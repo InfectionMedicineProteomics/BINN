@@ -122,7 +122,7 @@ class BINNExplainer:
         max_epochs: int,
         dataloader,
         fast_train: bool,
-    ) -> pd.DataFrame:
+    ) -> (pd.DataFrame, dict):
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
         For each iteration, the model's parameters are randomly initialized and trained on the provided data using
@@ -136,7 +136,7 @@ class BINNExplainer:
             dataloader: The PyTorch DataLoader to use for loading the data.
 
         Returns:
-            pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.
+            (pd.DataFrame, dict): A dataframe containing the aggregated SHAP feature importances and a dict containing training metrics.
         """
         dfs = {}
         metrics_dict = {}

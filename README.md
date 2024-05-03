@@ -14,6 +14,8 @@ BINN documentation is avaiable [here.](https://infectionmedicineproteomics.githu
 
 The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found [here](https://doi.org/10.1038/s41467-023-41146-4).
 
+Have a look at the ```poster_ndpia.ipynb``` for an example of a complete quick and easy BINN analysis.
+
 ---
 
 ## Installation
