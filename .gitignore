@@ -29,3 +29,5 @@ var/
 
 site
 .DS_Store
+poster_*
+!poster_ndpia.ipynb

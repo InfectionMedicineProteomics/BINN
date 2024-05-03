@@ -83,10 +83,11 @@ class BINNExplainer:
             curr_layer += 1
         df = pd.DataFrame(data=feature_dict)
         return df
-    
+
     def fast_train(self, dataloader, num_epochs, optimizer):
+        return_dict = {"accuracies":[], "losses":[], "epoch":[]}
         for epoch in range(num_epochs):
-            self.model.train() 
+            self.model.train()
             total_loss = 0.0
             total_accuracy = 0
 
@@ -99,12 +100,19 @@ class BINNExplainer:
                 loss.backward()
                 optimizer.step()
                 total_loss += loss.item()
-                total_accuracy += torch.sum(torch.argmax(outputs, axis=1) == targets) / len(targets)
+                total_accuracy += torch.sum(
+                    torch.argmax(outputs, axis=1) == targets
+                ) / len(targets)
 
             avg_loss = total_loss / len(dataloader)
             avg_accuracy = total_accuracy / len(dataloader)
-        print(f'Final epoch: Average Accuracy {avg_accuracy:.2f}, Average Loss: {avg_loss:.2f}')
-        return self.model
+            return_dict["accuracies"].append(avg_accuracy.numpy().tolist())
+            return_dict["losses"].append(avg_loss)
+            return_dict["epoch"].append(epoch)
+        print(
+            f"Final epoch: Average Accuracy {avg_accuracy:.2f}, Average Loss: {avg_loss:.2f}"
+        )
+        return self.model, return_dict
 
     def explain_average(
         self,
@@ -113,7 +121,7 @@ class BINNExplainer:
         nr_iterations: int,
         max_epochs: int,
         dataloader,
-        fast_train : bool
+        fast_train: bool,
     ) -> pd.DataFrame:
         """
         Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
@@ -131,13 +139,15 @@ class BINNExplainer:
             pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.
         """
         dfs = {}
+        metrics_dict = {}
         for iteration in range(nr_iterations):
             print(f"Iteration {iteration}")
             self.model.reset_params()
             self.model.init_weights()
             if fast_train:
                 optimizer = self.model.configure_optimizers()[0][0]
-                self.model = self.fast_train(dataloader, max_epochs, optimizer)
+                self.model, return_dict = self.fast_train(dataloader, max_epochs, optimizer)
+                metrics_dict[iteration] = return_dict
             else:
                 trainer = pl.Trainer(max_epochs=max_epochs)
                 trainer.fit(self.model, dataloader)
@@ -155,7 +165,7 @@ class BINNExplainer:
         df["value_mean"] = values_mean
         df["values_std"] = values_std
         df["value"] = values_mean
-        return df
+        return df, metrics_dict
 
     def recursive_pathway_elimination(
         self,
