@@ -6,7 +6,7 @@ requirements = [
     "pandas",
     "torch",
     "lightning",
-    "shap",
+    "shap<=0.44.1",
     "matplotlib",
     "plotly",
     "nbformat>=4.2.0",

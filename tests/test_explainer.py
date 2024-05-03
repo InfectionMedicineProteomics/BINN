@@ -18,11 +18,11 @@ def binn_explainer():
     return BINNExplainer(model)
 
 
-def test_binn_explainer_init(binn_explainer:BINNExplainer):
+def test_binn_explainer_init(binn_explainer: BINNExplainer):
     assert isinstance(binn_explainer.model, BINN)
 
 
-def test_binn_explainer_update_model(binn_explainer:BINNExplainer):
+def test_binn_explainer_update_model(binn_explainer: BINNExplainer):
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
         {"source": ["A", "B", "C"], "target": ["path1", "path1", "path2"]}
@@ -36,7 +36,7 @@ def test_binn_explainer_update_model(binn_explainer:BINNExplainer):
     assert binn_explainer.model == new_model
 
 
-def test_binn_explainer_explain(binn_explainer:BINNExplainer):
+def test_binn_explainer_explain(binn_explainer: BINNExplainer):
     test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
     background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
 
@@ -45,16 +45,16 @@ def test_binn_explainer_explain(binn_explainer:BINNExplainer):
     assert len(result) > 0
 
 
-def test_binn_explainer_explain_input(binn_explainer :BINNExplainer):
+def test_binn_explainer_explain_input(binn_explainer: BINNExplainer):
     test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
-    
+
     background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
 
     result = binn_explainer.explain_input(test_data, background_data)
     assert isinstance(result, dict)
 
 
-def test_binn_explainer_explain_layers(binn_explainer:BINNExplainer):
+def test_binn_explainer_explain_layers(binn_explainer: BINNExplainer):
     test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
     background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
     result = binn_explainer._explain_layers(background_data, test_data)
@@ -63,7 +63,7 @@ def test_binn_explainer_explain_layers(binn_explainer:BINNExplainer):
     assert "shap_values" in result
 
 
-def test_binn_explainer_explain_layer(binn_explainer:BINNExplainer):
+def test_binn_explainer_explain_layer(binn_explainer: BINNExplainer):
     test_data = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
     background_data = torch.tensor([[7, 8, 9], [10, 11, 12]], dtype=torch.float32)
     wanted_layer = 0
