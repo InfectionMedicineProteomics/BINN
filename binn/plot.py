@@ -213,12 +213,12 @@ def complete_sankey(
         conn = df[df["source_w_other"].isin(sources)].copy()
         source_code = [_get_code(s, code_map) for s in conn["source_w_other"]]
         target_code = [_get_code(s, code_map) for s in conn["target_w_other"]]
-        values = [v for v in conn["normalized value"]]
+        values = [v for v in conn["normalized value"]] * 10
         if multiclass == False:
             temp_df, _ = get_node_colors(feature_labels, df, curr_cmap=edge_cmap)
             link_colors = (
                 temp_df["node_color"]
-                .apply(lambda x: x.split(", 0.75)")[0] + ", 0.3)")
+                .apply(lambda x: x.split(", 0.75)")[0] + ", 0.75)")
                 .values.tolist()
             )
         else:

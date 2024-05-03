@@ -19,13 +19,15 @@ def fit_data_matrix_to_network_input(data_matrix: pd.DataFrame, features, featur
 
 def generate_data(data_matrix: pd.DataFrame, design_matrix: pd.DataFrame):
     GroupOneCols = design_matrix[design_matrix['group']
-                                 == 1]['sample'].values
+                                 == 1]['sample'].values.tolist()
     GroupTwoCols = design_matrix[design_matrix['group']
-                                 == 2]['sample'].values
+                                 == 2]['sample'].values.tolist()
 
-    df1 = data_matrix[GroupOneCols].T
-    df2 = data_matrix[GroupTwoCols].T
-    y = np.array([0 for _ in GroupOneCols] + [1 for _ in GroupTwoCols])
+    df1 = data_matrix[GroupOneCols].T.copy()
+    df2 = data_matrix[GroupTwoCols].T.copy()
+
     X = pd.concat([df1, df2]).fillna(0).to_numpy()
+    y = np.array([0 for _ in GroupOneCols] + [1 for _ in GroupTwoCols])
+    
     X = preprocessing.StandardScaler().fit_transform(X)
     return X, y
