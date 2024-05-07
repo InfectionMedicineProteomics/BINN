@@ -48,11 +48,12 @@ class BINNExplainer:
         feature_id_mapping = {}
 
         feature_id = 0
-        feature_id_mapping["root"] = feature_id
-        for layer_features in shap_dict["features"]:
+        for layer, layer_features in enumerate(shap_dict["features"]):
             for feature in layer_features:
                 feature_id += 1
-                feature_id_mapping[feature] = feature_id
+                feature_id_mapping[f"{feature}_{layer}"] = feature_id
+        
+        feature_id_mapping[f"root_{layer+1}"] = 0
 
         curr_layer = 0
         for sv, features, cm in zip(
@@ -71,9 +72,9 @@ class BINNExplainer:
                 for target in connections:
                     for curr_class in range(n_classes):
                         feature_dict["source"].append(
-                            feature_id_mapping[features[feature]]
+                            feature_id_mapping[f"{features[feature]}_{curr_layer}"]
                         )
-                        feature_dict["target"].append(feature_id_mapping[target])
+                        feature_dict["target"].append(feature_id_mapping[f"{target}_{curr_layer+1}"])
                         feature_dict["source name"].append(features[feature])
                         feature_dict["target name"].append(target)
                         feature_dict["value"].append(sv_mean[curr_class][feature])

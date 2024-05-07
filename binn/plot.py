@@ -27,12 +27,19 @@ def subgraph_sankey(
         fig : go.Figure
             The Sankey diagram figure created using Plotly.
     """
+    df["source name"] = [x.split("_")[0] for x in df["source name"]]
+    df["target name"] = [x.split("_")[0] for x in df["target name"]]
+
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
+
     unique_features = df["source"].unique().tolist()
     unique_features += df["target"].unique().tolist()
+
     code_map, feature_labels = _encode_features(list(set(unique_features)))
+
     sources = df["source"].unique().tolist()
+
     name_map = _create_subgraph_name_map(df)
 
     def normalize_layer_values(df: pd.DataFrame):
@@ -47,7 +54,7 @@ def subgraph_sankey(
             new_df = pd.concat([new_df, layer_df])
         return new_df
 
-    df = _remove_loops(df)
+    
     df = normalize_layer_values(df)
 
     def get_connections(sources: list, source_target_df: pd.DataFrame):
@@ -91,7 +98,9 @@ def subgraph_sankey(
                 node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
         node_dict[final_node] = "rgba(0,0,0,1)"
         weight_dict[final_node] = 1
+
         colors = [node_dict[n] for n in sources]
+
         new_df = new_df.assign(
             node_color=[node_dict[n] for n in new_df["source"]],
             node_weight=[weight_dict[n] for n in new_df["source"]],
@@ -139,12 +148,16 @@ def complete_sankey(
     df: pd.DataFrame,
     multiclass: bool = False,
     show_top_n: int = 10,
+    remove_loops: bool = False,
     val_col: str = "value",
     node_cmap: str = "Reds",
     edge_cmap: Union[str, list] = "coolwarm",
     root_id: int = 0,
     other_id: int = -1,
 ):
+    
+
+
     if not multiclass:
         df = df.groupby(
             by=["source", "target", "source name", "target name"], as_index=False
@@ -157,12 +170,22 @@ def complete_sankey(
             }
         )
 
+    df["source name"] = [x.split("_")[0] for x in df["source name"]]
+    df["target name"] = [x.split("_")[0] for x in df["target name"]]
+
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
-    df = _remove_loops(df)
-    n_layers = max(df["target layer"].values)
+
+    if remove_loops:
+        df = _remove_loops(df)
+
+    n_layers = len(df["source layer"].unique())
+
     df["value"] = df[val_col]
+
     name_map = _create_name_map(df, n_layers, root_id, other_id)
+
+
 
     top_n = {}
 
@@ -175,6 +198,7 @@ def complete_sankey(
             .iloc[:show_top_n]
             .index.tolist()
         )
+
 
     def set_to_other(row, top_n: dict, source_or_target: str):
         node = row[source_or_target]
@@ -223,9 +247,11 @@ def complete_sankey(
             )
         else:
             link_colors = conn.apply(
-                lambda x: "rgba(236,236,236, 0.75)"
-                if x["source_w_other"] <= other_id
-                else edge_cmap[x["type"]],
+                lambda x: (
+                    "rgba(236,236,236, 0.75)"
+                    if x["source_w_other"] <= other_id
+                    else edge_cmap[x["type"]]
+                ),
                 axis=1,
             ).values.tolist()
         return source_code, target_code, values, link_colors
@@ -275,17 +301,21 @@ def complete_sankey(
     def get_node_positions(feature_labels: list, df: pd.DataFrame):
         x = []
         y = []
+
         grouped_df = df.groupby("source_w_other", as_index=False).agg(
             {"source layer": "min", "value": "mean"}
         )
+
         layers = range(n_layers)
         final_df = pd.DataFrame()
         for layer in layers:
+
             layer_df = (
                 grouped_df[grouped_df["source layer"] == layer]
                 .sort_values(["value"], ascending=True)
                 .copy()
             )
+
             other_df = layer_df[layer_df["source_w_other"] <= other_id].copy()
             layer_df = layer_df[layer_df["source_w_other"] > other_id].copy()
 
@@ -417,9 +447,9 @@ def _create_name_map(df: pd.DataFrame, n_layers: int, root_id: int, other_id: in
 
 def _create_subgraph_name_map(df: pd.DataFrame):
     name_map = dict(
-        zip(df["source"].values.tolist(), df["source name"].values.tolist())
+        zip(df["source"].unique().tolist(), df["source name"].unique().tolist())
     )
     name_map.update(
-        zip(df["target"].values.tolist(), df["target name"].values.tolist())
+        zip(df["target"].unique().tolist(), df["target name"].unique().tolist())
     )
     return name_map

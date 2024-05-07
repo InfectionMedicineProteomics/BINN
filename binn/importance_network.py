@@ -104,6 +104,7 @@ class ImportanceNetwork:
         multiclass: bool = False,
         show_top_n: int = 10,
         node_cmap: str = "Reds",
+        remove_loops:bool=False,
         edge_cmap: Union[str, list] = "Reds",
         savename="sankey.png",
         width: int = 1900,
@@ -132,6 +133,7 @@ class ImportanceNetwork:
         fig = complete_sankey(
             self.importance_df,
             multiclass=multiclass,
+            remove_loops=remove_loops,
             val_col=self.val_col,
             show_top_n=show_top_n,
             edge_cmap=edge_cmap,
