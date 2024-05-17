@@ -148,6 +148,7 @@ Plotting a subgraph starting from a node generates the plot:
 ![Pathway sankey!](docs/img/subgraph_sankey.png "Pathway sankey")
 A complete sankey may look like this:
 ![Complete sankey!](docs/img/complete_sankey.png "Complete sankey")
+Warning: plotting many nodes may result in faulty ordering of nodes (assuming that the top nodes are the most important).
 
 ## Testing
 

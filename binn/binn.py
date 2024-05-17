@@ -60,6 +60,10 @@ class BINN(pl.LightningModule):
         device: str = "cpu",
     ):
         super().__init__()
+        if residual:
+            print("Warning! Residual connections are currently disabled due to an incompatability with SHAP")
+            print("residual has been set to False")
+            residual = False
         self.to(device)
         self.residual = residual
         if not connectivity_matrices:
