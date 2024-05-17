@@ -356,9 +356,9 @@ def complete_sankey(
 
     df["source_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "source"), axis=1)
     df["target_w_other"] = df.apply(lambda x: set_to_other(x, top_n, "target"), axis=1)
-    df = df[
-        ~((df["source_w_other"] <= other_id) & (df["target_w_other"] <= other_id))
-    ].copy()
+    #df = df[
+    #    ~((df["source_w_other"] <= other_id) & (df["target_w_other"] <= other_id))
+    #].copy()
     df = normalize_layer_values(df)
     df = df.groupby(
         by=["source_w_other", "target_w_other", "type"], sort=False, as_index=False
