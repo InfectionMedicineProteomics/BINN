@@ -27,8 +27,8 @@ def subgraph_sankey(
         fig : go.Figure
             The Sankey diagram figure created using Plotly.
     """
-    df["source name"] = [x.split("_")[0] for x in df["source name"]]
-    df["target name"] = [x.split("_")[0] for x in df["target name"]]
+    #df["source name"] = [x.split("_")[0] for x in df["source name"]]
+    #df["target name"] = [x.split("_")[0] for x in df["target name"]]
 
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
@@ -169,10 +169,9 @@ def complete_sankey(
                 "type": "mean",
             }
         )
-
-    df["source name"] = [x.split("_")[0] for x in df["source name"]]
-    df["target name"] = [x.split("_")[0] for x in df["target name"]]
-
+    #df["source name"] = [x.split("_")[0] for x in df["source name"]]
+    #df["target name"] = [x.split("_")[0] for x in df["target name"]]
+    
     df["source layer"] = df["source layer"].astype(int)
     df["target layer"] = df["target layer"].astype(int)
 
