@@ -59,8 +59,6 @@ def test_binn_explainer_explain_output(binn_explainer: BINNExplainer):
             for j in cm.columns.tolist():
                 if cm.loc[i, j] == 1:
                     theoretical_unique_pairs.append((i, j))
-                    
-    print(unique_pairs)
          
     assert set(unique_pairs) == set(theoretical_unique_pairs)
 
