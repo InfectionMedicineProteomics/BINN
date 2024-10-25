@@ -5,7 +5,7 @@ import pandas as pd
 
 
 @pytest.fixture
-def binn_explainer(return_input=False):
+def binn_explainer():
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
     pathways = pd.DataFrame(
         {"source": ["A", "B", "C"], "target": ["path1", "path1", "path2"]}
