@@ -20,6 +20,7 @@ def binn_explainer():
 
 def test_binn_explainer_init(binn_explainer: BINNExplainer):
     assert isinstance(binn_explainer.model, BINN)
+    
 
 def test_binn_explainer_update_model(binn_explainer: BINNExplainer):
     input_data = pd.DataFrame({"Protein": ["a", "b", "c"]})
