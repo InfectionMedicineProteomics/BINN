@@ -79,14 +79,14 @@ def _get_map_from_layer(layer_dict: dict) -> pd.DataFrame:
     return df.T
 
 
-def _add_edges(G: nx.DiGraph, node: str, n_levels: int) -> nx.DiGraph:
+def _add_edges(G: nx.DiGraph, node: str, n_layers: int) -> nx.DiGraph:
     """
-    Create 'n_levels' copies of a node (node_copy1, node_copy2, ...),
+    Create 'n_layers' copies of a node (node_copy1, node_copy2, ...),
     connecting each copy to the next, and add them to the graph.
     """
     edges = []
     source = node
-    for level in range(n_levels):
+    for level in range(n_layers):
         target = f"{node}_copy{level + 1}"
         edges.append((source, target))
         source = target
@@ -95,18 +95,18 @@ def _add_edges(G: nx.DiGraph, node: str, n_levels: int) -> nx.DiGraph:
     return G
 
 
-def _complete_network(G: nx.DiGraph, n_levels: int = 4) -> nx.DiGraph:
+def _complete_network(G: nx.DiGraph, n_layers: int = 4) -> nx.DiGraph:
     """
-    Extend the network so that every terminal node has up to 'n_levels' copies,
+    Extend the network so that every terminal node has up to 'n_layers' copies,
     ensuring a uniform depth for all terminal nodes.
     """
-    sub_graph = nx.ego_graph(G, "output_node", radius=n_levels)
+    sub_graph = nx.ego_graph(G, "output_node", radius=n_layers)
     terminal_nodes = [n for n, d in sub_graph.out_degree() if d == 0]
 
     for node in terminal_nodes:
         distance = len(nx.shortest_path(sub_graph, source="output_node", target=node))
-        if distance <= n_levels:
-            diff = n_levels - distance + 1
+        if distance <= n_layers:
+            diff = n_layers - distance + 1
             _add_edges(sub_graph, node, diff)
 
     return sub_graph
@@ -123,12 +123,12 @@ def _get_nodes_at_level(net: nx.DiGraph, distance: int) -> List[str]:
     return list(nodes_at_distance)
 
 
-def _get_layers_from_net(net: nx.DiGraph, n_levels: int) -> List[dict]:
+def _get_layers_from_net(net: nx.DiGraph, n_layers: int) -> List[dict]:
     """
-    Extract layer information from the graph, from level 0 up to n_levels-1.
+    Extract layer information from the graph, from level 0 up to n_layers-1.
     """
     layers = []
-    for dist in range(n_levels):
+    for dist in range(n_layers):
         nodes = _get_nodes_at_level(net, dist)
         layer_map = {}
         for n in nodes:
@@ -192,18 +192,18 @@ class PathwayNetwork:
 
         return pathway_graph
 
-    def get_layers(self, n_levels: int) -> List[dict]:
+    def get_layers(self, n_layers: int) -> List[dict]:
         """
-        Get layered structure of the network up to n_levels, plus a final dict
+        Get layered structure of the network up to n_layers, plus a final dict
         mapping terminal pathways -> which inputs map to them.
 
-        :param n_levels: Number of layers to extract
-        :return: A list of length n_levels + 1:
-                 - n_levels layers describing pathway relationships
+        :param n_layers: Number of layers to extract
+        :return: A list of length n_layers + 1:
+                 - n_layers layers describing pathway relationships
                  - A final dictionary mapping terminal pathways to input(s).
         """
-        completed_graph = _complete_network(self.pathway_graph, n_levels=n_levels)
-        layers = _get_layers_from_net(completed_graph, n_levels)
+        completed_graph = _complete_network(self.pathway_graph, n_layers=n_layers)
+        layers = _get_layers_from_net(completed_graph, n_layers)
 
         # Identify terminal nodes in the extended graph
         terminal_nodes = [n for n, d in completed_graph.out_degree() if d == 0]
@@ -227,16 +227,16 @@ class PathwayNetwork:
         layers.append(terminal_mapping)
         return layers
 
-    def get_connectivity_matrices(self, n_levels: int) -> List[pd.DataFrame]:
+    def get_connectivity_matrices(self, n_layers: int) -> List[pd.DataFrame]:
         """
         Produce one connectivity matrix per layer (bottom-up). Each matrix
         displays which inputs are connected to which pathways in that layer.
 
-        :param n_levels: Number of layers
+        :param n_layers: Number of layers
         :return: A list of pandas DataFrames, one per layer
         """
         matrices = []
-        layers = self.get_layers(n_levels)
+        layers = self.get_layers(n_layers)
 
         # Process layers in reverse order so the bottom-most is first
         current_inputs = self.inputs  # will be updated as we go
@@ -265,3 +265,55 @@ class PathwayNetwork:
             matrices.append(merged_df)
 
         return matrices
+
+
+def dataframes_to_pathway_network(
+    data_matrix: pd.DataFrame,
+    pathway_df: pd.DataFrame,
+    mapping_df: pd.DataFrame,
+    entity_col: str = "Protein",
+    source_col: str = "source",
+    target_col: str = "target",
+    input_col: str = "input",
+    translation_col: str = "translation",
+) -> PathwayNetwork:
+    """
+    Construct a PathwayNetwork from three DataFrames:
+      1) A 'data_matrix' containing the input entities (e.g. proteins).
+      2) A 'pathway_df' containing pathway edges (source -> target).
+      3) A 'mapping_df' mapping each entity in data_matrix to pathways.
+
+    Args:
+        data_matrix (pd.DataFrame): A DataFrame that contains the column 'entity_col'.
+          For example, if `entity_col='Protein'`, this DataFrame might have a
+          "Protein" column listing protein identifiers.
+        pathway_df (pd.DataFrame): A DataFrame with at least two columns describing
+          directed edges in a pathway (defaults: 'source', 'target').
+        mapping_df (pd.DataFrame): A DataFrame with columns describing how
+          each entity maps to pathways (defaults: 'input', 'translation').
+        entity_col (str): Name of the column in `data_matrix` containing
+          the entities of interest (defaults to 'Protein').
+        source_col (str): Name of the column in `pathway_df` representing
+          the source node in an edge (defaults to 'source').
+        target_col (str): Name of the column in `pathway_df` representing
+          the target node in an edge (defaults to 'target').
+        input_col (str): Name of the column in `mapping_df` representing
+          the input entity (defaults to 'input').
+        translation_col (str): Name of the column in `mapping_df` representing
+          the mapped pathway node (defaults to 'translation').
+
+    Returns:
+        PathwayNetwork: A newly constructed PathwayNetwork instance, ready for
+        further analysis (e.g., layer extraction, connectivity matrices).
+    """
+
+    input_data = data_matrix[entity_col].dropna().unique().tolist()
+    pathways = list(pathway_df[[source_col, target_col]].itertuples(index=False, name=None))
+    mapping = list(mapping_df[[input_col, translation_col]].itertuples(index=False, name=None))
+
+    pn = PathwayNetwork(
+        input_data=input_data,
+        pathways=pathways,
+        mapping=mapping,
+    )
+    return pn

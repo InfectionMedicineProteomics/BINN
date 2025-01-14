@@ -2,10 +2,12 @@ import collections
 
 import torch
 import lightning.pytorch as pl
+import pandas as pd
 from torch import nn as nn
 from torch.nn.utils import prune as prune
 
-from binn.model.pathway_network import PathwayNetwork
+from binn.model.pathway_network import dataframes_to_pathway_network
+from binn.model.util import load_reactome_db
 
 
 class BINN(pl.LightningModule):
@@ -45,8 +47,10 @@ class BINN(pl.LightningModule):
 
     def __init__(
         self,
-        network: PathwayNetwork = None,
-        connectivity_matrices: list = None,
+        data_matrix: pd.DataFrame = None,
+        use_reactome : bool = False,
+        mapping: pd.DataFrame = None,
+        pathways: pd.DataFrame = None,
         activation: str = "tanh",
         weight: torch.tensor = torch.tensor([1, 1]),
         learning_rate: float = 1e-4,
@@ -61,18 +65,21 @@ class BINN(pl.LightningModule):
     ):
         super().__init__()
         self.to(device)
-        self.residual = residual
-        if not connectivity_matrices:
-            self.network = network
-            self.connectivity_matrices = self.network.get_connectivity_matrices(
-                n_layers
-            )
-        else:
-            self.connectivity_matrices = connectivity_matrices
         self.n_layers = n_layers
+        self.residual = residual
 
         layer_sizes = []
         self.layer_names = []
+
+        if use_reactome:
+            reactome_db = load_reactome_db()
+            mapping = reactome_db["mapping"]
+            pathways = reactome_db["pathways"]
+
+        pn = dataframes_to_pathway_network(
+            data_matrix=data_matrix, pathway_df=pathways, mapping_df=mapping
+        )
+        self.connectivity_matrices = pn.get_connectivity_matrices(n_levels=n_layers)
 
         matrix = self.connectivity_matrices[0]
         i, _ = matrix.shape
