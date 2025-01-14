@@ -60,6 +60,9 @@ class BINNExplainer:
         ):
             sv = np.asarray(sv)
             sv = abs(sv)
+            # we need sv to be of shape (n_classes, n_samples, n_features)
+            if sv.shape[1] != len(test_data):
+                sv = np.transpose(sv, (2, 0, 1)) 
             sv_mean = np.mean(sv, axis=1)
 
             for feature in range(sv_mean.shape[-1]):
@@ -271,8 +274,8 @@ class BINNExplainer:
                 if layer_index == wanted_layer:
                     explainer = shap.DeepExplainer((self.model, layer), background_data)
                     shap_values = explainer.shap_values(test_data)
-                    shap_dict["features"] += self.model.layer_names[wanted_layer]
-                    shap_dict["shap_values"] += shap_values
+                    shap_dict["features"].append(self.model.layer_names[wanted_layer])
+                    shap_dict["shap_values"].append(shap_values)
                     return shap_dict
                 layer_index += 1
                 intermediate_data = layer(intermediate_data)
