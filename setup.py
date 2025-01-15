@@ -5,11 +5,10 @@ requirements = [
     "networkx",
     "pandas",
     "torch",
-    "lightning",
     "shap",
     "matplotlib",
     "plotly",
-    "nbformat>=4.2.0",
+    "nbformat",
     "kaleido",
 ]
 
