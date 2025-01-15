@@ -219,7 +219,6 @@ class BINNExplainer:
         shap_results = {"features": [], "shap_values": []}
         layer_idx = 0
 
-        # Use your approach of hooking each linear layer with shap.DeepExplainer
         for name, layer in self.model.layers.named_children():
             if isinstance(layer, nn.Linear):
                 explainer = shap.DeepExplainer((self.model, layer), background_data)
@@ -236,9 +235,8 @@ class BINNExplainer:
         containing connection-level SHAP importance.
 
         Columns: ['source_layer', 'target_layer', 'source_node', 'target_node',
-                  'class_idx', 'importance']
+                'class_idx', 'importance', 'source_id', 'target_id']
         """
-        # We'll gather the connectivity matrices
         connectivity_mats = self.model.connectivity_matrices
 
         all_rows = []
@@ -259,12 +257,15 @@ class BINNExplainer:
                 if feat_name not in cm.index:
                     continue
                 row_conn = cm.loc[[feat_name], :]
-                # drop columns with all zero edges
+                # drop columns with all zero edges (these are pruned edges)
                 row_conn = row_conn.loc[:, (row_conn != 0).any(axis=0)]
                 if row_conn.empty:
                     continue
 
                 for target_name in row_conn.columns:
+                    # Create unique node ids for source and target nodes:
+                    source_id = f"n{feat_name}_l{current_layer}"
+                    target_id = f"n{target_name}_l{current_layer + 1}"
                     # for each class
                     for class_idx in range(num_classes):
                         importance_val = float(svals_mean[feat_idx, class_idx])
@@ -276,13 +277,15 @@ class BINNExplainer:
                                 "target_node": target_name,
                                 "class_idx": class_idx,
                                 "importance": importance_val,
+                                "source_id": source_id,
+                                "target_id": target_id,
                             }
                         )
-
             current_layer += 1
 
         df = pd.DataFrame(all_rows)
         return df
+
 
     def _combine_iterations(
         self, results_dict: Dict[int, pd.DataFrame]

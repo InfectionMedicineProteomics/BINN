@@ -142,16 +142,6 @@ Sequential(
 
 ---
 
-### Plotting
-
-Plotting a subgraph starting from a node generates the plot:
-![Pathway sankey!](docs/img/subgraph_sankey.png "Pathway sankey")
-A complete sankey may look like this:
-![Complete sankey!](docs/img/complete_sankey.png "Complete sankey")
-
-## Testing
-
-The software has been tested on desktop machines running Windows 10/Linux (Ubuntu). Small networks are not RAM-intensive and all experiments have been run comfortably with 16 GB RAM.
 
 ## Cite 
 Please cite: 
@@ -168,7 +158,3 @@ if you use this package.
 ## Contact
 
 Erik Hartman - erik.hartman@hotmail.com
-
-<p align="center">
-    <img src="docs/img/imp_logo.png", width="200" />
-<p>
