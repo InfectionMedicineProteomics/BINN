@@ -3,8 +3,8 @@ import collections
 import torch
 import lightning.pytorch as pl
 import pandas as pd
-from torch import nn as nn
-from torch.nn.utils import prune as prune
+from torch import nn
+from torch.nn.utils import prune
 
 from binn.model.pathway_network import dataframes_to_pathway_network
 from binn.model.util import load_reactome_db
@@ -12,47 +12,64 @@ from binn.model.util import load_reactome_db
 
 class BINN(pl.LightningModule):
     """
-    Implements a Biologically Informed Neural Network (BINN). The BINN
-    is implemented using the Lightning-framework.
-    If you are unfamiliar with PyTorch, we suggest visiting
-    their website: https://pytorch.org/
-
+    A biologically informed neural network (BINN) using PyTorch Lightning.
+    - If `heads_ensemble=False`, we build a standard sequential network with layer-to-layer connections.
+    - If `heads_ensemble=True`, we actually build an 'ensemble of heads' network:
+      each layer produces a separate output head (same dimension = n_outputs), 
+      each head goes through a sigmoid, and at the end we sum them all.
 
     Args:
-        pathways (Network): A Network object that defines the network topology.
-        activation (str, optional): Activation function to use. Defaults to "tanh".
-        weight (torch.Tensor, optional): Weights for loss function. Defaults to torch.Tensor([1, 1]).
-        learning_rate (float, optional): Learning rate for optimizer. Defaults to 1e-4.
-        n_layers (int, optional): Number of layers in the network. Defaults to 4.
-        scheduler (str, optional): Learning rate scheduler to use. Defaults to "plateau".
-        optimizer (str, optional): Optimizer to use. Defaults to "adam".
-        validate (bool, optional): Whether to use validation data during training. Defaults to False.
-        n_outputs (int, optional): Number of output nodes. Defaults to 2.
-        dropout (float, optional): Dropout probability. Defaults to 0.
-        residual (bool, optional): Whether to use residual connections. Defaults to False.
+        data_matrix (pd.DataFrame, optional):
+            A DataFrame of input features (samples x features). If not needed, can be None.
+        use_reactome (bool, optional):
+            If True, loads `mapping` and `pathways` from `load_reactome_db()`, ignoring the ones provided.
+        mapping (pd.DataFrame, optional):
+            A DataFrame describing how each input feature maps into the pathway graph. 
+            If None, the user must rely on `use_reactome=True`.
+        pathways (pd.DataFrame, optional):
+            A DataFrame describing the edges among pathway nodes.
+        activation (str, optional):
+            The activation function to use in each layer. Defaults to "tanh".
+        weight (torch.Tensor, optional):
+            Class weight for the loss function. Defaults to `tensor([1, 1])`.
+        learning_rate (float, optional):
+            Learning rate for the optimizer. Defaults to 1e-4.
+        n_layers (int, optional):
+            Number of layers in the network (i.e., the depth of the BINN). Defaults to 4.
+        scheduler (str, optional):
+            Learning rate scheduler, e.g. "plateau" or "step". Defaults to "plateau".
+        optimizer (str, optional):
+            Optimizer name, e.g. "adam". Defaults to "adam".
+        validate (bool, optional):
+            Whether to monitor validation metrics. Defaults to False.
+        n_outputs (int, optional):
+            Dimension of the final output (e.g., 2 for binary classification). Defaults to 2.
+        dropout (float, optional):
+            Dropout probability. Defaults to 0.
+        heads_ensemble (bool, optional):
+            If True, build an ensemble-of-heads network. Otherwise, build a standard sequential network.
+        device (str, optional):
+            The PyTorch device to place this model on. Defaults to "cpu".
 
     Attributes:
-        residual (bool): Whether to use residual connections.
-        pathways (Network): A Network object that defines the network topology.
-        n_layers (int): Number of layers in the network.
-        layer_names (List[str]): List of layer names.
-        features (Index): A pandas Index object containing the input features.
-        layers (nn.Module): The layers of the BINN.
-        loss (nn.Module): The loss function used during training.
-        learning_rate (float): Learning rate for optimizer.
-        scheduler (str): Learning rate scheduler used.
-        optimizer (str): Optimizer used.
-        validate (bool): Whether to use validation data during training.
+        connectivity_matrices (List[pd.DataFrame]):
+            The adjacency masks used for pruning each layer.
+        layers (nn.Module):
+            The built network (either standard sequential or ensemble-of-heads).
+        layer_names (List[List[str]]):
+            Names of the nodes in each layer (for interpretability).
+        features (pd.Index):
+            The set of input features (row index of the first connectivity matrix).
     """
 
     def __init__(
         self,
         data_matrix: pd.DataFrame = None,
-        use_reactome : bool = False,
+        use_reactome: bool = False,
         mapping: pd.DataFrame = None,
         pathways: pd.DataFrame = None,
         activation: str = "tanh",
-        weight: torch.tensor = torch.tensor([1, 1]),
+        weight: torch.Tensor = torch.tensor([1, 1]),
         learning_rate: float = 1e-4,
         n_layers: int = 4,
         scheduler: str = "plateau",
@@ -60,41 +77,60 @@ class BINN(pl.LightningModule):
         validate: bool = False,
         n_outputs: int = 2,
         dropout: float = 0,
-        residual: bool = False,
+        heads_ensemble: bool = False,
         device: str = "cpu",
     ):
         super().__init__()
         self.to(device)
+
         self.n_layers = n_layers
-        self.residual = residual
+        self.heads_ensemble = heads_ensemble 
+        self.learning_rate = learning_rate
+        self.scheduler = scheduler
+        self.optimizer = optimizer
+        self.validate = validate
+        self.weight = weight
+        self.loss = nn.CrossEntropyLoss(weight=weight)  
 
-        layer_sizes = []
-        self.layer_names = []
-
+        # Build the pathway network from dataframes
         if use_reactome:
             reactome_db = load_reactome_db()
             mapping = reactome_db["mapping"]
             pathways = reactome_db["pathways"]
 
+        # Build the pathway-based connectivity
         pn = dataframes_to_pathway_network(
-            data_matrix=data_matrix, pathway_df=pathways, mapping_df=mapping
+            data_matrix=data_matrix,
+            pathway_df=pathways,
+            mapping_df=mapping
         )
-        self.connectivity_matrices = pn.get_connectivity_matrices(n_levels=n_layers)
+        # Connectivity matrices for each layer
+        self.connectivity_matrices = pn.get_connectivity_matrices(n_layers=n_layers)
 
-        matrix = self.connectivity_matrices[0]
-        i, _ = matrix.shape
-        layer_sizes.append(i)
-        self.layer_names.append(matrix.index.tolist())
-        self.features = matrix.index
-        self.trainable_params = matrix.to_numpy().sum() + len(matrix.index)
-        for matrix in self.connectivity_matrices[1:]:
-            self.trainable_params += matrix.to_numpy().sum() + len(matrix.index)
-            i, _ = matrix.shape
+        # Keep track of layer sizes & names
+        layer_sizes = []
+        self.layer_names = []
+
+        # The first matrix defines the input layer
+        mat_first = self.connectivity_matrices[0]
+        in_features, _ = mat_first.shape
+        layer_sizes.append(in_features)
+        self.layer_names.append(mat_first.index.tolist())
+        self.features = mat_first.index
+
+        # For debugging: track a "rough" param count
+        self.trainable_params = mat_first.to_numpy().sum() + len(mat_first.index)
+
+        # Additional layers
+        for mat in self.connectivity_matrices[1:]:
+            self.trainable_params += mat.to_numpy().sum() + len(mat.index)
+            i, _ = mat.shape
             layer_sizes.append(i)
-            self.layer_names.append(matrix.index.tolist())
+            self.layer_names.append(mat.index.tolist())
 
-        if self.residual:
-            self.layers = _generate_residual(
+        # Build either standard sequential or ensemble-of-heads
+        if self.heads_ensemble:
+            self.layers = _generate_ensemble_of_heads(
                 layer_sizes,
                 connectivity_matrices=self.connectivity_matrices,
                 activation=activation,
@@ -110,93 +146,55 @@ class BINN(pl.LightningModule):
                 n_outputs=n_outputs,
                 dropout=dropout,
             )
+
+        # Initialize weights
         self.apply(_init_weights)
-        self.weight = weight
-        self.loss = nn.CrossEntropyLoss()
-        self.learning_rate = learning_rate
-        self.scheduler = scheduler
-        self.optimizer = optimizer
-        self.validate = validate
+
         self.save_hyperparameters()
         print("\nBINN is on the device:", self.device, end="\n")
 
-    def forward(self, x: torch.tensor) -> torch.tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        Performs a forward pass through the BINN.
+        Forward pass of the BINN.
 
-        Args:
-            x (torch.Tensor): The input tensor to the BINN.
-
-        Returns:
-            torch.Tensor: The output tensor of the BINN.
+        If `self.heads_ensemble==True`, it calls the ensemble-of-heads forward
+        (i.e. sums all heads). Otherwise, it just calls `self.layers(x)`.
         """
-        if self.residual:
-            return self._forward_residual(x)
-        else:
-            return self.layers(x)
+        return self.layers(x)
 
     def training_step(self, batch, _):
-        """
-        Performs a single training step for the BINN.
-
-        Args:
-            batch: The batch of data to use for the training step.
-            _: Not used.
-
-        Returns:
-            torch.Tensor: The loss tensor for the training step.
-        """
         x, y = batch
-        x = x.to(self.device)
-        y = y.to(self.device)
-        y_hat = self(x).to(self.device)
+        x, y = x.to(self.device), y.to(self.device)
+        y_hat = self(x)
         loss = self.loss(y_hat, y)
-        prediction = torch.argmax(y_hat, dim=1)
-        accuracy = self.calculate_accuracy(y, prediction)
+        pred = torch.argmax(y_hat, dim=1)
+        acc = self.calculate_accuracy(y, pred)
         self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("train_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_acc", acc, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, _):
-        """
-        Implements a single validation step for the BINN.
-
-        Args:
-            batch: A tuple containing the input and output data for the current batch.
-            _: The batch index, which is not used.
-        """
-
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        prediction = torch.argmax(y_hat, dim=1)
-        accuracy = self.calculate_accuracy(y, prediction)
+        pred = torch.argmax(y_hat, dim=1)
+        acc = self.calculate_accuracy(y, pred)
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("val_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
-        return {"val_loss": loss, "val_acc": accuracy}
+        self.log("val_acc", acc, prog_bar=True, on_step=False, on_epoch=True)
+        return {"val_loss": loss, "val_acc": acc}
 
     def test_step(self, batch, _):
-        """
-        Implements a single testing step for the BINN.
-
-        Args:
-            batch: A tuple containing the input and output data for the current batch.
-            _: The batch index, which is not used.
-        """
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        prediction = torch.argmax(y_hat, dim=1)
-        accuracy = self.calculate_accuracy(y, prediction)
+        pred = torch.argmax(y_hat, dim=1)
+        acc = self.calculate_accuracy(y, pred)
         self.log("test_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
-        self.log("test_acc", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("test_acc", acc, prog_bar=True, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         """
-        Configures the optimizer and learning rate scheduler for training the BINN.
-
-        Returns:
-            A list of optimizers and a list of learning rate schedulers.
+        Defines the optimizer & LR scheduler.
         """
         if self.validate:
             monitor = "val_loss"
@@ -204,7 +202,7 @@ class BINN(pl.LightningModule):
             monitor = "train_loss"
 
         if isinstance(self.optimizer, str):
-            if self.optimizer == "adam":
+            if self.optimizer.lower() == "adam":
                 optimizer = torch.optim.Adam(
                     self.parameters(), lr=self.learning_rate, weight_decay=1e-3
                 )
@@ -226,19 +224,15 @@ class BINN(pl.LightningModule):
                     optimizer, step_size=25, gamma=0.1, verbose=True
                 )
             }
+        else:
+            scheduler = None
 
-        return [optimizer], [scheduler]
+        return ([optimizer], [scheduler]) if scheduler else ([optimizer], [])
 
     def calculate_accuracy(self, y, prediction) -> float:
         return torch.sum(y == prediction).item() / float(len(y))
 
     def get_connectivity_matrices(self) -> list:
-        """
-        Returns the connectivity matrices underlying the BINN.
-
-        Returns:
-            The connectivity matrices as a list of Pandas DataFrames.
-        """
         return self.connectivity_matrices
 
     def reset_params(self):
@@ -253,46 +247,34 @@ class BINN(pl.LightningModule):
         """
         self.apply(_init_weights)
 
-    def _forward_residual(self, x: torch.tensor):
-        x_final = torch.tensor([0, 0], device=self.device)
-        residual_counter: int = 0
-        for name, layer in self.layers.named_children():
-            if name.startswith("Residual"):
-                if "out" in name:
-                    x_temp = layer(x)
-                if _is_activation(layer):
-                    x_temp = layer(x_temp)
-                    x_final = x_temp + x_final
-                    residual_counter = residual_counter + 1
-            else:
-                x = layer(x)
-        x_final = x_final / residual_counter
-        return x_final
 
+#
+# Helper functions
+#
 
 def _init_weights(m):
-    if type(m) == nn.Linear:
+    if isinstance(m, nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight)
 
 
 def _reset_params(m):
-    if isinstance(m, nn.BatchNorm1d) or isinstance(m, nn.Linear):
+    if isinstance(m, (nn.BatchNorm1d, nn.Linear)):
         m.reset_parameters()
 
 
-def _append_activation(layers, activation, n):
+def _append_activation(layers, activation, layer_idx):
     if activation == "tanh":
-        layers.append((f"Tanh {n}", nn.Tanh()))
+        layers.append((f"Tanh {layer_idx}", nn.Tanh()))
     elif activation == "relu":
-        layers.append((f"ReLU {n}", nn.ReLU()))
+        layers.append((f"ReLU {layer_idx}", nn.ReLU()))
     elif activation == "leaky relu":
-        layers.append((f"LeakyReLU {n}", nn.LeakyReLU()))
+        layers.append((f"LeakyReLU {layer_idx}", nn.LeakyReLU()))
     elif activation == "sigmoid":
-        layers.append((f"Sigmoid {n}", nn.Sigmoid()))
+        layers.append((f"Sigmoid {layer_idx}", nn.Sigmoid()))
     elif activation == "elu":
-        layers.append((f"Elu {n}", nn.ELU()))
+        layers.append((f"Elu {layer_idx}", nn.ELU()))
     elif activation == "hardsigmoid":
-        layers.append((f"HardSigmoid {n}", nn.Hardsigmoid()))
+        layers.append((f"HardSigmoid {layer_idx}", nn.Hardsigmoid()))
     return layers
 
 
@@ -302,80 +284,123 @@ def _generate_sequential(
     activation: str = "tanh",
     bias: bool = True,
     n_outputs: int = 2,
-    dropout: int = 0,
+    dropout: float = 0,
 ):
+    """
+    Standard feed-forward multi-layer network with pruning from connectivity_matrices.
+    Only the LAST layer outputs dimension = n_outputs.
+    """
     layers = []
-    for n in range(len(layer_sizes) - 1):
-        linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
-        layers.append((f"Layer_{n}", linear_layer))  # linear layer
-        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1])))
+    for i in range(len(layer_sizes) - 1):
+        lin = nn.Linear(layer_sizes[i], layer_sizes[i + 1], bias=bias)
+        layers.append((f"Layer_{i}", lin))
+        layers.append((f"BatchNorm_{i}", nn.BatchNorm1d(layer_sizes[i + 1])))
+
+        # Prune
         if connectivity_matrices is not None:
-            prune.custom_from_mask(
-                linear_layer,
-                name="weight",
-                mask=torch.tensor(connectivity_matrices[n].T.values),
-            )
-        if isinstance(dropout, list):
-            layers.append((f"Dropout_{n}", nn.Dropout(dropout[n])))
-        else:
-            layers.append((f"Dropout_{n}", nn.Dropout(dropout)))
-        if isinstance(activation, list):
-            layers.append((f"Activation_{n}", activation[n]))
-        else:
-            _append_activation(layers, activation, n)
-    layers.append(("Output layer", nn.Linear(layer_sizes[-1], n_outputs, bias=bias)))
+            mask = torch.tensor(connectivity_matrices[i].T.values, dtype=torch.float32)
+            prune.custom_from_mask(lin, name="weight", mask=mask)
+
+        # Dropout
+        layers.append((f"Dropout_{i}", nn.Dropout(dropout)))
+
+        # Activation
+        _append_activation(layers, activation, i)
+
+    # The output layer
+    layers.append(("Output", nn.Linear(layer_sizes[-1], n_outputs, bias=bias)))
     model = nn.Sequential(collections.OrderedDict(layers))
     return model
 
 
-def _generate_residual(
-    layer_sizes, connectivity_matrices=None, activation="tanh", bias=False, n_outputs=2
+def _generate_ensemble_of_heads(
+    layer_sizes,
+    connectivity_matrices=None,
+    activation="tanh",
+    bias=True,
+    n_outputs=2,
 ):
-    layers = []
 
-    def generate_block(n, layers):
-        linear_layer = nn.Linear(layer_sizes[n], layer_sizes[n + 1], bias=bias)
-        layers.append((f"Layer_{n}", linear_layer))
-        layers.append((f"BatchNorm_{n}", nn.BatchNorm1d(layer_sizes[n + 1])))
-        if connectivity_matrices is not None:
-            prune.custom_from_mask(
-                linear_layer,
-                name="weight",
-                mask=torch.tensor(connectivity_matrices[n].T.values),
+    return EnsembleHeads(
+        layer_sizes,
+        connectivity_matrices=connectivity_matrices,
+        activation=activation,
+        bias=bias,
+        n_outputs=n_outputs
+    )
+
+
+class EnsembleHeads(nn.Module):
+    """
+    A network that processes input x layer by layer, 
+    collecting an "output head" at each layer. 
+    The final output is the sum of all heads (each passed through a Sigmoid).
+    """
+
+    def __init__(
+        self,
+        layer_sizes,
+        connectivity_matrices=None,
+        activation="tanh",
+        bias=True,
+        n_outputs=2
+    ):
+        super().__init__()
+        self.blocks = nn.ModuleList()
+        self.heads = nn.ModuleList()
+        self.activation_name = activation
+
+        for i in range(len(layer_sizes) - 1):
+            # build the main transform block for layer i
+            block = nn.Sequential()
+            lin = nn.Linear(layer_sizes[i], layer_sizes[i + 1], bias=bias)
+            block.add_module(f"Linear_{i}", lin)
+            block.add_module(f"BatchNorm_{i}", nn.BatchNorm1d(layer_sizes[i + 1]))
+
+            if connectivity_matrices is not None:
+                mask = torch.tensor(connectivity_matrices[i].T.values, dtype=torch.float32)
+                prune.custom_from_mask(lin, name="weight", mask=mask)
+
+            # Activation
+            block.add_module(f"Activation_{i}", _make_activation(activation))
+
+            self.blocks.append(block)
+
+            # Each layer i also gets a "head" from the layer output -> n_outputs
+            head_lin = nn.Linear(layer_sizes[i + 1], n_outputs, bias=bias)
+            head = nn.Sequential(
+                head_lin,
+                nn.Sigmoid()
             )
-        layers.append((f"Dropout_{n}", nn.Dropout(0.2)))
-        layers.append(
-            (f"Residual_out_{n}", nn.Linear(layer_sizes[n + 1], n_outputs, bias=bias))
-        )
-        layers.append((f"Residual_sigmoid_{n}", nn.Sigmoid()))
-        return layers
+            self.heads.append(head)
 
-    for res_index in range(len(layer_sizes)):
-        if res_index == len(layer_sizes) - 1:
-            layers.append(("BatchNorm_final", nn.BatchNorm1d(layer_sizes[-1])))
-            layers.append(("Dropout_final", nn.Dropout(0.2)))
-            layers.append(
-                (
-                    "Residual_out_final",
-                    nn.Linear(layer_sizes[-1], n_outputs, bias=bias),
-                )
-            )
-            layers.append(("Residual_sigmoid_final", nn.Sigmoid()))
-        else:
-            layers = generate_block(res_index, layers)
-            _append_activation(layers, activation, res_index)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # We'll accumulate each head's output
+        sum_of_heads = None
 
-    model = nn.Sequential(collections.OrderedDict(layers))
-    return model
+        for i, (block, head) in enumerate(zip(self.blocks, self.heads)):
+            x = block(x)                # transform
+            head_out = head(x)          # shape [batch_size, n_outputs]
+            if sum_of_heads is None:
+                sum_of_heads = head_out
+            else:
+                sum_of_heads = sum_of_heads + head_out
+
+        return sum_of_heads
 
 
-def _is_activation(layer):
-    if isinstance(layer, nn.Tanh):
-        return True
-    elif isinstance(layer, nn.ReLU):
-        return True
-    elif isinstance(layer, nn.LeakyReLU):
-        return True
-    elif isinstance(layer, nn.Sigmoid):
-        return True
-    return False
+def _make_activation(activation_name: str) -> nn.Module:
+    if activation_name == "tanh":
+        return nn.Tanh()
+    elif activation_name == "relu":
+        return nn.ReLU()
+    elif activation_name == "leaky relu":
+        return nn.LeakyReLU()
+    elif activation_name == "sigmoid":
+        return nn.Sigmoid()
+    elif activation_name == "elu":
+        return nn.ELU()
+    elif activation_name == "hardsigmoid":
+        return nn.Hardsigmoid()
+    else:
+        return nn.Identity()

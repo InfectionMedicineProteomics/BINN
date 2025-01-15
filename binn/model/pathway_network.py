@@ -183,6 +183,7 @@ class PathwayNetwork:
         """
         pathway_graph = nx.DiGraph()
         pathway_graph.add_edges_from(self.pathways)
+        pathway_graph = pathway_graph.reverse()
 
         # Create a special output node for all sources with no incoming edges
         output_node = "output_node"
@@ -282,6 +283,8 @@ def dataframes_to_pathway_network(
       1) A 'data_matrix' containing the input entities (e.g. proteins).
       2) A 'pathway_df' containing pathway edges (source -> target).
       3) A 'mapping_df' mapping each entity in data_matrix to pathways.
+
+    This method should be as flexible as possible.
 
     Args:
         data_matrix (pd.DataFrame): A DataFrame that contains the column 'entity_col'.
