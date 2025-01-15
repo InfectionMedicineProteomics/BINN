@@ -15,7 +15,7 @@ class BINN(pl.LightningModule):
     A biologically informed neural network (BINN) using PyTorch Lightning.
     - If `heads_ensemble=False`, we build a standard sequential network with layer-to-layer connections.
     - If `heads_ensemble=True`, we actually build an 'ensemble of heads' network:
-      each layer produces a separate output head (same dimension = n_outputs), 
+      each layer produces a separate output head (same dimension = n_outputs),
       each head goes through a sigmoid, and at the end we sum them all.
 
     Args:
@@ -24,7 +24,7 @@ class BINN(pl.LightningModule):
         use_reactome (bool, optional):
             If True, loads `mapping` and `pathways` from `load_reactome_db()`, ignoring the ones provided.
         mapping (pd.DataFrame, optional):
-            A DataFrame describing how each input feature maps into the pathway graph. 
+            A DataFrame describing how each input feature maps into the pathway graph.
             If None, the user must rely on `use_reactome=True`.
         pathways (pd.DataFrame, optional):
             A DataFrame describing the edges among pathway nodes.
@@ -84,13 +84,13 @@ class BINN(pl.LightningModule):
         self.to(device)
 
         self.n_layers = n_layers
-        self.heads_ensemble = heads_ensemble 
+        self.heads_ensemble = heads_ensemble
         self.learning_rate = learning_rate
         self.scheduler = scheduler
         self.optimizer = optimizer
         self.validate = validate
         self.weight = weight
-        self.loss = nn.CrossEntropyLoss(weight=weight)  
+        self.loss = nn.CrossEntropyLoss(weight=weight)
 
         # Build the pathway network from dataframes
         if use_reactome:
@@ -100,9 +100,7 @@ class BINN(pl.LightningModule):
 
         # Build the pathway-based connectivity
         pn = dataframes_to_pathway_network(
-            data_matrix=data_matrix,
-            pathway_df=pathways,
-            mapping_df=mapping
+            data_matrix=data_matrix, pathway_df=pathways, mapping_df=mapping
         )
         # Connectivity matrices for each layer
         self.connectivity_matrices = pn.get_connectivity_matrices(n_layers=n_layers)
@@ -113,6 +111,7 @@ class BINN(pl.LightningModule):
 
         # The first matrix defines the input layer
         mat_first = self.connectivity_matrices[0]
+        self.inputs = mat_first.index.tolist()
         in_features, _ = mat_first.shape
         layer_sizes.append(in_features)
         self.layer_names.append(mat_first.index.tolist())
@@ -213,7 +212,7 @@ class BINN(pl.LightningModule):
         if self.scheduler == "plateau":
             scheduler = {
                 "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
-                    optimizer, patience=5, threshold=0.01, mode="min", verbose=True
+                    optimizer, patience=5, threshold=0.01, mode="min"
                 ),
                 "interval": "epoch",
                 "monitor": monitor,
@@ -221,7 +220,7 @@ class BINN(pl.LightningModule):
         elif self.scheduler == "step":
             scheduler = {
                 "scheduler": torch.optim.lr_scheduler.StepLR(
-                    optimizer, step_size=25, gamma=0.1, verbose=True
+                    optimizer, step_size=25, gamma=0.1
                 )
             }
         else:
@@ -251,6 +250,7 @@ class BINN(pl.LightningModule):
 #
 # Helper functions
 #
+
 
 def _init_weights(m):
     if isinstance(m, nn.Linear):
@@ -326,14 +326,14 @@ def _generate_ensemble_of_heads(
         connectivity_matrices=connectivity_matrices,
         activation=activation,
         bias=bias,
-        n_outputs=n_outputs
+        n_outputs=n_outputs,
     )
 
 
 class EnsembleHeads(nn.Module):
     """
-    A network that processes input x layer by layer, 
-    collecting an "output head" at each layer. 
+    A network that processes input x layer by layer,
+    collecting an "output head" at each layer.
     The final output is the sum of all heads (each passed through a Sigmoid).
     """
 
@@ -343,7 +343,7 @@ class EnsembleHeads(nn.Module):
         connectivity_matrices=None,
         activation="tanh",
         bias=True,
-        n_outputs=2
+        n_outputs=2,
     ):
         super().__init__()
         self.blocks = nn.ModuleList()
@@ -358,7 +358,9 @@ class EnsembleHeads(nn.Module):
             block.add_module(f"BatchNorm_{i}", nn.BatchNorm1d(layer_sizes[i + 1]))
 
             if connectivity_matrices is not None:
-                mask = torch.tensor(connectivity_matrices[i].T.values, dtype=torch.float32)
+                mask = torch.tensor(
+                    connectivity_matrices[i].T.values, dtype=torch.float32
+                )
                 prune.custom_from_mask(lin, name="weight", mask=mask)
 
             # Activation
@@ -368,10 +370,7 @@ class EnsembleHeads(nn.Module):
 
             # Each layer i also gets a "head" from the layer output -> n_outputs
             head_lin = nn.Linear(layer_sizes[i + 1], n_outputs, bias=bias)
-            head = nn.Sequential(
-                head_lin,
-                nn.Sigmoid()
-            )
+            head = nn.Sequential(head_lin, nn.Sigmoid())
             self.heads.append(head)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -379,8 +378,8 @@ class EnsembleHeads(nn.Module):
         sum_of_heads = None
 
         for i, (block, head) in enumerate(zip(self.blocks, self.heads)):
-            x = block(x)                # transform
-            head_out = head(x)          # shape [batch_size, n_outputs]
+            x = block(x)  # transform
+            head_out = head(x)  # shape [batch_size, n_outputs]
             if sum_of_heads is None:
                 sum_of_heads = head_out
             else:

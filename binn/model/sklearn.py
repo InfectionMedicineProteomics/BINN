@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import lightning.pytorch as pl
 from sklearn.base import BaseEstimator, ClassifierMixin
 
-from binn import BINN, PathwayNetwork, SuperLogger
+from binn import BINN, PathwayNetwork
 
 
 class BINNClassifier(BaseEstimator, ClassifierMixin):
@@ -75,7 +75,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
         residual: bool = False,
         threads: int = 1,
         epochs: int = 100,
-        logger: Union[SuperLogger, None] = None,
+
         log_steps: int = 50,
     ):
         self.clf = BINN(
@@ -94,7 +94,7 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
 
         self.threads = threads
         self.epochs = epochs
-        self.logger = logger
+
         self.log_steps = log_steps
 
     def fit(self, X: np.ndarray, y: np.ndarray, epochs: int):
@@ -120,7 +120,6 @@ class BINNClassifier(BaseEstimator, ClassifierMixin):
 
         trainer = pl.Trainer(
             callbacks=[],
-            logger=self.logger.get_logger_list(),
             max_epochs=self.epochs,
             log_every_n_steps=self.log_steps,
         )
