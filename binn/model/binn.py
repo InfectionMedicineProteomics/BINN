@@ -56,7 +56,7 @@ class BINN(nn.Module):
     def __init__(
         self,
         data_matrix: pd.DataFrame = None,
-        use_reactome: bool = False,
+        network_source: str = None,
         mapping: pd.DataFrame = None,
         pathways: pd.DataFrame = None,
         activation: str = "tanh",
@@ -75,7 +75,8 @@ class BINN(nn.Module):
         self.heads_ensemble = heads_ensemble
 
         # Build the pathway network from dataframes
-        if use_reactome:
+  
+        if network_source == "reactome":
             reactome_db = load_reactome_db()
             mapping = reactome_db["mapping"]
             pathways = reactome_db["pathways"]

@@ -16,7 +16,7 @@ class BINNTrainer:
         self.network = binn_network
         self.logger = BINNLogger(save_dir=save_dir)
 
-    def train(
+    def fit(
         self,
         dataloaders: dict,
         num_epochs: int = 30,
