@@ -3,8 +3,9 @@ import numpy as np
 import torch
 import pandas as pd
 from torch import nn
+import networkx as nx
 from typing import Dict, Tuple
-from binn import BINN, BINNTrainer, BINNDataLoader
+from binn import BINN, BINNTrainer
 
 
 class BINNExplainer:
@@ -18,7 +19,7 @@ class BINNExplainer:
     2. Call `explain(dataloaders, split="train")` or
        `explain(dataloaders, split=None)` to produce SHAP-based explanations
        for either one or all splits.
-    3. If you wish to do multiple re-initializations and training, call `explain_average`
+    3. If you wish to do multiple re-initializations and training, call `explain`
        with `nr_iterations` and a trainer (pure PyTorch).
     """
 
@@ -35,7 +36,7 @@ class BINNExplainer:
         """Update the current BINN model for explanations."""
         self.model = model
 
-    def explain(self, dataloaders: dict, split: str = None) -> pd.DataFrame:
+    def explain_single(self, dataloaders: dict, split: str = None) -> pd.DataFrame:
         """
         Gathers all samples from the specified DataLoader(s),
         uses them for both background and test data in SHAP,
@@ -63,7 +64,7 @@ class BINNExplainer:
         explanation_df = self._shap_to_dataframe(shap_dict)
         return explanation_df
 
-    def explain_average(
+    def explain(
         self,
         dataloaders: dict,
         nr_iterations: int,
@@ -109,11 +110,116 @@ class BINNExplainer:
             trainer.fit(dataloaders, num_epochs)
 
             # Then compute explanations with the newly trained model
-            iteration_df = self.explain(dataloaders, split=split)
+            iteration_df = self.explain_single(dataloaders, split=split)
             all_dfs[iteration] = iteration_df
 
         combined_df = self._combine_iterations(all_dfs)
         return combined_df
+
+    def normalize_importances(
+        self,
+        importance_df: pd.DataFrame,
+        method: str = "subgraph",
+    ) -> pd.DataFrame:
+        """
+        Normalizes the 'importance' (or 'value') column in the DataFrame
+        using either 'fan' or 'subgraph' logic:
+
+        - fan:    importance / log2( fan_in + fan_out + 1 )
+        - subgraph: importance / log2( upstream_subgraph_nodes + downstream_subgraph_nodes )
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Must contain at least [source_node, target_node, value_col].
+        method : {"fan", "subgraph"}
+            The normalization strategy.
+
+        Returns
+        -------
+        pd.DataFrame
+            A **copy** of the input DataFrame with a newly normalized
+            column, `'normalized_value'`.
+        """
+        importance_df = importance_df.copy()
+        if "mean_importance" in importance_df.columns:
+            value_col = "mean_importance"
+        else:
+            value_col = "importance"
+
+        # 1) Build a directed graph from df
+        G = nx.DiGraph()
+        # Add edges
+        for _, row in importance_df.iterrows():
+            src = row["source_node"]
+            tgt = row["target_node"]
+            if not G.has_node(src):
+                G.add_node(src)
+            if not G.has_node(tgt):
+                G.add_node(tgt)
+            G.add_edge(src, tgt)
+
+        # 2) Precompute BFS or fan values to avoid repeated calls
+        #    We'll store them in dictionaries keyed by node.
+
+        if method == "fan":
+            # fan_in[node] = number of incoming edges
+            # fan_out[node] = number of outgoing edges
+            fan_in = {n: 0 for n in G.nodes()}
+            fan_out = {n: 0 for n in G.nodes()}
+            for n in G.nodes():
+                fan_in[n] = G.in_degree(n)
+                fan_out[n] = G.out_degree(n)
+
+        elif method == "subgraph":
+            # We'll store # of nodes upstream, # of nodes downstream for each node
+            # We'll do BFS in the normal direction for downstream,
+            # BFS in reversed graph for upstream.
+
+            # reversed graph:
+            G_reverse = G.reverse(copy=True)
+
+            # For each node, BFS
+            upstream_count = {}
+            downstream_count = {}
+
+            for node in G.nodes():
+                # BFS in forward direction for downstream
+                # e.g. all nodes reachable from node
+                # not counting the node itself
+                down_nodes = nx.descendants(G, node)
+                downstream_count[node] = len(down_nodes)
+
+                # BFS in reverse direction for upstream
+                up_nodes = nx.descendants(G_reverse, node)
+                upstream_count[node] = len(up_nodes)
+
+        else:
+            raise ValueError(f"Unknown normalization method: {method}")
+
+        # 3) For each row in df, compute the normalizing factor
+        #    Then produce a new column “normalized_value”
+        norm_vals = []
+        for _, row in importance_df.iterrows():
+            node = row["source_node"]  # The node from which we measure fan or subgraph
+            raw_imp = row[value_col]
+
+            if method == "fan":
+                fi = fan_in[node]
+                fo = fan_out[node]
+                total = fi + fo + 1
+                new_val = raw_imp / (np.log2(total) if total > 1 else 1.0)
+
+            else:  # subgraph
+                ups = upstream_count[node]
+                downs = downstream_count[node]
+                total = ups + downs
+                new_val = raw_imp / (np.log2(total) if total > 1 else 1.0)
+
+            norm_vals.append(new_val)
+
+        importance_df["normalized_importance"] = norm_vals
+        return importance_df
 
     def _explain_layers(
         self, background_data: torch.Tensor, test_data: torch.Tensor
