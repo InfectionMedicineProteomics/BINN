@@ -91,7 +91,7 @@ class BINNHandler:
         dataset = TensorDataset(torch.tensor(X, dtype=torch.float32), torch.tensor(y, dtype=torch.long))
         return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
-    def train_binn_with_pytorch(self, dataloader, num_epochs=30):
+    def train_binn(self, dataloader, num_epochs=30):
         """
         Train the BINN using a standard PyTorch training loop.
 
