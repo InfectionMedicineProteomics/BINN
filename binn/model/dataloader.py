@@ -9,31 +9,33 @@ import torch
 class BINNDataLoader:
     """
     A utility class for aligning data to the BINN network, preparing train/validation splits, 
-    and creating PyTorch DataLoaders.
+    and creating PyTorch DataLoaders with a simplified user interface.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, binn_network):
+        """
+        Args:
+            binn_network: The BINN model instance for feature alignment.
+        """
+        self.binn_network = binn_network
 
-    def align_to_network(
+    def _align_to_network(
         self,
         data_matrix: pd.DataFrame,
-        binn_network,
-        feature_column: str = "Protein",
+        feature_column: str,
     ) -> pd.DataFrame:
         """
-        Align the input data matrix to the features expected by the BINN network.
+        Internal method to align the input data matrix to the BINN network's expected features.
 
         Args:
             data_matrix (pd.DataFrame): Raw data matrix.
-            binn_network: The BINN model instance (for extracting `inputs`).
             feature_column (str): Column name for feature identifiers in 'data_matrix'.
 
         Returns:
-            pd.DataFrame: Aligned data matrix with rows matching the BINN's expected features, 
+            pd.DataFrame: Data matrix with rows matching the BINN's expected features, 
                           filling missing features with zeros if needed.
         """
-        features = binn_network.inputs  # Features expected by BINN
+        features = self.binn_network.inputs  # Features expected by BINN
         dm = data_matrix.copy()
 
         # Ensure all expected features are present
@@ -47,25 +49,25 @@ class BINNDataLoader:
         dm = dm.reindex(features).fillna(0)
         return dm
 
-    def prepare_training_data(
+    def _prepare_training_data(
         self,
         aligned_data: pd.DataFrame,
         design_matrix: pd.DataFrame,
-        group_column: str = "group",
-        sample_column: str = "sample",
-        validation_split: float = 0.2,
-        random_state: int = 42,
+        group_column: str,
+        sample_column: str,
+        validation_split: float,
+        random_state: int,
     ) -> dict:
         """
-        Prepare training and validation data (X, y).
+        Internal method to prepare (X, y) for training, with optional validation split.
 
         Args:
             aligned_data (pd.DataFrame): Data aligned to BINN's feature order.
             design_matrix (pd.DataFrame): Contains group and sample identifiers.
             group_column (str): Column indicating class/group labels.
             sample_column (str): Column indicating sample identifiers.
-            validation_split (float): Fraction of data to use for validation. Set to 0 for no validation split.
-            random_state (int): Random seed for reproducibility.
+            validation_split (float): Fraction of data to reserve for validation.
+            random_state (int): RNG seed for reproducibility.
 
         Returns:
             dict: Contains 'train': (X_train, y_train) and optionally 'val': (X_val, y_val).
@@ -98,21 +100,73 @@ class BINNDataLoader:
         else:
             return {"train": (X, y)}
 
-    def create_dataloader(
+    def create_dataloaders(
+        self,
+        data_matrix: pd.DataFrame,
+        design_matrix: pd.DataFrame,
+        feature_column: str = "Protein",
+        group_column: str = "group",
+        sample_column: str = "sample",
+        batch_size: int = 8,
+        validation_split: float = 0.2,
+        shuffle: bool = True,
+        random_state: int = 42,
+    ) -> dict:
+        """
+        Public method to create PyTorch DataLoaders directly from raw data.
+
+        Args:
+            data_matrix (pd.DataFrame): Raw data matrix with features as rows, samples as columns.
+            design_matrix (pd.DataFrame): Contains group and sample identifiers.
+            feature_column (str): Column name for feature identifiers in 'data_matrix'.
+            group_column (str): Column indicating class/group labels.
+            sample_column (str): Column indicating sample identifiers.
+            batch_size (int): Batch size for DataLoader.
+            validation_split (float): Fraction of data to use for validation. Set to 0 for no validation split.
+            shuffle (bool): Whether to shuffle the data in DataLoader.
+            random_state (int): RNG seed for reproducibility.
+
+        Returns:
+            dict: Contains 'train' DataLoader and optionally 'val' DataLoader.
+        """
+        # Align the data matrix to the network
+        aligned_data = self._align_to_network(data_matrix, feature_column)
+
+        # Prepare the data splits (train/val)
+        data_splits = self._prepare_training_data(
+            aligned_data,
+            design_matrix,
+            group_column,
+            sample_column,
+            validation_split,
+            random_state,
+        )
+
+        # Create DataLoaders
+        dataloaders = {
+            "train": self._create_dataloader(*data_splits["train"], batch_size, shuffle)
+        }
+        if "val" in data_splits:
+            dataloaders["val"] = self._create_dataloader(
+                *data_splits["val"], batch_size, shuffle=False
+            )
+        return dataloaders
+
+    def _create_dataloader(
         self,
         X: np.ndarray,
         y: np.ndarray,
-        batch_size: int = 8,
-        shuffle: bool = True,
+        batch_size: int,
+        shuffle: bool,
     ) -> DataLoader:
         """
-        Create a PyTorch DataLoader from feature matrix (X) and labels (y).
+        Internal method to create a PyTorch DataLoader from (X, y).
 
         Args:
             X (np.ndarray): Feature matrix (num_samples x num_features).
             y (np.ndarray): Target labels (num_samples,).
-            batch_size (int): Batch size for the DataLoader.
-            shuffle (bool): Whether to shuffle data during loading.
+            batch_size (int): Batch size for DataLoader.
+            shuffle (bool): Whether to shuffle the data.
 
         Returns:
             DataLoader: A PyTorch DataLoader.

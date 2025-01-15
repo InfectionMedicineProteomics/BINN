@@ -5,7 +5,6 @@ requirements = [
     "networkx",
     "pandas",
     "torch",
-    "lightning",
     "shap",
     "matplotlib",
     "plotly",
