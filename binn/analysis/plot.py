@@ -6,135 +6,6 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-def subgraph_sankey(
-    df: pd.DataFrame,
-    final_node: int = 0,
-    val_col="value",
-    cmap_name="coolwarm",
-):
-    """
-    Create a Sankey diagram using Plotly and Seaborn.
-    Parameters:
-        df : pd.DataFrame
-            The input DataFrame containing the data to be plotted.
-        final_node : str, optional
-            The final node in the Sankey diagram (default is "root").
-        val_col : str, optional
-            The column in the input DataFrame containing the values to be plotted (default is "value").
-        cmap_name : str, optional
-            The name of the color map to be used (default is "coolwarm").
-    Returns:
-        fig : go.Figure
-            The Sankey diagram figure created using Plotly.
-    """
-    df["source layer"] = df["source layer"].astype(int)
-    df["target layer"] = df["target layer"].astype(int)
-    unique_features = df["source"].unique().tolist()
-    unique_features += df["target"].unique().tolist()
-    code_map, feature_labels = _encode_features(list(set(unique_features)))
-    sources = df["source"].unique().tolist()
-    name_map = _create_subgraph_name_map(df)
-
-    def normalize_layer_values(df: pd.DataFrame):
-        new_df = pd.DataFrame()
-        total_value_sum = df[val_col].sum()
-        for layer in df["source layer"].unique():
-            layer_df = df[df["source layer"] == layer].copy()
-            layer_total = layer_df[val_col].sum()
-            layer_df.loc[:, "normalized value"] = (
-                total_value_sum * layer_df[val_col] / layer_total
-            )
-            new_df = pd.concat([new_df, layer_df])
-        return new_df
-
-    df = _remove_loops(df)
-    df = normalize_layer_values(df)
-
-    def get_connections(sources: list, source_target_df: pd.DataFrame):
-        conn = source_target_df[source_target_df["source"].isin(sources)]
-        source_code = [_get_code(s, code_map) for s in conn["source"]]
-        target_code = [_get_code(s, code_map) for s in conn["target"]]
-        values = [v for v in conn["normalized value"]]
-        link_colors = conn["node_color"].values.tolist()
-        return source_code, target_code, values, link_colors
-
-    def get_node_colors(sources, df: pd.DataFrame):
-        cmap = plt.cm.ScalarMappable(
-            norm=matplotlib.colors.Normalize(vmin=0, vmax=1), cmap=cmap_name
-        )
-        colors = []
-        new_df = df
-        node_dict = {}
-        weight_dict = {}
-        for layer in df["source layer"].unique():
-            w = df.loc[df["source layer"] == layer, "normalized value"].values
-            n = df.loc[df["source layer"] == layer, "source"].values
-
-            if len(w) < 2:
-                w = [1]
-            else:
-                xmin = min(w)
-                xmax = max(w)
-                if xmax == xmin:
-                    w = [1] * len(n)
-                else:
-                    w = np.array(w)
-                    X_std = (w - xmin) / (xmax - xmin)
-                    X_scaled = X_std
-                    w = X_scaled.tolist()
-
-            pairs = [(f, v) for f, v in zip(n, w)]
-            for pair in pairs:
-                n, w = pair
-                r, g, b, a = cmap.to_rgba(w, alpha=0.5)
-                weight_dict[n] = w
-                node_dict[n] = f"rgba({r * 255}, {g * 255}, {b * 255}, {a})"
-        node_dict[final_node] = "rgba(0,0,0,1)"
-        weight_dict[final_node] = 1
-        colors = [node_dict[n] for n in sources]
-        new_df = new_df.assign(
-            node_color=[node_dict[n] for n in new_df["source"]],
-            node_weight=[weight_dict[n] for n in new_df["source"]],
-        )
-        return new_df, colors
-
-    df, node_colors = get_node_colors(feature_labels, df)
-    encoded_source, encoded_target, value, link_colors = get_connections(sources, df)
-
-    new_labels = []
-    for label in feature_labels:
-        if label in name_map.keys():
-            new_labels.append(name_map[label])
-        else:
-            new_labels.append(label)
-
-    nodes = dict(
-        pad=20,
-        thickness=20,
-        line=dict(color="white", width=2),
-        label=new_labels,
-        color=node_colors,
-    )
-
-    links = dict(
-        source=encoded_source, target=encoded_target, value=value, color=link_colors
-    )
-
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                textfont=dict(size=15, family="Arial"),
-                orientation="h",
-                arrangement="snap",
-                node=nodes,
-                link=links,
-            )
-        ],
-    )
-
-    return fig
-
-
 def complete_sankey(
     df: pd.DataFrame,
     multiclass: bool = False,
@@ -144,7 +15,8 @@ def complete_sankey(
     edge_cmap: Union[str, list] = "coolwarm",
     root_id: int = 0,
     other_id: int = -1,
-):
+):  
+    
     if not multiclass:
         df = df.groupby(
             by=["source", "target", "source name", "target name"], as_index=False
@@ -415,11 +287,3 @@ def _create_name_map(df: pd.DataFrame, n_layers: int, root_id: int, other_id: in
     return name_map
 
 
-def _create_subgraph_name_map(df: pd.DataFrame):
-    name_map = dict(
-        zip(df["source"].values.tolist(), df["source name"].values.tolist())
-    )
-    name_map.update(
-        zip(df["target"].values.tolist(), df["target name"].values.tolist())
-    )
-    return name_map

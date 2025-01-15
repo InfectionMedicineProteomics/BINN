@@ -118,7 +118,7 @@ class BINNExplainer:
 
     def normalize_importances(
         self,
-        importance_df: pd.DataFrame,
+        explanation_df: pd.DataFrame,
         method: str = "subgraph",
     ) -> pd.DataFrame:
         """
@@ -141,16 +141,15 @@ class BINNExplainer:
             A **copy** of the input DataFrame with a newly normalized
             column, `'normalized_value'`.
         """
-        importance_df = importance_df.copy()
-        if "mean_importance" in importance_df.columns:
+        explanation_df = explanation_df.copy()
+
+        if "mean_importance" in explanation_df.columns:
             value_col = "mean_importance"
         else:
             value_col = "importance"
 
-        # 1) Build a directed graph from df
         G = nx.DiGraph()
-        # Add edges
-        for _, row in importance_df.iterrows():
+        for _, row in explanation_df.iterrows():
             src = row["source_node"]
             tgt = row["target_node"]
             if not G.has_node(src):
@@ -159,12 +158,7 @@ class BINNExplainer:
                 G.add_node(tgt)
             G.add_edge(src, tgt)
 
-        # 2) Precompute BFS or fan values to avoid repeated calls
-        #    We'll store them in dictionaries keyed by node.
-
         if method == "fan":
-            # fan_in[node] = number of incoming edges
-            # fan_out[node] = number of outgoing edges
             fan_in = {n: 0 for n in G.nodes()}
             fan_out = {n: 0 for n in G.nodes()}
             for n in G.nodes():
@@ -172,36 +166,23 @@ class BINNExplainer:
                 fan_out[n] = G.out_degree(n)
 
         elif method == "subgraph":
-            # We'll store # of nodes upstream, # of nodes downstream for each node
-            # We'll do BFS in the normal direction for downstream,
-            # BFS in reversed graph for upstream.
-
-            # reversed graph:
             G_reverse = G.reverse(copy=True)
 
-            # For each node, BFS
             upstream_count = {}
             downstream_count = {}
 
             for node in G.nodes():
-                # BFS in forward direction for downstream
-                # e.g. all nodes reachable from node
-                # not counting the node itself
                 down_nodes = nx.descendants(G, node)
                 downstream_count[node] = len(down_nodes)
-
-                # BFS in reverse direction for upstream
                 up_nodes = nx.descendants(G_reverse, node)
                 upstream_count[node] = len(up_nodes)
-
         else:
             raise ValueError(f"Unknown normalization method: {method}")
 
-        # 3) For each row in df, compute the normalizing factor
-        #    Then produce a new column “normalized_value”
+
         norm_vals = []
-        for _, row in importance_df.iterrows():
-            node = row["source_node"]  # The node from which we measure fan or subgraph
+        for _, row in explanation_df.iterrows():
+            node = row["source_node"] 
             raw_imp = row[value_col]
 
             if method == "fan":
@@ -218,8 +199,8 @@ class BINNExplainer:
 
             norm_vals.append(new_val)
 
-        importance_df["normalized_importance"] = norm_vals
-        return importance_df
+        explanation_df["normalized_importance"] = norm_vals
+        return explanation_df
 
     def _explain_layers(
         self, background_data: torch.Tensor, test_data: torch.Tensor
