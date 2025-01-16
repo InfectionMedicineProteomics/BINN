@@ -235,7 +235,7 @@ class BINNExplainer:
         containing connection-level SHAP importance.
 
         Columns: ['source_layer', 'target_layer', 'source_node', 'target_node',
-                'class_idx', 'importance', 'source_id', 'target_id']
+                'class_idx', 'importance']
         """
         connectivity_mats = self.model.connectivity_matrices
 
@@ -263,9 +263,6 @@ class BINNExplainer:
                     continue
 
                 for target_name in row_conn.columns:
-                    # Create unique node ids for source and target nodes:
-                    source_id = f"n{feat_name}_l{current_layer}"
-                    target_id = f"n{target_name}_l{current_layer + 1}"
                     # for each class
                     for class_idx in range(num_classes):
                         importance_val = float(svals_mean[feat_idx, class_idx])
@@ -277,8 +274,6 @@ class BINNExplainer:
                                 "target_node": target_name,
                                 "class_idx": class_idx,
                                 "importance": importance_val,
-                                "source_id": source_id,
-                                "target_id": target_id,
                             }
                         )
             current_layer += 1
