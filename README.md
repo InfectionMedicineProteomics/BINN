@@ -35,112 +35,53 @@ pip install -e BINN/
 
 ## Usage
 
-First, a network is created. This is the network that will be used to create the sparse BINN.
+The complete pipeline to create, train and interpret a BINN is:
 
 ```py
-from binn import BINN, Network
+from binn import BINN, BINNDataLoader, BINNTrainer, BINNExplainer
 import pandas as pd
 
-input_data = pd.read_csv("../data/test_qm.tsv", sep="\t")
-translation = pd.read_csv("../data/translation.tsv", sep="\t")
-pathways = pd.read_csv("../data/pathways.tsv", sep="\t")
+# Load your data
+data_matrix = pd.read_csv("../data/sample_datamatrix.csv")
+design_matrix = pd.read_csv("../data/sample_design_matrix.tsv", sep="\t")
 
-network = Network(
-    input_data=input_data,
-    pathways=pathways,
-    mapping=translation,
-    verbose=True
+# Initialize BINN
+binn = BINN(data_matrix=data_matrix, network_source="reactome", n_layers=4, dropout=0.2)
+
+## Initialize DataLoader
+binn_dataloader = BINNDataLoader(binn)
+
+# Create DataLoaders
+dataloaders = binn_dataloader.create_dataloaders(
+    data_matrix=data_matrix,
+    design_matrix=design_matrix,
+    feature_column="Protein",
+    group_column="group",
+    sample_column="sample",
+    batch_size=32,
+    validation_split=0.2,
 )
+# Train the model
+trainer = BINNTrainer(binn)
+trainer.fit(dataloaders=dataloaders, num_epochs=100)
+
+# Explain the model
+explainer = BINNExplainer(binn)
+single_explanations = explainer.explain_single(dataloaders, split="val", normalization_method="subgraph")
+single_explanations
 ```
 
-The BINN can thereafter be generated using the network:
+The output can be visualized in a network:
 
 ```py
-binn = BINN(
-    pathways=network,
-    n_layers=4,
-    dropout=0.2,
-    validate=False,
-)
+from binn.plot.network import visualize_binn
+
+layer_specific_top_n = {"0": 10, "1": 7, "2": 5, "3":5, "4":5}
+plt = visualize_binn(single_explanations, top_n=layer_specific_top_n, plot_size=(20,10), sink_node_size=500, node_size_scaling = 200, edge_width=1,  node_cmap="coolwarm")
+plt.title("Interpreted network")
 ```
 
-An sklearn wrapper is also available:
-
-```py
-from binn import BINNClassifier
-
-binn = BINNClassifier(
-    pathways=network,
-    n_layers=4,
-    dropout=0.2,
-    validate=True,
-    epochs=10,
-    threads=10,
-)
-```
-
-This generates the Pytorch sequential model:
-
-```py
-Sequential(
-  (Layer_0): Linear(in_features=446, out_features=953, bias=True)
-  (BatchNorm_0): BatchNorm1d(953, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (Dropout_0): Dropout(p=0.2, inplace=False)
-  (Tanh 0): Tanh()
-  (Layer_1): Linear(in_features=953, out_features=455, bias=True)
-  (BatchNorm_1): BatchNorm1d(455, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (Dropout_1): Dropout(p=0.2, inplace=False)
-  (Tanh 1): Tanh()
-  (Layer_2): Linear(in_features=455, out_features=162, bias=True)
-  (BatchNorm_2): BatchNorm1d(162, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (Dropout_2): Dropout(p=0.2, inplace=False)
-  (Tanh 2): Tanh()
-  (Layer_3): Linear(in_features=162, out_features=28, bias=True)
-  (BatchNorm_3): BatchNorm1d(28, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (Dropout_3): Dropout(p=0.2, inplace=False)
-  (Tanh 3): Tanh()
-  (Output layer): Linear(in_features=28, out_features=2, bias=True)
-)
-```
-
-### Example input
-
-![data](docs/img/data_explanation.png)
-
-**Data** - this file should contain a column with the feature names (quantmatrix or some matrix containing input column - in this case "Protein"). These *need* to map to the input layer of the BINN, either directly or by providing a translation file. 
-
-| Protein |
-| ------- |
-| P00746  |
-| P00746  |
-| P04004  |
-| P27348  |
-| P02751  |
-...
-
-**Pathways file** - this file should contain the mapping used to create the connectivity in the hidden layers.
-
-| target       | source        |
-| ------------ | ------------- |
-| R-BTA-109581 | R-BTA-109606  |
-| R-BTA-109581 | R-BTA-169911  |
-| R-BTA-109581 | R-BTA-5357769 |
-| R-BTA-109581 | R-BTA-75153   |
-| R-BTA-109582 | R-BTA-140877  |
-...
-
-**Translation file** - this file is alternative, but is useful if some translation is needed to map the input features to the pathways in the hiddenn layers. In this case, it is used to map proteins (UniProt IDs) to pathways (Reactome IDs).
-
-| input | translation  |
-| ------------------- | -------------------------- |
-| A0A075B6P5          | R-HSA-166663               |
-| A0A075B6P5          | R-HSA-173623               |
-| A0A075B6P5          | R-HSA-198933               |
-| A0A075B6P5          | R-HSA-202733               |
-| A0A075B6P5          | R-HSA-2029481              |
-...
-
----
+![vis](docs/img/interpreted_binn.png)
 
 
 ## Cite 

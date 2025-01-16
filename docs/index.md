@@ -31,7 +31,7 @@ pip install -e BINN/
 
 **Examples:**
 
-In the [examples](binn_example.ipynb) we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on mass-spec intensity values.
+In the [examples](binn_example.ipynb) we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on quantified proteins by mass spectrometry.
 
 - [BINN example](binn_example.ipynb)
 - [Interpretation example](shap_example.ipynb)
