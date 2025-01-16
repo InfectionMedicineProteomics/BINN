@@ -36,7 +36,7 @@ class BINNExplainer:
         """Update the current BINN model for explanations."""
         self.model = model
 
-    def explain_single(self, dataloaders: dict, split: str = None) -> pd.DataFrame:
+    def explain_single(self, dataloaders: dict, split: str = None, normalization_method: str = "subgraph") -> pd.DataFrame:
         """
         Gathers all samples from the specified DataLoader(s),
         uses them for both background and test data in SHAP,
@@ -62,6 +62,8 @@ class BINNExplainer:
 
         shap_dict = self._explain_layers(all_inputs, all_inputs)
         explanation_df = self._shap_to_dataframe(shap_dict)
+        if normalization_method:
+            explanation_df = self.normalize_importances(explanation_df, method=normalization_method)
         return explanation_df
 
     def explain(
@@ -71,6 +73,7 @@ class BINNExplainer:
         num_epochs: int,
         trainer: BINNTrainer,
         split: str = None,
+        normalization_method: str = "subgraph"
     ) -> Tuple[pd.DataFrame, Dict[int, Dict]]:
         """
         Re-initializes the BINN model multiple times, trains it using the given trainer,
@@ -114,6 +117,8 @@ class BINNExplainer:
             all_dfs[iteration] = iteration_df
 
         combined_df = self._combine_iterations(all_dfs)
+        if normalization_method:
+            combined_df = self.normalize_importances(combined_df, method=normalization_method)
         return combined_df
 
     def normalize_importances(

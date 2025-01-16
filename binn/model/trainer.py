@@ -11,7 +11,7 @@ class BINNTrainer:
         """
         Args:
             binn_model: The BINN model instance to train.
-            save_dir (str): Directory to save logs or checkpoints.
+            save_dir (str): Directory to save logs and/or checkpoints.
         """
         self.save_dir = save_dir
         self.network = binn_model

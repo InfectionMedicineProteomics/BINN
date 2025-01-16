@@ -3,7 +3,7 @@ site_name: BINN
 repo_url: https://github.com/InfectionMedicineProteomics/BINN
 
 theme:
-  name: gitbook
+  name: bootstrap
 
 nav:
   - index.md
