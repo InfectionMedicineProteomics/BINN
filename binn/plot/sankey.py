@@ -196,7 +196,7 @@ class SankeyPlotter:
             zip(data_frame["source_id"].tolist(), data_frame["source_node"].tolist())
         )
         # Also define the mapping for "nOther_lX" -> "Other connections X"
-        for i in range(1, self.n_layers + 3):
+        for i in range(self.n_layers+1):
             key = f"{self.other_id}_l{i}"
             name_map[key] = f"Other connections {i}"
         return name_map
@@ -466,7 +466,7 @@ class SankeyPlotter:
         # Build x,y arrays in node_labels order
         x_positions, y_positions = [], []
         pos_df2 = pd.DataFrame(final_positions)
-        print(pos_df2)
+
         for label in node_labels:
             if "output_node" in label:
                 x_positions.append(.85)
