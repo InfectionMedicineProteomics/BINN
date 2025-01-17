@@ -87,9 +87,12 @@ plt.title("Interpreted network")
 ## Cite 
 Please cite: 
 
+```
 Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
+```
 
 if you use this package.
+
 ## Contributors
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University

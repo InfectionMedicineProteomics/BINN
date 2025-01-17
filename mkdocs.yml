@@ -14,6 +14,8 @@ nav:
   - API Reference:
       - reference/binn_ref.md
       - reference/explain_ref.md
+      - reference/trainer_ref.md
+      - reference/dataloader_ref.md
 
 
 
