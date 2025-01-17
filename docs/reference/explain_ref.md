@@ -1,3 +1,3 @@
 # Explain
 
-## ::: binn.explainer
+## ::: binn.analysis.explainer

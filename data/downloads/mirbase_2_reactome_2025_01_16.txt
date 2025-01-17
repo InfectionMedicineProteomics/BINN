@@ -1,0 +1,87 @@
+MI0000060	R-HSA-9839394	https://reactome.org/PathwayBrowser/#/R-HSA-9839394	TGFBR3 expression	TAS	Homo sapiens
+MI0000063	R-HSA-9708530	https://reactome.org/PathwayBrowser/#/R-HSA-9708530	Regulation of BACH1 activity	TAS	Homo sapiens
+MI0000064	R-HSA-9708530	https://reactome.org/PathwayBrowser/#/R-HSA-9708530	Regulation of BACH1 activity	TAS	Homo sapiens
+MI0000071	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000071	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000071	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000072	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000073	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000073	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000074	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000074	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000075	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000075	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000076	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000076	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000076	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000077	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000078	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000080	R-HSA-2559580	https://reactome.org/PathwayBrowser/#/R-HSA-2559580	Oxidative Stress Induced Senescence	TAS	Homo sapiens
+MI0000080	R-HSA-2559585	https://reactome.org/PathwayBrowser/#/R-HSA-2559585	Oncogene Induced Senescence	TAS	Homo sapiens
+MI0000080	R-HSA-8853884	https://reactome.org/PathwayBrowser/#/R-HSA-8853884	Transcriptional Regulation by VENTX	TAS	Homo sapiens
+MI0000081	R-HSA-2559580	https://reactome.org/PathwayBrowser/#/R-HSA-2559580	Oxidative Stress Induced Senescence	TAS	Homo sapiens
+MI0000081	R-HSA-2559585	https://reactome.org/PathwayBrowser/#/R-HSA-2559585	Oncogene Induced Senescence	TAS	Homo sapiens
+MI0000081	R-HSA-8853884	https://reactome.org/PathwayBrowser/#/R-HSA-8853884	Transcriptional Regulation by VENTX	TAS	Homo sapiens
+MI0000082	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000083	R-HSA-5628897	https://reactome.org/PathwayBrowser/#/R-HSA-5628897	TP53 Regulates Metabolic Genes	TAS	Homo sapiens
+MI0000083	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000083	R-HSA-9018519	https://reactome.org/PathwayBrowser/#/R-HSA-9018519	Estrogen-dependent gene expression	TAS	Homo sapiens
+MI0000083	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0000084	R-HSA-9018519	https://reactome.org/PathwayBrowser/#/R-HSA-9018519	Estrogen-dependent gene expression	TAS	Homo sapiens
+MI0000084	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0000085	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000085	R-HSA-8936459	https://reactome.org/PathwayBrowser/#/R-HSA-8936459	RUNX1 regulates genes involved in megakaryocyte differentiation and platelet function	TAS	Homo sapiens
+MI0000090	R-HSA-189200	https://reactome.org/PathwayBrowser/#/R-HSA-189200	Cellular hexose transport	TAS	Homo sapiens
+MI0000091	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0000095	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000100	R-HSA-9708530	https://reactome.org/PathwayBrowser/#/R-HSA-9708530	Regulation of BACH1 activity	TAS	Homo sapiens
+MI0000113	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000113	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000113	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000238	R-HSA-9708530	https://reactome.org/PathwayBrowser/#/R-HSA-9708530	Regulation of BACH1 activity	TAS	Homo sapiens
+MI0000268	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000271	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000285	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000290	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000291	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000301	R-HSA-9768778	https://reactome.org/PathwayBrowser/#/R-HSA-9768778	Regulation of NPAS4 mRNA translation	TAS	Homo sapiens
+MI0000342	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000439	R-HSA-203927	https://reactome.org/PathwayBrowser/#/R-HSA-203927	MicroRNA (miRNA) biogenesis	TAS	Homo sapiens
+MI0000439	R-HSA-9839394	https://reactome.org/PathwayBrowser/#/R-HSA-9839394	TGFBR3 expression	TAS	Homo sapiens
+MI0000440	R-HSA-9839394	https://reactome.org/PathwayBrowser/#/R-HSA-9839394	TGFBR3 expression	TAS	Homo sapiens
+MI0000449	R-HSA-9022692	https://reactome.org/PathwayBrowser/#/R-HSA-9022692	Regulation of MECP2 expression and activity	IEA	Homo sapiens
+MI0000454	R-HSA-8986944	https://reactome.org/PathwayBrowser/#/R-HSA-8986944	Transcriptional Regulation by MECP2	TAS	Homo sapiens
+MI0000454	R-HSA-8986944	https://reactome.org/PathwayBrowser/#/R-HSA-8986944	Transcriptional Regulation by MECP2	IEA	Homo sapiens
+MI0000460	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0000461	R-HSA-203927	https://reactome.org/PathwayBrowser/#/R-HSA-203927	MicroRNA (miRNA) biogenesis	TAS	Homo sapiens
+MI0000479	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000490	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000650	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000650	R-HSA-9759811	https://reactome.org/PathwayBrowser/#/R-HSA-9759811	Regulation of CDH11 mRNA translation by microRNAs	TAS	Homo sapiens
+MI0000681	R-HSA-9708530	https://reactome.org/PathwayBrowser/#/R-HSA-9708530	Regulation of BACH1 activity	TAS	Homo sapiens
+MI0000734	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000734	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0000738	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000742	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000742	R-HSA-5687128	https://reactome.org/PathwayBrowser/#/R-HSA-5687128	MAPK6/MAPK4 signaling	TAS	Homo sapiens
+MI0000743	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0000743	R-HSA-5687128	https://reactome.org/PathwayBrowser/#/R-HSA-5687128	MAPK6/MAPK4 signaling	TAS	Homo sapiens
+MI0000750	R-HSA-5628897	https://reactome.org/PathwayBrowser/#/R-HSA-5628897	TP53 Regulates Metabolic Genes	TAS	Homo sapiens
+MI0000750	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0000750	R-HSA-9018519	https://reactome.org/PathwayBrowser/#/R-HSA-9018519	Estrogen-dependent gene expression	TAS	Homo sapiens
+MI0000750	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0000772	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0000786	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MI0001519	R-HSA-8943723	https://reactome.org/PathwayBrowser/#/R-HSA-8943723	Regulation of PTEN mRNA translation	TAS	Homo sapiens
+MI0001519	R-HSA-8948700	https://reactome.org/PathwayBrowser/#/R-HSA-8948700	Competing endogenous RNAs (ceRNAs) regulate PTEN translation	TAS	Homo sapiens
+MI0001648	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0001729	R-HSA-9759811	https://reactome.org/PathwayBrowser/#/R-HSA-9759811	Regulation of CDH11 mRNA translation by microRNAs	TAS	Homo sapiens
+MI0001729	R-HSA-9759811	https://reactome.org/PathwayBrowser/#/R-HSA-9759811	Regulation of CDH11 mRNA translation by microRNAs	IEA	Homo sapiens
+MI0003560	R-HSA-4086398	https://reactome.org/PathwayBrowser/#/R-HSA-4086398	Ca2+ pathway	TAS	Homo sapiens
+MI0003626	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0003646	R-HSA-9029569	https://reactome.org/PathwayBrowser/#/R-HSA-9029569	NR1H3 & NR1H2 regulate gene expression linked to cholesterol transport and efflux	TAS	Homo sapiens
+MI0003673	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0003823	R-HSA-1912408	https://reactome.org/PathwayBrowser/#/R-HSA-1912408	Pre-NOTCH Transcription and Translation	TAS	Homo sapiens
+MI0005416	R-HSA-8934593	https://reactome.org/PathwayBrowser/#/R-HSA-8934593	Regulation of RUNX1 Expression and Activity	TAS	Homo sapiens
+MIMAT0000076	R-HSA-9725371	https://reactome.org/PathwayBrowser/#/R-HSA-9725371	Nuclear events stimulated by ALK signaling in cancer	TAS	Homo sapiens
+MIMAT0000268	R-HSA-9824594	https://reactome.org/PathwayBrowser/#/R-HSA-9824594	Regulation of MITF-M-dependent genes involved in apoptosis	TAS	Homo sapiens

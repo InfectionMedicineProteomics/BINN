@@ -34,3 +34,5 @@ poster_*
 data/covid_*
 data/human_proteome.gz
 data/id_to_name.txt
+
+!data/downloads

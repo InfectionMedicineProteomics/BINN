@@ -7,14 +7,16 @@ class BINNTrainer:
     Handles training BINN models using a raw PyTorch training loop.
     """
 
-    def __init__(self, binn_network, save_dir: str = ""):
+    def __init__(self, binn_model, save_dir: str = ""):
         """
         Args:
-            binn_network: The BINN model instance to train.
-            save_dir (str): Directory to save logs or checkpoints.
+            binn_model: The BINN model instance to train.
+            save_dir (str): Directory to save logs and/or checkpoints.
         """
-        self.network = binn_network
+        self.save_dir = save_dir
+        self.network = binn_model
         self.logger = BINNLogger(save_dir=save_dir)
+        
 
     def fit(
         self,
@@ -117,6 +119,11 @@ class BINNTrainer:
         avg_accuracy = total_accuracy / len(dataloader)
 
         return {"loss": avg_loss, "accuracy": avg_accuracy}
+    
+    def update_model(self, new_binn_model):
+        self.binn_model = new_binn_model
+        self.logger = BINNLogger(save_dir=self.save_dir)
+
 
 
 class BINNLogger:
@@ -124,7 +131,7 @@ class BINNLogger:
     A minimal logger for BINN.
     """
 
-    def __init__(self, save_dir=""):
+    def __init__(self, save_dir):
         self.save_dir = save_dir
         self.logs = {"train": [], "val": []}
 
