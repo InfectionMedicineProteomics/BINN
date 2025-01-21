@@ -9,12 +9,13 @@
 [![PyPI version](https://badge.fury.io/py/binn.svg)](https://badge.fury.io/py/binn)
 [![Python application](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml)
 [![DOI](https://zenodo.org/badge/535627233.svg)](https://zenodo.org/badge/latestdoi/535627233)
+<a href="https://colab.research.google.com/github/InfectionMedicineProteomics/BINN/blob/refactor-explain/BINN_colab.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
 
 The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found [here](https://doi.org/10.1038/s41467-023-41146-4).
 
-Have a look at the ```poster_ndpia.ipynb``` for an example of a complete quick and easy BINN analysis.
+This repo is accompanied by a [Colab notebook](https://colab.research.google.com/github/InfectionMedicineProteomics/BINN/blob/refactor-explain/BINN_colab.ipynb) for easy use.
 
 ---
 
@@ -85,20 +86,28 @@ plt.title("Interpreted network")
 
 
 ## Cite 
-Please cite: 
+If you use this package, please cite: 
+Hartman, E., Scott, A.M., Karlsson, C. et al. 
+Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. 
+Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
 
 ```
-Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
+@article{BINN,
+  title = {Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis},
+  volume = {14},
+  ISSN = {2041-1723},
+  url = {http://dx.doi.org/10.1038/s41467-023-41146-4},
+  DOI = {10.1038/s41467-023-41146-4},
+  number = {1},
+  journal = {Nature Communications},
+  publisher = {Springer Science and Business Media LLC},
+  author = {Hartman,  Erik and Scott,  Aaron M. and Karlsson,  Christofer and Mohanty,  Tirthankar and Vaara,  Suvi T. and Linder,  Adam and Malmstr\"{o}m,  Lars and Malmstr\"{o}m,  Johan},
+  year = {2023},
+  month = sep 
+}
 ```
-
-if you use this package.
 
 ## Contributors
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University
-
 [Aaron Scott](https://orcid.org/0000-0002-2391-6914), infection medicine proteomics, Lund University
-
-## Contact
-
-Erik Hartman - erik.hartman@hotmail.com

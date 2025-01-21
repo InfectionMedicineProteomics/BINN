@@ -1,8 +1,16 @@
+import textwrap
 import matplotlib.pyplot as plt
 import networkx as nx
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
+import pandas as pd
 
+# Import our utility helpers
+from binn.plot.util import (
+    load_default_mapping,
+    build_mapping_dict,
+    rename_node_by_layer
+)
 
 def visualize_binn(
     dataframe,
@@ -18,194 +26,281 @@ def visualize_binn(
     arrow_size=10,
     edge_width=1,
     node_size_scaling=10,
+    input_entity_mapping=None,  # can be a str, a DataFrame, or None
+    pathways_mapping=None,      # can be a str, a DataFrame, or None
+    input_entity_key_col="input_id",      # which column to use as key if user-provided
+    input_entity_val_col="input_name",       # which column to use as value if user-provided
+    pathways_key_col="pathway_id",    # which column to use as key if user-provided
+    pathways_val_col="pathway_name",           # which column to use as value if user-provided
 ):
     """
     Visualizes the most important nodes in a network using a multipartite (layered) layout,
     with a single output node to represent all non-top connections in the final layer.
 
-    - 'Sink nodes' gather all non-top nodes from a given layer and inherit their connections.
-      They are drawn at the bottom of each layer with fixed size and color, and are excluded
-      from the colormap scaling.
+    'Sink nodes' gather all non-top nodes from a given layer and inherit their connections.
+    They are drawn at the bottom of each layer with fixed size and color, and are excluded
+    from the colormap scaling.
 
     Parameters:
-    - dataframe: Input dataframe containing node information.
-      Must have columns: [source_node, target_node, source_layer, target_layer, normalized_importance].
-    - top_n: Number of top nodes to visualize per layer. Can be a dictionary {layer: top_n_value}
-             or a single integer for all layers.
-    - layer_normalization_value: Normalization value for importance in each layer.
-    - sink_node_size: Fixed size for sink nodes.
-    - sink_node_color: Color for sink nodes.
-    - node_cmap: Colormap for non-sink nodes.
-    - plot_size: Tuple specifying the plot size (width, height).
-    - alpha: Transparency for node colors.
-    - edge_color: Color for edges.
-    - edge_alpha: Transparency for edges.
-    - arrow_size: Arrow size for directed edges.
-    - edge_width_scaling: Scaling factor for edge width based on importance.
-    - node_size_scaling: Scaling factor for node size based on importance.
+    ----------
+    dataframe : pd.DataFrame
+        Must have columns: 
+            [source_node, target_node, source_layer, target_layer, normalized_importance].
+    top_n : int or dict
+        Number of top nodes to visualize per layer. 
+        If an int, applies to all layers. If dict, keys are layers and values are ints.
+    layer_normalization_value : float
+        Normalization value for importance in each layer.
+    sink_node_size : float
+        Fixed size for sink nodes.
+    sink_node_color : str
+        Color for sink nodes.
+    node_cmap : str
+        Colormap name for non-sink nodes.
+    plot_size : tuple
+        (width, height) for the figure.
+    alpha : float
+        Transparency for node colors.
+    edge_color : str
+        Color for edges.
+    edge_alpha : float
+        Transparency for edges.
+    arrow_size : int
+        Size of arrows in the drawn edges.
+    edge_width : float
+        Width of edges.
+    node_size_scaling : float
+        Scaling factor for node size based on importance.
+
+    input_entity_mapping : {None, str, pd.DataFrame}
+        If None, no mapping is done for layer 1.
+        If str (e.g. "reactome"), we attempt to load a default DataFrame 
+        from the package (not typical for input entities, but flexible).
+        If pd.DataFrame, we build a dictionary for renaming.
+
+    pathways_mapping : {None, str, pd.DataFrame}
+        If None, no mapping is done for layers != 1.
+        If str (e.g. "reactome"), we attempt to load a default DataFrame 
+        from the package.
+        If pd.DataFrame, we build a dictionary for renaming.
+
+    input_entity_key_col : str
+        Column name used as the key in input_entity_mapping if it's a DataFrame.
+    input_entity_val_col : str
+        Column name used as the value in input_entity_mapping.
+
+    pathways_key_col : str
+        Column name used as the key in pathways_mapping if it's a DataFrame.
+    pathways_val_col : str
+        Column name used as the value in pathways_mapping.
     """
 
-    # Ensure layer columns are of consistent type (convert to string)
+    # ---------------------------------------------------------------------
+    # 1) Build or load dictionaries for input entities and pathways
+    # ---------------------------------------------------------------------
+    # input entities (usually for layer 1)
+    if isinstance(input_entity_mapping, str):
+        # load default df, then build dict
+        input_entity_df = load_default_mapping(input_entity_mapping)
+        input_entity_dict = build_mapping_dict(
+            input_entity_df, key_col=input_entity_key_col, val_col=input_entity_val_col
+        )
+    elif isinstance(input_entity_mapping, pd.DataFrame):
+        # user-provided df => build dict
+        input_entity_dict = build_mapping_dict(
+            input_entity_mapping, key_col=input_entity_key_col, val_col=input_entity_val_col
+        )
+    else:
+        # None or anything else => no mapping
+        input_entity_dict = None
+
+    # pathways (usually for layers != 1)
+    if isinstance(pathways_mapping, str):
+        # load default df, then build dict
+        pathways_df = load_default_mapping(pathways_mapping)
+        pathways_dict = build_mapping_dict(
+            pathways_df, key_col=pathways_key_col, val_col=pathways_val_col
+        )
+    elif isinstance(pathways_mapping, pd.DataFrame):
+        # user-provided df => build dict
+        pathways_dict = build_mapping_dict(
+            pathways_mapping, key_col=pathways_key_col, val_col=pathways_val_col
+        )
+    else:
+        pathways_dict = None
+
+    # ---------------------------------------------------------------------
+    # 2) Preprocess the main dataframe: ensure layers are strings, build (node, layer) tuples
+    # ---------------------------------------------------------------------
     dataframe["source_layer"] = dataframe["source_layer"].astype(str)
     dataframe["target_layer"] = dataframe["target_layer"].astype(str)
 
-    # Create unique IDs by merging node and layer
-    dataframe["unique_source"] = (
-        dataframe["source_node"] + "_" + dataframe["source_layer"]
-    )
-    dataframe["unique_target"] = (
-        dataframe["target_node"] + "_" + dataframe["target_layer"]
-    )
+    dataframe["source_tuple"] = list(zip(dataframe["source_node"], dataframe["source_layer"]))
+    dataframe["target_tuple"] = list(zip(dataframe["target_node"], dataframe["target_layer"]))
 
-    # Aggregate node importance for source nodes
+    # ---------------------------------------------------------------------
+    # 3) Aggregate + normalize node importance
+    # ---------------------------------------------------------------------
+    if "normalized_importance" in dataframe.columns:
+        value_column = "normalized_importance"
+    else:
+        value_column = "importance"
+
     source_importance_df = (
-        dataframe.groupby(["unique_source", "source_layer"])["normalized_importance"]
+        dataframe
+        .groupby(["source_tuple", "source_layer"])[value_column]
         .sum()
         .reset_index()
     )
 
-    # Normalize importance values per layer
-    source_importance_df["normalized_importance"] = source_importance_df.groupby(
-        "source_layer"
-    )["normalized_importance"].transform(
-        lambda x: x / x.sum() * layer_normalization_value
-    )
+    # Normalize importance by layer
+    source_importance_df[value_column] = source_importance_df.groupby("source_layer")[
+        value_column
+    ].transform(lambda x: x / x.sum() * layer_normalization_value)
 
-    # Ensure top_n is a dictionary for layer-specific values
+    # Handle top_n as dict
     if isinstance(top_n, int):
-        top_n = {
-            layer: top_n for layer in source_importance_df["source_layer"].unique()
-        }
+        layers_unique = source_importance_df["source_layer"].unique()
+        top_n = {layer: top_n for layer in layers_unique}
 
-    # Select top nodes within each layer based on aggregated importance
+    def pick_top(group):
+        n = top_n.get(group.name, 0)
+        return group.nlargest(n, value_column)
+
     top_nodes_by_layer = (
-        source_importance_df.groupby("source_layer")
-        .apply(lambda x: x.nlargest(top_n.get(x.name, 0), "normalized_importance"))
+        source_importance_df
+        .groupby("source_layer")
+        .apply(pick_top)
         .reset_index(drop=True)
     )
+    top_source_nodes = set(top_nodes_by_layer["source_tuple"])
 
-    # Get set of top source nodes for quick lookup
-    top_source_nodes = set(top_nodes_by_layer["unique_source"])
-
-    # Identify sink nodes, renaming the final sink node to "output_node"
-    layers = set(dataframe["source_layer"].unique()).union(
+    # ---------------------------------------------------------------------
+    # 4) Identify sink nodes
+    # ---------------------------------------------------------------------
+    all_layers = set(dataframe["source_layer"].unique()).union(
         set(dataframe["target_layer"].unique())
     )
-    final_layer = max(int(layer) for layer in layers)
+    final_layer = max(int(layer) for layer in all_layers)
+
+    # We'll call them ("sink", layer) except for final layer => ("output_node", final_layer)
     sink_nodes = {}
-    for layer in layers:
-        if int(layer) == final_layer:
-            sink_nodes[layer] = "output_node"
+    for layer_str in all_layers:
+        if int(layer_str) == final_layer:
+            sink_nodes[layer_str] = ("output_node", layer_str)
         else:
-            sink_nodes[layer] = f"sink_{layer}"
+            sink_nodes[layer_str] = ("sink", layer_str)
 
-    # Initialize a directed graph
+    # ---------------------------------------------------------------------
+    # 5) Build the directed graph
+    # ---------------------------------------------------------------------
     G = nx.DiGraph()
-
-    # Keep track of each node's importance.
-    # For non-sink nodes, use the top_nodes_by_layer info; initialize sink nodes with 0.
     node_importance = {}
-    for _, row in top_nodes_by_layer.iterrows():
-        node_importance[row["unique_source"]] = row["normalized_importance"]
-    for layer, sink_node in sink_nodes.items():
-        node_importance[sink_node] = 0.0
 
-    # ---------------------------------------------------------------------
-    # Build edges while mapping non-top nodes to their layer-specific sink node.
-    # This way, sink nodes inherit the connections from all underlying non-top nodes.
-    # ---------------------------------------------------------------------
+    # initialize top-node importance
+    for _, row in top_nodes_by_layer.iterrows():
+        node_tuple = row["source_tuple"]
+        node_importance[node_tuple] = row[value_column]
+
+    # initialize sink-node importance
+    for layer_str, sink_tuple in sink_nodes.items():
+        node_importance[sink_tuple] = 0.0
+
+    # For each row in the dataframe, redirect non-top nodes to sink nodes
     for _, row in dataframe.iterrows():
-        source = row["unique_source"]
-        target = row["unique_target"]
+        s_tuple = row["source_tuple"]
+        t_tuple = row["target_tuple"]
         s_layer = row["source_layer"]
         t_layer = row["target_layer"]
-        importance = row["normalized_importance"]
+        importance = row[value_column]
 
-        # Map to sink node if not top node
-        new_source = source if source in top_source_nodes else sink_nodes[s_layer]
-        new_target = target if target in top_source_nodes else sink_nodes[t_layer]
+        new_source = s_tuple if s_tuple in top_source_nodes else sink_nodes[s_layer]
+        new_target = t_tuple if t_tuple in top_source_nodes else sink_nodes[t_layer]
 
-        # Create nodes with their corresponding layer if not present
         if not G.has_node(new_source):
-            G.add_node(new_source, layer=int(s_layer))
+            G.add_node(
+                new_source,
+                layer=int(s_layer),
+                name=rename_node_by_layer(
+                    new_source, 
+                    input_entity_dict=input_entity_dict, 
+                    pathways_dict=pathways_dict
+                ),
+            )
         if not G.has_node(new_target):
-            G.add_node(new_target, layer=int(t_layer))
+            G.add_node(
+                new_target,
+                layer=int(t_layer),
+                name=rename_node_by_layer(
+                    new_target, 
+                    input_entity_dict=input_entity_dict, 
+                    pathways_dict=pathways_dict
+                ),
+            )
 
-        # Accumulate node importance for both nodes.
         node_importance[new_source] = node_importance.get(new_source, 0) + importance
         node_importance[new_target] = node_importance.get(new_target, 0) + importance
 
-        # Aggregate edge weights if edge exists; otherwise add it.
         if G.has_edge(new_source, new_target):
             G[new_source][new_target]["weight"] += importance
         else:
             G.add_edge(new_source, new_target, weight=importance)
 
     # ---------------------------------------------------------------------
-    # Determine node layers.
+    # 6) Figure out node order per layer and generate layout
     # ---------------------------------------------------------------------
     node_layers = {node: data["layer"] for node, data in G.nodes(data=True)}
-
-    # For laying out nodes, group nodes per layer.
-    # Also, adjust ordering so that sink nodes always end up at the bottom.
     layer_nodes = {}
     for node, layer in node_layers.items():
         layer_nodes.setdefault(layer, []).append(node)
 
+    # Sort non-sink nodes within each layer by descending importance
     for layer in layer_nodes:
-        # Separate non-sink nodes from sink nodes.
-        non_sink = [n for n in layer_nodes[layer] if n not in sink_nodes.values()]
-        sinks = [n for n in layer_nodes[layer] if n in sink_nodes.values()]
-        # Sort non-sink nodes descending by importance.
+        sinks_here = [n for n in layer_nodes[layer] if n in sink_nodes.values()]
+        non_sink = [n for n in layer_nodes[layer] if n not in sinks_here]
         non_sink_sorted = sorted(non_sink, key=lambda n: -node_importance.get(n, 0))
-        # The final order is non-sink nodes followed by sink nodes.
-        layer_nodes[layer] = non_sink_sorted + sinks
+        layer_nodes[layer] = non_sink_sorted + sinks_here
 
-    # ---------------------------------------------------------------------
-    # Create the layout using NetworkX's multipartite_layout.
-    # We'll then adjust vertical positions for each layer so that they are centered.
-    # ---------------------------------------------------------------------
     pos = nx.multipartite_layout(G, subset_key="layer")
 
+    # Re-center vertically
     for layer, nodes_in_layer in layer_nodes.items():
         count = len(nodes_in_layer)
-        # Compute an offset so that positions will be centered:
-        # For example, if count=3, we want y-coords: 1, 0, -1.
-        offset = (count - 1) / 2
+        offset = (count - 1) / 2.0
         for idx, node in enumerate(nodes_in_layer):
-            # Here, a higher index means a lower position.
             pos[node] = (layer, offset - idx)
 
     # ---------------------------------------------------------------------
-    # Create normalization for colormap using only non-sink nodes per layer.
+    # 7) Colormap normalization (exclude sink nodes)
     # ---------------------------------------------------------------------
+    cmap = plt.get_cmap(node_cmap)
     layer_norms = {}
     for layer, nodes_in_layer in layer_nodes.items():
-        # Only consider non-sink nodes for colormap normalization.
         non_sink = [n for n in nodes_in_layer if n not in sink_nodes.values()]
         if non_sink:
-            values = [node_importance[n] for n in non_sink]
-            layer_norms[layer] = mcolors.Normalize(vmin=min(values), vmax=max(values))
+            vals = [node_importance[n] for n in non_sink]
+            layer_norms[layer] = mcolors.Normalize(vmin=min(vals), vmax=max(vals))
         else:
             layer_norms[layer] = mcolors.Normalize(vmin=0, vmax=1)
 
     # ---------------------------------------------------------------------
-    # Plot the graph.
+    # 8) Plot
     # ---------------------------------------------------------------------
     plt.figure(figsize=plot_size)
-    cmap = plt.get_cmap(node_cmap)
 
+    # Draw nodes
     for layer, nodes_in_layer in layer_nodes.items():
         norm = layer_norms[layer]
         sizes = []
         colors = []
         for n in nodes_in_layer:
-            if n in sink_nodes.values():  # Fixed size and color for sink nodes.
+            if n in sink_nodes.values():
                 sizes.append(sink_node_size)
                 colors.append(sink_node_color)
             else:
-                sizes.append(node_importance.get(n, 0) * node_size_scaling)
-                colors.append(cmap(norm(node_importance.get(n, 0))))
+                val = node_importance.get(n, 0)
+                sizes.append(val * node_size_scaling)
+                colors.append(cmap(norm(val)))
         nx.draw_networkx_nodes(
             G,
             pos,
@@ -215,7 +310,7 @@ def visualize_binn(
             alpha=alpha,
         )
 
-    # Draw edges with widths based on importance.
+    # Draw edges
     nx.draw_networkx_edges(
         G,
         pos,
@@ -226,10 +321,15 @@ def visualize_binn(
         width=edge_width,
     )
 
-    # Draw node labels.
-    nx.draw_networkx_labels(G, pos)
+    # Draw labels (the "name" attribute we set above)
+    max_label_width = 20
+    labels = {
+        node: "\n".join(textwrap.wrap(data["name"], width=max_label_width))
+        for node, data in G.nodes(data=True)
+    }
+    nx.draw_networkx_labels(G, pos, labels=labels)
 
-    # Add a colorbar for non-sink nodes (using the last computed cmap).
+    # Add colorbar
     sm = cm.ScalarMappable(cmap=cmap)
     sm.set_array([])
     plt.colorbar(sm, ax=plt.gca(), label="Normalized node importance")

@@ -66,8 +66,23 @@ Erik Hartman - erik.hartman@hotmail.com
 
 # Cite
 
-Please cite: 
+If you use this package, please cite: 
+Hartman, E., Scott, A.M., Karlsson, C. et al. 
+Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. 
+Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
 
-Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
-
-if you use this package.
+```
+@article{BINN,
+  title = {Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis},
+  volume = {14},
+  ISSN = {2041-1723},
+  url = {http://dx.doi.org/10.1038/s41467-023-41146-4},
+  DOI = {10.1038/s41467-023-41146-4},
+  number = {1},
+  journal = {Nature Communications},
+  publisher = {Springer Science and Business Media LLC},
+  author = {Hartman,  Erik and Scott,  Aaron M. and Karlsson,  Christofer and Mohanty,  Tirthankar and Vaara,  Suvi T. and Linder,  Adam and Malmstr\"{o}m,  Lars and Malmstr\"{o}m,  Johan},
+  year = {2023},
+  month = sep 
+}
+```
