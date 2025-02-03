@@ -8,13 +8,13 @@
 The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using [SHAP](https://arxiv.org/abs/1705.07874). The package is hosted on [GitHub](https://github.com/InfectionMedicineProteomics/BINN).
 
 
-### Table Of Contents
+# Table Of Contents
 
 - [Install](#install)
 - [Introduction](#introduction)
 - [API Reference](reference/binn_ref.md)
 
-### Install
+# Install
 
 BINN can be installed via `pip`
 
@@ -31,14 +31,13 @@ pip install -e BINN/
 
 **Examples:**
 
-In the [examples](binn_example.ipynb) we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on mass-spec intensity values.
+In the [examples](binn_example.ipynb) we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on quantified proteins by mass spectrometry.
 
-- [BINN example](binn_example.ipynb)
-- [Interpretation example](shap_example.ipynb)
-- [Scikit-learn API](sklearn_api.ipynb)
+- [Creating and training a BINN](binn_example.ipynb)
+- [Full example with interpretation and visualization](shap_example.ipynb)
 - [Robustness analysis](robustness.ipynb)
 
-### Introduction
+# Introduction
 
 Biological systems are highly complex and require tools which are capable of capturing that complexity while at the same time making the systems understandable. Here, we have created a package which generates **BINNs (_Biologically Informed Neural Networks_)**. A BINN is generated using an underlying graph which determines the connecitivty between its layers and the annotations for each node. The implementation is agnostic to the input graph and can be provided with e.g., [Reactome pathways](https://reactome.org/), [KEGG pathways](https://www.genome.jp/kegg/), [Gene Ontology pathways](http://geneontology.org/) or your own curated pathways.
 
@@ -46,38 +45,44 @@ The initial layer of the BINN contain the input features, and should connect to 
 
 We also include some plotting functionalities which allow you to visualize the importance of each node in the network.
 
-|                                                          <img src="img/complete_sankey.png" style="display:block;margin-left:auto;margin-right:auto;">                                                           |
+|                                                          <img src="img/interpreted_binn.png" style="display:block;margin-left:auto;margin-right:auto;">                                                           |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Sankey plot showing the importance of a of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database. |
+| Network showing the importance of nodes in a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database. |
 
-We can also subset an importance-graph to generate visualizations for specific parts of the network, e.g., originating from a certain node and looking downstream. In the example below we subset the BINN by choosing node 'P02766' and looking at what nodes it influences downstream:
 
-| <img src="img/subgraph_sankey.png" style="display:block;margin-left:auto;margin-right:auto;"> |
-| :-------------------------------------------------------------------------------------------: |
-|             Sankey plot showing the importance of nodes downstream from 'P02766'.             |
-
-### Contributors
+# Contributors
 
 [Erik Hartman](https://orcid.org/0000-0001-9997-2405), infection medicine proteomics, Lund University
 
 [Aaron Scott](https://orcid.org/0000-0002-2391-6914), infection medicine proteomics, Lund University
 
-### Contact
+# Contact
 
 Erik Hartman - erik.hartman@hotmail.com
 
-### GitHub repo
+# GitHub repo
 
 [github.com/InfectionMedicineProteomics/BINN](https://github.com/InfectionMedicineProteomics/BINN)
 
-### Cite
+# Cite
 
-Please cite: 
+If you use this package, please cite: 
+Hartman, E., Scott, A.M., Karlsson, C. et al. 
+Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. 
+Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
 
-Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4
-
-if you use this package.
-
-
-<br><br><br><br>
-<img src="img/imp_logo.png" width="250" height="250" style="display:block;margin-left:auto;margin-right:auto;">
+```
+@article{BINN,
+  title = {Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis},
+  volume = {14},
+  ISSN = {2041-1723},
+  url = {http://dx.doi.org/10.1038/s41467-023-41146-4},
+  DOI = {10.1038/s41467-023-41146-4},
+  number = {1},
+  journal = {Nature Communications},
+  publisher = {Springer Science and Business Media LLC},
+  author = {Hartman,  Erik and Scott,  Aaron M. and Karlsson,  Christofer and Mohanty,  Tirthankar and Vaara,  Suvi T. and Linder,  Adam and Malmstr\"{o}m,  Lars and Malmstr\"{o}m,  Johan},
+  year = {2023},
+  month = sep 
+}
+```

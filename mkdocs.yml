@@ -3,21 +3,21 @@ site_name: BINN
 repo_url: https://github.com/InfectionMedicineProteomics/BINN
 
 theme:
-  name: gitbook
+  name: bootstrap
 
 nav:
   - index.md
   - Examples & tutorials:
       - binn_example.ipynb
       - shap_example.ipynb
-      - sklearn_api.ipynb
       - robustness.ipynb
   - API Reference:
       - reference/binn_ref.md
-      - reference/net_ref.md
       - reference/explain_ref.md
-      - reference/import_ref.md
-      - reference/sk_ref.md
+      - reference/trainer_ref.md
+      - reference/dataloader_ref.md
+
+
 
 plugins:
   - mkdocstrings

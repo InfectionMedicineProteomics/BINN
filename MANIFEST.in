@@ -1,0 +1,2 @@
+recursive-include binn/data/downloads *.txt
+recursive-include binn/data/downloads *.tsv

@@ -1,0 +1,3 @@
+# BINNTrainer
+
+## ::: binn.model.trainer
