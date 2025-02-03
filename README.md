@@ -9,13 +9,13 @@
 [![PyPI version](https://badge.fury.io/py/binn.svg)](https://badge.fury.io/py/binn)
 [![Python application](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml/badge.svg)](https://github.com/InfectionMedicineProteomics/BINN/actions/workflows/python-app.yml)
 [![DOI](https://zenodo.org/badge/535627233.svg)](https://zenodo.org/badge/latestdoi/535627233)
-<a href="https://colab.research.google.com/github/InfectionMedicineProteomics/BINN/blob/refactor-explain/BINN_colab.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+<a href="https://colab.research.google.com/github/InfectionMedicineProteomics/BINN/blob/main/colab/BINN_colab.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 BINN documentation is avaiable [here.](https://infectionmedicineproteomics.github.io/BINN/)
 
 The BINN-package allows you to create a sparse neural network from a pathway and input file. The examples presented in [docs](<(https://infectionmedicineproteomics.github.io/BINN/)>) use the [Reactome pathway database](https://reactome.org/) and a proteomic dataset to generate the neural network. It also allows you to train and interpret the network using [SHAP](https://github.com/slundberg/shap). Plotting functions are also available for generating sankey plots. The article presenting the BINN can currently be found [here](https://doi.org/10.1038/s41467-023-41146-4).
 
-This repo is accompanied by a [Colab notebook](https://colab.research.google.com/github/InfectionMedicineProteomics/BINN/blob/refactor-explain/BINN_colab.ipynb) for easy use.
+This repo is accompanied by a [Colab notebook](./colab/BINN_colab.ipynb) for easy use.
 
 ---
 
