@@ -29,6 +29,16 @@ class BINN(nn.Module):
             If None, the user must rely on `use_reactome=True`.
         pathways (pd.DataFrame, optional):
             A DataFrame describing the edges among pathway nodes.
+        entity_col (str, optional):
+            **Datamatrix**: The column for the entity, in the datamatrix file.
+        input_col (str, optional):
+            **Mapping**: The column for the input in the mapping file. Should correspond to entity in the datamatrix file.
+        translation_col (str, optional):
+            **Mapping**: The column for the translation in the mapping file.
+        target_col (str, optional):
+            **Pathways**: The column for the target in the pathways file.
+        source_col (str, optional):
+            **Pathways**: The column for the source in the pathways file.
         activation (str, optional):
             The activation function to use in each layer. Defaults to "tanh".
         n_layers (int, optional):
@@ -41,6 +51,7 @@ class BINN(nn.Module):
             If True, build an ensemble-of-heads network. Otherwise, a standard MLP.
         device (str, optional):
             The PyTorch device to place this model on. Defaults to "cpu".
+
 
     Attributes:
         inputs (List[str]):
@@ -57,8 +68,16 @@ class BINN(nn.Module):
         self,
         data_matrix: pd.DataFrame = None,
         network_source: str = None,
+        input_source: str = "uniprot",
         mapping: pd.DataFrame = None,
         pathways: pd.DataFrame = None,
+
+        entity_col: str = "Protein",
+        input_col: str = "input",
+        translation_col: str = "translation",
+        target_col: str = "target",
+        source_col: str = "source",
+
         activation: str = "tanh",
         n_layers: int = 4,
         n_outputs: int = 2,
@@ -75,15 +94,22 @@ class BINN(nn.Module):
         self.heads_ensemble = heads_ensemble
 
         # Build the pathway network from dataframes
-  
+
         if network_source == "reactome":
-            reactome_db = load_reactome_db()
+            reactome_db = load_reactome_db(input_source=input_source)
             mapping = reactome_db["mapping"]
             pathways = reactome_db["pathways"]
 
         # Build connectivity from the pathway network
         pn = dataframes_to_pathway_network(
-            data_matrix=data_matrix, pathway_df=pathways, mapping_df=mapping
+            data_matrix=data_matrix,
+            pathway_df=pathways,
+            mapping_df=mapping,
+            input_col=input_col,
+            target_col=target_col,
+            source_col=source_col,
+            entity_col=entity_col,
+            translation_col=translation_col,
         )
 
         # The connectivity matrices for each layer
@@ -211,7 +237,9 @@ def _generate_ensemble_of_heads(
     Build a multi-head ensemble: each hidden layer also has a head -> n_outputs,
     which is passed through Sigmoid, and then the heads are summed in forward pass.
     """
-    return _EnsembleHeads(layer_sizes, connectivity_matrices, activation, n_outputs, bias)
+    return _EnsembleHeads(
+        layer_sizes, connectivity_matrices, activation, n_outputs, bias
+    )
 
 
 class _EnsembleHeads(nn.Module):
@@ -237,7 +265,9 @@ class _EnsembleHeads(nn.Module):
 
             # Prune
             if connectivity_matrices is not None:
-                mask = torch.tensor(connectivity_matrices[i].T.values, dtype=torch.float32)
+                mask = torch.tensor(
+                    connectivity_matrices[i].T.values, dtype=torch.float32
+                )
                 prune.custom_from_mask(lin, name="weight", mask=mask)
 
             # Activation
@@ -255,8 +285,8 @@ class _EnsembleHeads(nn.Module):
         sum_heads = None
 
         for i, (block, head) in enumerate(zip(self.blocks, self.heads)):
-            x = block(x)            # transform
-            out = head(x)           # shape [batch, n_outputs]
+            x = block(x)  # transform
+            out = head(x)  # shape [batch, n_outputs]
             sum_heads = out if sum_heads is None else sum_heads + out
 
         return sum_heads

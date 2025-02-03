@@ -31,6 +31,7 @@ site
 .DS_Store
 poster_*
 !poster_ndpia.ipynb
-data/covid_*
-data/human_proteome.gz
-data/id_to_name.txt
+
+!binn/data/downloads
+
+.pytest_cache
