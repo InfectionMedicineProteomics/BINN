@@ -8,7 +8,7 @@ import torch
 
 class BINNDataLoader:
     """
-    A utility class for aligning data to the BINN network, preparing train/validation splits, 
+    A utility class for aligning data to the BINN network, preparing train/validation splits,
     and creating PyTorch DataLoaders with a simplified user interface.
     """
 
@@ -32,7 +32,7 @@ class BINNDataLoader:
             feature_column (str): Column name for feature identifiers in 'data_matrix'.
 
         Returns:
-            pd.DataFrame: Data matrix with rows matching the BINN's expected features, 
+            pd.DataFrame: Data matrix with rows matching the BINN's expected features,
                           filling missing features with zeros if needed.
         """
         features = self.binn_network.inputs  # Features expected by BINN
@@ -79,13 +79,18 @@ class BINNDataLoader:
 
         # Prepare X and y
         group_samples = {
-            group: design_matrix[design_matrix[group_column] == group][sample_column].values.tolist()
+            group: design_matrix[design_matrix[group_column] == group][
+                sample_column
+            ].values.tolist()
             for group in groups
         }
         X_list = [aligned_data[samples].T for samples in group_samples.values()]
         X = pd.concat(X_list).fillna(0).to_numpy()
         y = np.concatenate(
-            [[group_to_label[group]] * len(samples) for group, samples in group_samples.items()]
+            [
+                [group_to_label[group]] * len(samples)
+                for group, samples in group_samples.items()
+            ]
         )
 
         # Standardize features

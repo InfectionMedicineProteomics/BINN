@@ -2,7 +2,6 @@ import pytest
 import torch
 import numpy as np
 import pandas as pd
-import networkx as nx
 import torch.nn as nn
 
 from binn.analysis.explainer import BINNExplainer

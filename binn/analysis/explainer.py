@@ -36,7 +36,12 @@ class BINNExplainer:
         """Update the current BINN model for explanations."""
         self.model = model
 
-    def explain_single(self, dataloaders: dict, split: str = None, normalization_method: str = "subgraph") -> pd.DataFrame:
+    def explain_single(
+        self,
+        dataloaders: dict,
+        split: str = None,
+        normalization_method: str = "subgraph",
+    ) -> pd.DataFrame:
         """
         Gathers all samples from the specified DataLoader(s),
         uses them for both background and test data in SHAP,
@@ -63,7 +68,9 @@ class BINNExplainer:
         shap_dict = self._explain_layers(all_inputs, all_inputs)
         explanation_df = self._shap_to_dataframe(shap_dict)
         if normalization_method:
-            explanation_df = self.normalize_importances(explanation_df, method=normalization_method)
+            explanation_df = self.normalize_importances(
+                explanation_df, method=normalization_method
+            )
         return explanation_df
 
     def explain(
@@ -74,7 +81,7 @@ class BINNExplainer:
         trainer: BINNTrainer,
         split: str = None,
         normalization_method: str = "subgraph",
-        verbose : bool = True,
+        verbose: bool = True,
     ) -> Tuple[pd.DataFrame, Dict[int, Dict]]:
         """
         Re-initializes the BINN model multiple times, trains it using the given trainer,
@@ -120,7 +127,9 @@ class BINNExplainer:
 
         combined_df = self._combine_iterations(all_dfs)
         if normalization_method:
-            combined_df = self.normalize_importances(combined_df, method=normalization_method)
+            combined_df = self.normalize_importances(
+                combined_df, method=normalization_method
+            )
         return combined_df
 
     def normalize_importances(
@@ -186,10 +195,9 @@ class BINNExplainer:
         else:
             raise ValueError(f"Unknown normalization method: {method}")
 
-
         norm_vals = []
         for _, row in explanation_df.iterrows():
-            node = row["source_node"] 
+            node = row["source_node"]
             raw_imp = row[value_col]
 
             if method == "fan":
@@ -287,7 +295,6 @@ class BINNExplainer:
 
         df = pd.DataFrame(all_rows)
         return df
-
 
     def _combine_iterations(
         self, results_dict: Dict[int, pd.DataFrame]

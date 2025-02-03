@@ -1,4 +1,3 @@
-import collections
 import torch
 import pandas as pd
 from torch import nn
@@ -71,13 +70,11 @@ class BINN(nn.Module):
         input_source: str = "uniprot",
         mapping: pd.DataFrame = None,
         pathways: pd.DataFrame = None,
-
         entity_col: str = "Protein",
         input_col: str = "input",
         translation_col: str = "translation",
         target_col: str = "target",
         source_col: str = "source",
-
         activation: str = "tanh",
         n_layers: int = 4,
         n_outputs: int = 2,
