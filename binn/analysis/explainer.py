@@ -73,7 +73,8 @@ class BINNExplainer:
         num_epochs: int,
         trainer: BINNTrainer,
         split: str = None,
-        normalization_method: str = "subgraph"
+        normalization_method: str = "subgraph",
+        verbose : bool = True,
     ) -> Tuple[pd.DataFrame, Dict[int, Dict]]:
         """
         Re-initializes the BINN model multiple times, trains it using the given trainer,
@@ -102,7 +103,8 @@ class BINNExplainer:
         all_dfs = {}
 
         for iteration in range(nr_iterations):
-            print(f"[BINNExplainer] Iteration {iteration+1}/{nr_iterations}...")
+            if verbose:
+                print(f"[BINNExplainer] Iteration {iteration+1}/{nr_iterations}...")
 
             # Re-init model params
             self.model.apply(_reset_params)

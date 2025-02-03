@@ -11,12 +11,12 @@ def load_default_mapping(mapping_name: str) -> pd.DataFrame:
     """
     base_dir = os.path.dirname(os.path.abspath(__file__))
     if mapping_name.lower() == "reactome":
-        mapping_path = os.path.join(base_dir, "../../data/downloads/reactome_pathways_names_2025_01_21.txt")
+        mapping_path = os.path.join(base_dir, "..", "data", "downloads", "reactome_pathways_names_2025_01_21.txt")
         mapping_df = pd.read_csv(mapping_path, sep="\t", header=None,
                                  names=["pathway_id", "pathway_name", "species"])
         return mapping_df
     elif mapping_name.lower() == "uniprot":
-        mapping_path = os.path.join(base_dir, "../../data/downloads/uniprotkb_human_2025_01_21.tsv")
+        mapping_path = os.path.join(base_dir, "..", "data", "downloads", "uniprotkb_human_2025_01_21.tsv")
         mapping_df = pd.read_csv(mapping_path, sep="\t", header=None,
                                  names=["input_id", "input_name", "input_longer_name"])
         return mapping_df

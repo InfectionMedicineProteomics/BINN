@@ -19,4 +19,5 @@ setup(
     long_description=open("README.md").read(),
     install_requires=requirements,
     url="https://github.com/InfectionMedicineProteomics/BINN",
+    include_package_data=True,
 )
