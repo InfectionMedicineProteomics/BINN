@@ -1,110 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<title>Home - BINN</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>BINN</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
 
-<meta name="generator" content="mkdocs-1.5.3, mkdocs-gitbook-1.0.7">
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">BINN</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-<link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
-<meta name="HandheldFriendly" content="true"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta rel="next" href="" />
-<link href="./css/style.min.css" rel="stylesheet">
-<link href="assets/_mkdocstrings.css" rel="stylesheet"> 
-</head>
-
-<body>
-<div class="book">
-<div class="book-summary">
-
-<nav role="navigation">
-<ul class="summary">
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="." class="nav-link active" aria-current="page">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Examples & tutorials</a>
+                                <ul class="dropdown-menu">
+                                    
 <li>
-<a href="." target="_blank" class="custom-link">BINN</a>
+    <a href="binn_example/" class="dropdown-item">Creating a BINN</a>
 </li>
-<li class="divider"></li>
-<li class="chapter active" data-path="">
-<a href=".">Home</a>
-<li class="header">Examples & tutorials</li>
-
+                                    
 <li>
-<a href="binn_example/" class="">BINN - Biologically Informed Neural Network</a>
+    <a href="shap_example/" class="dropdown-item">Shap example</a>
 </li>
-
+                                    
 <li>
-<a href="shap_example/" class="">Shap example</a>
+    <a href="robustness/" class="dropdown-item">Robustness</a>
 </li>
-
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API Reference</a>
+                                <ul class="dropdown-menu">
+                                    
 <li>
-<a href="sklearn_api/" class="">Scikit-learn API</a>
+    <a href="reference/binn_ref/" class="dropdown-item">BINN</a>
 </li>
-
+                                    
 <li>
-<a href="robustness/" class="">Robustness</a>
+    <a href="reference/explain_ref/" class="dropdown-item">Explain</a>
 </li>
-
-<li class="header">API Reference</li>
-
+                                    
 <li>
-<a href="reference/binn_ref/" class="">BINN</a>
+    <a href="reference/trainer_ref/" class="dropdown-item">BINNTrainer</a>
 </li>
-
+                                    
 <li>
-<a href="reference/net_ref/" class="">Network</a>
+    <a href="reference/dataloader_ref/" class="dropdown-item">BINNDataloader</a>
 </li>
+                                </ul>
+                            </li>
+                        </ul>
 
-<li>
-<a href="reference/explain_ref/" class="">Explain</a>
-</li>
+                    <ul class="nav navbar-nav ms-md-auto">
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="binn_example/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/InfectionMedicineProteomics/BINN/edit/master/docs/index.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-<li>
-<a href="reference/import_ref/" class="">Importance Network & Visualization</a>
-</li>
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
 
-<li>
-<a href="reference/sk_ref/" class="">Scikit-learn API</a>
-</li>
-
-<li class="divider"></li>
-
-
-
-<li><a href="http://www.mkdocs.org">
-Published with MkDocs
-</a></li>
-
-<li><a href="https://github.com/GitbookIO/theme-default">
-Theme by GitBook
-</a></li>
-</ul>
-
-</nav>
-
-</div> <!-- end of book-summary -->
-
-<div class="book-body">
-<div class="body-inner">
-<div class="book-header" role="navigation">
-
-<!-- Title -->
-<h1>
-<i class="fa fa-circle-o-notch fa-spin"></i>
-<a href="." ></a>
-</h1>
-
-</div> <!-- end of book-header -->
-
-<div class="page-wrapper" tabindex="-1" role="main">
-<div class="page-inner">
-
-<section class="normal markdown-section">
-
-
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#welcome-to-the-binn-documentation" class="nav-link">Welcome to the BINN documentation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#table-of-contents" class="nav-link">Table Of Contents</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#install" class="nav-link">Install</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#contributors" class="nav-link">Contributors</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#contact" class="nav-link">Contact</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#github-repo" class="nav-link">GitHub repo</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#cite" class="nav-link">Cite</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
 
 <p align="center">
     <img src="img/logo.png", width="150" />
@@ -112,13 +160,13 @@ Theme by GitBook
 
 <h1 id="welcome-to-the-binn-documentation">Welcome to the BINN documentation</h1>
 <p>The BINN-package allows you to create a sparse neural network in the PyTorch-framework from a pathway and input file. It also allows you to train and interpret the network using <a href="https://arxiv.org/abs/1705.07874">SHAP</a>. The package is hosted on <a href="https://github.com/InfectionMedicineProteomics/BINN">GitHub</a>.</p>
-<h3 id="table-of-contents">Table Of Contents</h3>
+<h1 id="table-of-contents">Table Of Contents</h1>
 <ul>
 <li><a href="#install">Install</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="reference/binn_ref/">API Reference</a></li>
 </ul>
-<h3 id="install">Install</h3>
+<h1 id="install">Install</h1>
 <p>BINN can be installed via <code>pip</code></p>
 <pre><code>pip install binn
 </code></pre>
@@ -127,67 +175,113 @@ Theme by GitBook
 pip install -e BINN/
 </code></pre>
 <p><strong>Examples:</strong></p>
-<p>In the <a href="binn_example/">examples</a> we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on mass-spec intensity values.</p>
+<p>In the <a href="binn_example/">examples</a> we use proteins as the input layer and the Reactome pathway database to generate the BINN. The network is trained on quantified proteins by mass spectrometry.</p>
 <ul>
-<li><a href="binn_example/">BINN example</a></li>
-<li><a href="shap_example/">Interpretation example</a></li>
-<li><a href="sklearn_api/">Scikit-learn API</a></li>
+<li><a href="binn_example/">Creating and training a BINN</a></li>
+<li><a href="shap_example/">Full example with interpretation and visualization</a></li>
 <li><a href="robustness/">Robustness analysis</a></li>
 </ul>
-<h3 id="introduction">Introduction</h3>
+<h1 id="introduction">Introduction</h1>
 <p>Biological systems are highly complex and require tools which are capable of capturing that complexity while at the same time making the systems understandable. Here, we have created a package which generates <strong>BINNs (<em>Biologically Informed Neural Networks</em>)</strong>. A BINN is generated using an underlying graph which determines the connecitivty between its layers and the annotations for each node. The implementation is agnostic to the input graph and can be provided with e.g., <a href="https://reactome.org/">Reactome pathways</a>, <a href="https://www.genome.jp/kegg/">KEGG pathways</a>, <a href="http://geneontology.org/">Gene Ontology pathways</a> or your own curated pathways.</p>
 <p>The initial layer of the BINN contain the input features, and should connect to the chosen graph. This could be genes, proteins or any other entities which map correctly to the input graph. The network is then trained and interpreted using SHAP. This results in importance values for each node in the network, allowing you to identify which biological entities and pathways are important for the classification you trained the network on.</p>
 <p>We also include some plotting functionalities which allow you to visualize the importance of each node in the network.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;"><img src="img/complete_sankey.png" style="display:block;margin-left:auto;margin-right:auto;"></th>
+<th style="text-align: center;"><img src="img/interpreted_binn.png" style="display:block;margin-left:auto;margin-right:auto;"></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">Sankey plot showing the importance of a of a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database.</td>
+<td style="text-align: center;">Network showing the importance of nodes in a BINN. The first layer of the BINN contains proteins (hence the UniProt ID in the first layer). The hidden layers are generated using the Reactome pathway database.</td>
 </tr>
 </tbody>
 </table>
-<p>We can also subset an importance-graph to generate visualizations for specific parts of the network, e.g., originating from a certain node and looking downstream. In the example below we subset the BINN by choosing node 'P02766' and looking at what nodes it influences downstream:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;"><img src="img/subgraph_sankey.png" style="display:block;margin-left:auto;margin-right:auto;"></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Sankey plot showing the importance of nodes downstream from 'P02766'.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="contributors">Contributors</h3>
+<h1 id="contributors">Contributors</h1>
 <p><a href="https://orcid.org/0000-0001-9997-2405">Erik Hartman</a>, infection medicine proteomics, Lund University</p>
 <p><a href="https://orcid.org/0000-0002-2391-6914">Aaron Scott</a>, infection medicine proteomics, Lund University</p>
-<h3 id="contact">Contact</h3>
+<h1 id="contact">Contact</h1>
 <p>Erik Hartman - erik.hartman@hotmail.com</p>
-<h3 id="github-repo">GitHub repo</h3>
+<h1 id="github-repo">GitHub repo</h1>
 <p><a href="https://github.com/InfectionMedicineProteomics/BINN">github.com/InfectionMedicineProteomics/BINN</a></p>
-<h3 id="cite">Cite</h3>
-<p>Please cite: </p>
-<p>Hartman, E., Scott, A.M., Karlsson, C. et al. Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4</p>
-<p>if you use this package.</p>
-<p><br><br><br><br>
-<img src="img/imp_logo.png" width="250" height="250" style="display:block;margin-left:auto;margin-right:auto;"></p>
+<h1 id="cite">Cite</h1>
+<p>If you use this package, please cite: 
+Hartman, E., Scott, A.M., Karlsson, C. et al. 
+Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis. 
+Nat Commun 14, 5359 (2023). https://doi.org/10.1038/s41467-023-41146-4</p>
+<pre><code>@article{BINN,
+  title = {Interpreting biologically informed neural networks for enhanced proteomic biomarker discovery and pathway analysis},
+  volume = {14},
+  ISSN = {2041-1723},
+  url = {http://dx.doi.org/10.1038/s41467-023-41146-4},
+  DOI = {10.1038/s41467-023-41146-4},
+  number = {1},
+  journal = {Nature Communications},
+  publisher = {Springer Science and Business Media LLC},
+  author = {Hartman,  Erik and Scott,  Aaron M. and Karlsson,  Christofer and Mohanty,  Tirthankar and Vaara,  Suvi T. and Linder,  Adam and Malmstr\&quot;{o}m,  Lars and Malmstr\&quot;{o}m,  Johan},
+  year = {2023},
+  month = sep 
+}
+</code></pre></div>
+            </div>
+        </div>
 
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
 
-</section>
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
 
-</div> <!-- end of page-inner -->
-</div> <!-- end of page-wrapper -->
-
-</div> <!-- end of body-inner -->
-
-</div> <!-- end of book-body -->
-<script src="./js/main.js"></script>
-<script src="./js/gitbook.min.js"></script>
-<script src="./js/theme.min.js"></script>
-</body>
+    </body>
 </html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-02-03 11:34:09.600315+00:00
+-->

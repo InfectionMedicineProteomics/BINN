@@ -1,110 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<title>Explain - BINN</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Explain - BINN</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
 
-<meta name="generator" content="mkdocs-1.5.3, mkdocs-gitbook-1.0.7">
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">BINN</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-<link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
-<meta name="HandheldFriendly" content="true"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta rel="next" href="" />
-<link href="../../css/style.min.css" rel="stylesheet">
-<link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
-</head>
-
-<body>
-<div class="book">
-<div class="book-summary">
-
-<nav role="navigation">
-<ul class="summary">
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Examples & tutorials</a>
+                                <ul class="dropdown-menu">
+                                    
 <li>
-<a href="../.." target="_blank" class="custom-link">BINN</a>
+    <a href="../../binn_example/" class="dropdown-item">Creating a BINN</a>
 </li>
-<li class="divider"></li>
-<li class="chapter" data-path="">
-<a href="../..">Home</a>
-<li class="header">Examples & tutorials</li>
-
+                                    
 <li>
-<a href="../../binn_example/" class="">BINN - Biologically Informed Neural Network</a>
+    <a href="../../shap_example/" class="dropdown-item">Shap example</a>
 </li>
-
+                                    
 <li>
-<a href="../../shap_example/" class="">Shap example</a>
+    <a href="../../robustness/" class="dropdown-item">Robustness</a>
 </li>
-
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API Reference</a>
+                                <ul class="dropdown-menu">
+                                    
 <li>
-<a href="../../sklearn_api/" class="">Scikit-learn API</a>
+    <a href="../binn_ref/" class="dropdown-item">BINN</a>
 </li>
-
+                                    
 <li>
-<a href="../../robustness/" class="">Robustness</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Explain</a>
 </li>
-
-<li class="header">API Reference</li>
-
+                                    
 <li>
-<a href="../binn_ref/" class="">BINN</a>
+    <a href="../trainer_ref/" class="dropdown-item">BINNTrainer</a>
 </li>
-
+                                    
 <li>
-<a href="../net_ref/" class="">Network</a>
+    <a href="../dataloader_ref/" class="dropdown-item">BINNDataloader</a>
 </li>
+                                </ul>
+                            </li>
+                        </ul>
 
-<li>
-<a href="./" class="active">Explain</a>
-</li>
+                    <ul class="nav navbar-nav ms-md-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../binn_ref/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../trainer_ref/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/InfectionMedicineProteomics/BINN/edit/master/docs/reference/explain_ref.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-<li>
-<a href="../import_ref/" class="">Importance Network & Visualization</a>
-</li>
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
 
-<li>
-<a href="../sk_ref/" class="">Scikit-learn API</a>
-</li>
-
-<li class="divider"></li>
-
-
-
-<li><a href="http://www.mkdocs.org">
-Published with MkDocs
-</a></li>
-
-<li><a href="https://github.com/GitbookIO/theme-default">
-Theme by GitBook
-</a></li>
-</ul>
-
-</nav>
-
-</div> <!-- end of book-summary -->
-
-<div class="book-body">
-<div class="body-inner">
-<div class="book-header" role="navigation">
-
-<!-- Title -->
-<h1>
-<i class="fa fa-circle-o-notch fa-spin"></i>
-<a href="." ></a>
-</h1>
-
-</div> <!-- end of book-header -->
-
-<div class="page-wrapper" tabindex="-1" role="main">
-<div class="page-inner">
-
-<section class="normal markdown-section">
-
-
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#explain" class="nav-link">Explain</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#binn.analysis.explainer" class="nav-link">explainer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#binn.analysis.explainer.BINNExplainer" class="nav-link">BINNExplainer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
 
 <h1 id="explain">Explain</h1>
 
@@ -113,10 +134,15 @@ Theme by GitBook
 
 
 
-<a id="binn.explainer"></a>
-  <div class="doc doc-contents first">
+<a id="binn.analysis.explainer"></a>
+    <div class="doc doc-contents first">
 
-  
+
+
+
+
+
+
 
   <div class="doc doc-children">
 
@@ -131,53 +157,36 @@ Theme by GitBook
 
 
 
-
-<h2 id="binn.explainer.BINNExplainer" class="doc doc-heading">
-          <code>BINNExplainer</code>
+<h2 id="binn.analysis.explainer.BINNExplainer" class="doc doc-heading">
+            <code>BINNExplainer</code>
 
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-
-  
-      <p>A class for explaining the predictions of a BINN model using SHAP values.</p>
+    <div class="doc doc-contents ">
 
 
+        <p>A class for explaining the predictions of a BINN model using SHAP values,
+assuming we can gather all samples from a dictionary of DataLoaders.</p>
+<h4 id="binn.analysis.explainer.BINNExplainer--usage">Usage:</h4>
+<ol>
+<li>Initialize with a trained BINN model.</li>
+<li>Call <code>explain(dataloaders, split="train")</code> or
+   <code>explain(dataloaders, split=None)</code> to produce SHAP-based explanations
+   for either one or all splits.</li>
+<li>If you wish to do multiple re-initializations and training, call <code>explain</code>
+   with <code>nr_iterations</code> and a trainer (pure PyTorch).</li>
+</ol>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="binn.BINN" href="../binn_ref/#binn.binn.BINN">BINN</a></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>A trained BINN model.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-            <details class="quote">
-              <summary>Source code in <code>binn/explainer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 10</span>
-<span class="normal"> 11</span>
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 11</span>
 <span class="normal"> 12</span>
 <span class="normal"> 13</span>
 <span class="normal"> 14</span>
@@ -441,279 +450,471 @@ Theme by GitBook
 <span class="normal">272</span>
 <span class="normal">273</span>
 <span class="normal">274</span>
-<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BINNExplainer</span><span class="p">:</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BINNExplainer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class for explaining the predictions of a BINN model using SHAP values.</span>
+<span class="sd">    A class for explaining the predictions of a BINN model using SHAP values,</span>
+<span class="sd">    assuming we can gather all samples from a dictionary of DataLoaders.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        model (BINN): A trained BINN model.</span>
+<span class="sd">    Usage:</span>
+<span class="sd">    ------</span>
+<span class="sd">    1. Initialize with a trained BINN model.</span>
+<span class="sd">    2. Call `explain(dataloaders, split=&quot;train&quot;)` or</span>
+<span class="sd">       `explain(dataloaders, split=None)` to produce SHAP-based explanations</span>
+<span class="sd">       for either one or all splits.</span>
+<span class="sd">    3. If you wish to do multiple re-initializations and training, call `explain`</span>
+<span class="sd">       with `nr_iterations` and a trainer (pure PyTorch).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BINN</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-
-    <span class="k">def</span> <span class="nf">update_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BINN</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-
-    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generates SHAP explanations for a given test_data by computing the Shapley values for each feature using</span>
-<span class="sd">        the provided background_data. The feature importances are then aggregated and returned in a pandas dataframe.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">            background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : nn.Module</span>
+<span class="sd">            A trained BINN model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">shap_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_explain_layers</span><span class="p">(</span><span class="n">background_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
-        <span class="n">feature_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;source name&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;target name&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;source layer&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;target layer&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="p">}</span>
-        <span class="n">connectivity_matrices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_connectivity_matrices</span><span class="p">()</span>
-        <span class="n">feature_id_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
 
-        <span class="n">feature_id</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">feature_id_mapping</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
-        <span class="k">for</span> <span class="n">layer_features</span> <span class="ow">in</span> <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">layer_features</span><span class="p">:</span>
-                <span class="n">feature_id</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BINN</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the current BINN model for explanations.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
 
-        <span class="n">curr_layer</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">sv</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">cm</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">],</span> <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span> <span class="n">connectivity_matrices</span>
-        <span class="p">):</span>
-            <span class="n">sv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span>
-            <span class="n">sv</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span>
-            <span class="n">sv_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sv_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="n">n_classes</span> <span class="o">=</span> <span class="n">sv_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">connections</span> <span class="o">=</span> <span class="n">cm</span><span class="p">[</span><span class="n">cm</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">]]</span>
-                <span class="n">connections</span> <span class="o">=</span> <span class="n">connections</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-                    <span class="p">:,</span> <span class="p">(</span><span class="n">connections</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                <span class="p">]</span>  <span class="c1"># get targets and append to target</span>
-                <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">curr_class</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">):</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">]]</span>
-                        <span class="p">)</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">target</span><span class="p">])</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">])</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sv_mean</span><span class="p">[</span><span class="n">curr_class</span><span class="p">][</span><span class="n">feature</span><span class="p">])</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_class</span><span class="p">)</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_layer</span><span class="p">)</span>
-                        <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">curr_layer</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">feature_dict</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">df</span>
-
-    <span class="k">def</span> <span class="nf">fast_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> 
-            <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="n">total_accuracy</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">)</span>
-                <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-                <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
-                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-                <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-                <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-                <span class="n">total_accuracy</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">targets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
-
-            <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
-            <span class="n">avg_accuracy</span> <span class="o">=</span> <span class="n">total_accuracy</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Final epoch: Average Accuracy </span><span class="si">{</span><span class="n">avg_accuracy</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, Average Loss: </span><span class="si">{</span><span class="n">avg_loss</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-
-    <span class="k">def</span> <span class="nf">explain_average</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">explain_single</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-        <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-        <span class="n">nr_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">max_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">dataloader</span><span class="p">,</span>
-        <span class="n">fast_train</span> <span class="p">:</span> <span class="nb">bool</span>
+        <span class="n">dataloaders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalization_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.</span>
-<span class="sd">        For each iteration, the model&#39;s parameters are randomly initialized and trained on the provided data using</span>
-<span class="sd">        the provided trainer and dataloader. The feature importances are then aggregated and returned in a pandas dataframe.</span>
+<span class="sd">        Gathers all samples from the specified DataLoader(s),</span>
+<span class="sd">        uses them for both background and test data in SHAP,</span>
+<span class="sd">        and returns a DataFrame of explanations.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">            background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-<span class="sd">            nr_iterations (int): The number of iterations to use for averaging the Shapley values.</span>
-<span class="sd">            trainer: The PyTorch Lightning trainer to use for training the model.</span>
-<span class="sd">            dataloader: The PyTorch DataLoader to use for loading the data.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloaders : dict</span>
+<span class="sd">            A dictionary containing one or more DataLoaders, e.g. {&quot;train&quot;: train_dl, &quot;val&quot;: val_dl}.</span>
+<span class="sd">        split : str, optional</span>
+<span class="sd">            If provided, gather samples only from dataloaders[split]. If None, gather from all.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A DataFrame with columns:</span>
+<span class="sd">              [&#39;source_layer&#39;, &#39;target_layer&#39;, &#39;source_node&#39;, &#39;target_node&#39;,</span>
+<span class="sd">               &#39;class_idx&#39;, &#39;importance&#39;]</span>
+<span class="sd">            capturing the mean absolute SHAP importance for each connection in the BINN.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_iterations</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_params</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">init_weights</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">fast_train</span><span class="p">:</span>
-                <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">configure_optimizers</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_train</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">max_epochs</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">)</span>
-                <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">)</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span>
-            <span class="n">dfs</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="n">all_inputs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gather_all_from_dataloader</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">)</span>
+        <span class="n">all_inputs</span> <span class="o">=</span> <span class="n">all_inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-        <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;value_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dfs</span><span class="o">.</span><span class="n">keys</span><span class="p">())))]</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="n">values_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">values_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value_mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_mean</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;values_std&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_std</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_mean</span>
+        <span class="n">shap_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_explain_layers</span><span class="p">(</span><span class="n">all_inputs</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+        <span class="n">explanation_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shap_to_dataframe</span><span class="p">(</span><span class="n">shap_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalization_method</span><span class="p">:</span>
+            <span class="n">explanation_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_importances</span><span class="p">(</span>
+                <span class="n">explanation_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">normalization_method</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">explanation_df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">explain</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataloaders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">nr_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">trainer</span><span class="p">:</span> <span class="n">BINNTrainer</span><span class="p">,</span>
+        <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalization_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Re-initializes the BINN model multiple times, trains it using the given trainer,</span>
+<span class="sd">        computes SHAP for each iteration, then aggregates the results.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloaders : dict</span>
+<span class="sd">            Dictionary of DataLoaders (e.g. {&quot;train&quot;: train_dl, &quot;val&quot;: val_dl}).</span>
+<span class="sd">        nr_iterations : int</span>
+<span class="sd">            Number of random re-initializations/training runs to average over.</span>
+<span class="sd">        num_epochs : int</span>
+<span class="sd">            How many epochs to train each iteration.</span>
+<span class="sd">        trainer :</span>
+<span class="sd">            A trainer that runs a pure PyTorch loop (trainer.fit(dataloaders, num_epochs)).</span>
+<span class="sd">        split : str, optional</span>
+<span class="sd">            The specific split to gather data from for SHAP. If None, use all splits.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (pd.DataFrame, dict)</span>
+<span class="sd">            - A DataFrame with columns for each iteration’s &#39;importance&#39; plus</span>
+<span class="sd">              &#39;importance_mean&#39;/&#39;importance_std&#39;.</span>
+<span class="sd">            - A dict containing training metrics from each iteration (e.g., accuracy/loss).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_iterations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[BINNExplainer] Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">nr_iterations</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Re-init model params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_reset_params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_init_weights</span><span class="p">)</span>
+
+            <span class="c1"># Use the given trainer to train</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">update_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">)</span>
+
+            <span class="c1"># Then compute explanations with the newly trained model</span>
+            <span class="n">iteration_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explain_single</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">)</span>
+            <span class="n">all_dfs</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">iteration_df</span>
+
+        <span class="n">combined_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combine_iterations</span><span class="p">(</span><span class="n">all_dfs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalization_method</span><span class="p">:</span>
+            <span class="n">combined_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_importances</span><span class="p">(</span>
+                <span class="n">combined_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">normalization_method</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">combined_df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_importances</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">explanation_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalizes the &#39;importance&#39; (or &#39;value&#39;) column in the DataFrame</span>
+<span class="sd">        using either &#39;fan&#39; or &#39;subgraph&#39; logic:</span>
+
+<span class="sd">        - fan:    importance / log2( fan_in + fan_out + 1 )</span>
+<span class="sd">        - subgraph: importance / log2( upstream_subgraph_nodes + downstream_subgraph_nodes )</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Must contain at least [source_node, target_node, value_col].</span>
+<span class="sd">        method : {&quot;fan&quot;, &quot;subgraph&quot;}</span>
+<span class="sd">            The normalization strategy.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A **copy** of the input DataFrame with a newly normalized</span>
+<span class="sd">            column, `&#39;normalized_value&#39;`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">explanation_df</span> <span class="o">=</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;mean_importance&quot;</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">value_col</span> <span class="o">=</span> <span class="s2">&quot;mean_importance&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value_col</span> <span class="o">=</span> <span class="s2">&quot;importance&quot;</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_node&quot;</span><span class="p">]</span>
+            <span class="n">tgt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;target_node&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">tgt</span><span class="p">):</span>
+                <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+            <span class="n">fan_in</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+            <span class="n">fan_out</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="n">fan_in</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="n">fan_out</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">:</span>
+            <span class="n">G_reverse</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">upstream_count</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">downstream_count</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="n">down_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">descendants</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+                <span class="n">downstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">down_nodes</span><span class="p">)</span>
+                <span class="n">up_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">descendants</span><span class="p">(</span><span class="n">G_reverse</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+                <span class="n">upstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">up_nodes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown normalization method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">norm_vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_node&quot;</span><span class="p">]</span>
+            <span class="n">raw_imp</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">value_col</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+                <span class="n">fi</span> <span class="o">=</span> <span class="n">fan_in</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                <span class="n">fo</span> <span class="o">=</span> <span class="n">fan_out</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">fi</span> <span class="o">+</span> <span class="n">fo</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">new_val</span> <span class="o">=</span> <span class="n">raw_imp</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># subgraph</span>
+                <span class="n">ups</span> <span class="o">=</span> <span class="n">upstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                <span class="n">downs</span> <span class="o">=</span> <span class="n">downstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">ups</span> <span class="o">+</span> <span class="n">downs</span>
+                <span class="n">new_val</span> <span class="o">=</span> <span class="n">raw_imp</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+
+            <span class="n">norm_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+
+        <span class="n">explanation_df</span><span class="p">[</span><span class="s2">&quot;normalized_importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vals</span>
+        <span class="k">return</span> <span class="n">explanation_df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_explain_layers</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes SHAP explanations for each &#39;Linear&#39; layer in the BINN.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;features&quot;: List[List[str]]  # per-layer feature names</span>
+<span class="sd">                &quot;shap_values&quot;: List[np.ndarray]  # per-layer SHAP arrays</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shap_results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;shap_values&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">layer_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">named_children</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+                <span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">background_data</span><span class="p">)</span>
+                <span class="n">svals</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+                <span class="n">shap_results</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="n">layer_idx</span><span class="p">])</span>
+                <span class="n">shap_results</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">svals</span><span class="p">)</span>
+                <span class="n">layer_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">shap_results</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_shap_to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shap_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert raw shap_dict from `_explain_layers` to a tidy DataFrame</span>
+<span class="sd">        containing connection-level SHAP importance.</span>
+
+<span class="sd">        Columns: [&#39;source_layer&#39;, &#39;target_layer&#39;, &#39;source_node&#39;, &#39;target_node&#39;,</span>
+<span class="sd">                &#39;class_idx&#39;, &#39;importance&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connectivity_mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">connectivity_matrices</span>
+
+        <span class="n">all_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_layer</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">svals</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">cm</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">],</span> <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span> <span class="n">connectivity_mats</span>
+        <span class="p">):</span>
+            <span class="n">svals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">svals</span><span class="p">)</span>
+            <span class="n">svals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">svals</span><span class="p">)</span>
+            <span class="n">svals_mean</span> <span class="o">=</span> <span class="n">svals</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span>  <span class="c1"># average over samples =&gt; (num_classes, num_feats)</span>
+
+            <span class="n">num_feats</span><span class="p">,</span> <span class="n">num_classes</span> <span class="o">=</span> <span class="n">svals_mean</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="k">for</span> <span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">feats</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">feat_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">row_conn</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="n">feat_name</span><span class="p">],</span> <span class="p">:]</span>
+                <span class="c1"># drop columns with all zero edges (these are pruned edges)</span>
+                <span class="n">row_conn</span> <span class="o">=</span> <span class="n">row_conn</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="n">row_conn</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">row_conn</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">row_conn</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="c1"># for each class</span>
+                    <span class="k">for</span> <span class="n">class_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_classes</span><span class="p">):</span>
+                        <span class="n">importance_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">svals_mean</span><span class="p">[</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">class_idx</span><span class="p">])</span>
+                        <span class="n">all_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">{</span>
+                                <span class="s2">&quot;source_layer&quot;</span><span class="p">:</span> <span class="n">current_layer</span><span class="p">,</span>
+                                <span class="s2">&quot;target_layer&quot;</span><span class="p">:</span> <span class="n">current_layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                <span class="s2">&quot;source_node&quot;</span><span class="p">:</span> <span class="n">feat_name</span><span class="p">,</span>
+                                <span class="s2">&quot;target_node&quot;</span><span class="p">:</span> <span class="n">target_name</span><span class="p">,</span>
+                                <span class="s2">&quot;class_idx&quot;</span><span class="p">:</span> <span class="n">class_idx</span><span class="p">,</span>
+                                <span class="s2">&quot;importance&quot;</span><span class="p">:</span> <span class="n">importance_val</span><span class="p">,</span>
+                            <span class="p">}</span>
+                        <span class="p">)</span>
+            <span class="n">current_layer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_rows</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span>
 
-    <span class="k">def</span> <span class="nf">recursive_pathway_elimination</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">input_data</span><span class="p">,</span>
-        <span class="n">design_matrix</span><span class="p">,</span>
-        <span class="n">nr_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-        <span class="n">max_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-        <span class="n">clip_threshold</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-        <span class="n">constant_removal_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-        <span class="n">min_features_per_layer</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">early_stopping</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="n">rpe</span> <span class="o">=</span> <span class="n">RecursivePathwayElimination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="n">return_dict</span> <span class="o">=</span> <span class="n">rpe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-            <span class="n">input_data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
-            <span class="n">design_matrix</span><span class="o">=</span><span class="n">design_matrix</span><span class="p">,</span>
-            <span class="n">nr_iterations</span><span class="o">=</span><span class="n">nr_iterations</span><span class="p">,</span>
-            <span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">,</span>
-            <span class="n">clip_threshold</span><span class="o">=</span><span class="n">clip_threshold</span><span class="p">,</span>
-            <span class="n">constant_removal_rate</span><span class="o">=</span><span class="n">constant_removal_rate</span><span class="p">,</span>
-            <span class="n">min_features_per_layer</span><span class="o">=</span><span class="n">min_features_per_layer</span><span class="p">,</span>
-            <span class="n">early_stopping</span><span class="o">=</span><span class="n">early_stopping</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">rpe_model</span> <span class="o">=</span> <span class="n">rpe</span><span class="o">.</span><span class="n">get_final_model</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rpe_data</span> <span class="o">=</span> <span class="n">rpe</span><span class="o">.</span><span class="n">get_final_data</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">return_dict</span>
-
-    <span class="k">def</span> <span class="nf">explain_input</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_combine_iterations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the</span>
-<span class="sd">        Shapley values for each feature using the provided background_data. The feature importances are then returned</span>
-<span class="sd">        in a dictionary.</span>
+<span class="sd">        Combine multiple iteration results into a single DataFrame,</span>
+<span class="sd">        computing mean and std of &#39;importance&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Merged DataFrame with new columns: importance_&lt;iter&gt;,</span>
+<span class="sd">            importance_mean, importance_std, plus the final &#39;importance&#39; set to the mean.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">first_key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">merged_df</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">first_key</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">iteration_cols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">iteration_idx</span><span class="p">,</span> <span class="n">df_iter</span> <span class="ow">in</span> <span class="n">results_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;importance_</span><span class="si">{</span><span class="n">iteration_idx</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">merged_df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_iter</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">iteration_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span>
+
+        <span class="n">arr_vals</span> <span class="o">=</span> <span class="n">merged_df</span><span class="p">[</span><span class="n">iteration_cols</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># shape: (n_rows, n_iters)</span>
+        <span class="n">mean_vals</span> <span class="o">=</span> <span class="n">arr_vals</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">std_vals</span> <span class="o">=</span> <span class="n">arr_vals</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">merged_df</span><span class="p">[</span><span class="s2">&quot;importance_mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vals</span>
+        <span class="n">merged_df</span><span class="p">[</span><span class="s2">&quot;importance_std&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">std_vals</span>
+        <span class="n">merged_df</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vals</span>
+        <span class="k">return</span> <span class="n">merged_df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gather_all_from_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloaders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gather all inputs from a specified split or from all splits if split is None.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">            background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-<span class="sd">            layer (int): The index of the layer for which to compute the SHAP explanations.</span>
+<span class="sd">            dataloaders (dict): e.g. {&quot;train&quot;: train_dl, &quot;val&quot;: val_dl}</span>
+<span class="sd">            split (str): if provided, use only dataloaders[split].</span>
+<span class="sd">                         if None, gather from all splits.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: A dictionary containing the SHAP feature importances.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (torch.Tensor, torch.Tensor)</span>
+<span class="sd">            (all_inputs, all_targets) concatenated across all (or one) splits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_x</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_y</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span>
-        <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">split</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Check if the split exists</span>
+            <span class="k">if</span> <span class="n">split</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Split &#39;</span><span class="si">{</span><span class="n">split</span><span class="si">}</span><span class="s2">&#39; not found in dataloaders. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Available splits: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dataloaders</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">dl</span> <span class="o">=</span> <span class="n">dataloaders</span><span class="p">[</span><span class="n">split</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dl</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">all_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">all_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Concatenate all splits</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">dl</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dl</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">all_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                    <span class="n">all_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
 
-        <span class="n">shap_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;shap_values&quot;</span><span class="p">:</span> <span class="n">shap_values</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_x</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No samples found in the specified DataLoaders.&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">shap_dict</span>
-
-    <span class="k">def</span> <span class="nf">_explain_layers</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Helper method to compute SHAP explanations for each layer in the model.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-<span class="sd">            test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: A dictionary containing the SHAP feature importances for each layer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">feature_index</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">test_data</span>
-
-        <span class="n">shap_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;shap_values&quot;</span><span class="p">:</span> <span class="p">[]}</span>
-
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">named_children</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="s2">&quot;Residual&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;final&quot;</span> <span class="ow">in</span> <span class="n">name</span>
-            <span class="p">):</span>
-                <span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">background_data</span><span class="p">)</span>
-                <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
-                <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="n">feature_index</span><span class="p">])</span>
-                <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shap_values</span><span class="p">)</span>
-                <span class="n">feature_index</span> <span class="o">+=</span> <span class="mi">1</span>
-
-                <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">intermediate_data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">)</span>
-            <span class="p">):</span>
-                <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">intermediate_data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">shap_dict</span>
-
-    <span class="k">def</span> <span class="nf">_explain_layer</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">wanted_layer</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">test_data</span>
-
-        <span class="n">shap_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;shap_values&quot;</span><span class="p">:</span> <span class="p">[]}</span>
-        <span class="n">layer_index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">named_children</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="s2">&quot;Residual&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;final&quot;</span> <span class="ow">in</span> <span class="n">name</span>
-            <span class="p">):</span>
-                <span class="k">if</span> <span class="n">layer_index</span> <span class="o">==</span> <span class="n">wanted_layer</span><span class="p">:</span>
-                    <span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">background_data</span><span class="p">)</span>
-                    <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
-                    <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="n">wanted_layer</span><span class="p">]</span>
-                    <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">shap_values</span>
-                    <span class="k">return</span> <span class="n">shap_dict</span>
-                <span class="n">layer_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">intermediate_data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">)</span>
-            <span class="p">):</span>
-                <span class="n">intermediate_data</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">intermediate_data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">shap_dict</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_y</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -726,104 +927,223 @@ Theme by GitBook
 <div class="doc doc-object doc-function">
 
 
-
-
-<h3 id="binn.explainer.BINNExplainer.explain" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">explain</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span></code>
+<h3 id="binn.analysis.explainer.BINNExplainer.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></code>
 
 </h3>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Generates SHAP explanations for a given test_data by computing the Shapley values for each feature using
-the provided background_data. The feature importances are then aggregated and returned in a pandas dataframe.</p>
+    <div class="doc doc-contents ">
 
+        <h5 id="binn.analysis.explainer.BINNExplainer.__init__--parameters">Parameters</h5>
+<p>model : nn.Module
+    A trained BINN model.</p>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>test_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The input data for which to generate the explanations.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>background_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The background data to use for computing the Shapley values.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</p>
-            </div>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-          <details class="quote">
-            <summary>Source code in <code>binn/explainer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
+            <details class="quote">
+              <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : nn.Module</span>
+<span class="sd">        A trained BINN model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="binn.analysis.explainer.BINNExplainer.explain" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">explain</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">nr_iterations</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalization_method</span><span class="o">=</span><span class="s1">&#39;subgraph&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Re-initializes the BINN model multiple times, trains it using the given trainer,
+computes SHAP for each iteration, then aggregates the results.</p>
+<h5 id="binn.analysis.explainer.BINNExplainer.explain--parameters">Parameters</h5>
+<p>dataloaders : dict
+    Dictionary of DataLoaders (e.g. {"train": train_dl, "val": val_dl}).
+nr_iterations : int
+    Number of random re-initializations/training runs to average over.
+num_epochs : int
+    How many epochs to train each iteration.
+trainer :
+    A trainer that runs a pure PyTorch loop (trainer.fit(dataloaders, num_epochs)).
+split : str, optional
+    The specific split to gather data from for SHAP. If None, use all splits.</p>
+<h5 id="binn.analysis.explainer.BINNExplainer.explain--returns">Returns</h5>
+<p>(pd.DataFrame, dict)
+    - A DataFrame with columns for each iteration’s 'importance' plus
+      'importance_mean'/'importance_std'.
+    - A dict containing training metrics from each iteration (e.g., accuracy/loss).</p>
+
+            <details class="quote">
+              <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">explain</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">dataloaders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">nr_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">trainer</span><span class="p">:</span> <span class="n">BINNTrainer</span><span class="p">,</span>
+    <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalization_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Re-initializes the BINN model multiple times, trains it using the given trainer,</span>
+<span class="sd">    computes SHAP for each iteration, then aggregates the results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloaders : dict</span>
+<span class="sd">        Dictionary of DataLoaders (e.g. {&quot;train&quot;: train_dl, &quot;val&quot;: val_dl}).</span>
+<span class="sd">    nr_iterations : int</span>
+<span class="sd">        Number of random re-initializations/training runs to average over.</span>
+<span class="sd">    num_epochs : int</span>
+<span class="sd">        How many epochs to train each iteration.</span>
+<span class="sd">    trainer :</span>
+<span class="sd">        A trainer that runs a pure PyTorch loop (trainer.fit(dataloaders, num_epochs)).</span>
+<span class="sd">    split : str, optional</span>
+<span class="sd">        The specific split to gather data from for SHAP. If None, use all splits.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (pd.DataFrame, dict)</span>
+<span class="sd">        - A DataFrame with columns for each iteration’s &#39;importance&#39; plus</span>
+<span class="sd">          &#39;importance_mean&#39;/&#39;importance_std&#39;.</span>
+<span class="sd">        - A dict containing training metrics from each iteration (e.g., accuracy/loss).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_iterations</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[BINNExplainer] Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">nr_iterations</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Re-init model params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_reset_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_init_weights</span><span class="p">)</span>
+
+        <span class="c1"># Use the given trainer to train</span>
+        <span class="n">trainer</span><span class="o">.</span><span class="n">update_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">)</span>
+
+        <span class="c1"># Then compute explanations with the newly trained model</span>
+        <span class="n">iteration_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explain_single</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">)</span>
+        <span class="n">all_dfs</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">iteration_df</span>
+
+    <span class="n">combined_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combine_iterations</span><span class="p">(</span><span class="n">all_dfs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalization_method</span><span class="p">:</span>
+        <span class="n">combined_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_importances</span><span class="p">(</span>
+            <span class="n">combined_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">normalization_method</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">combined_df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="binn.analysis.explainer.BINNExplainer.explain_single" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">explain_single</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalization_method</span><span class="o">=</span><span class="s1">&#39;subgraph&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gathers all samples from the specified DataLoader(s),
+uses them for both background and test data in SHAP,
+and returns a DataFrame of explanations.</p>
+<h5 id="binn.analysis.explainer.BINNExplainer.explain_single--parameters">Parameters</h5>
+<p>dataloaders : dict
+    A dictionary containing one or more DataLoaders, e.g. {"train": train_dl, "val": val_dl}.
+split : str, optional
+    If provided, gather samples only from dataloaders[split]. If None, gather from all.</p>
+<h5 id="binn.analysis.explainer.BINNExplainer.explain_single--returns">Returns</h5>
+<p>pd.DataFrame
+    A DataFrame with columns:
+      ['source_layer', 'target_layer', 'source_node', 'target_node',
+       'class_idx', 'importance']
+    capturing the mean absolute SHAP importance for each connection in the BINN.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
@@ -858,240 +1178,78 @@ the provided background_data. The feature importances are then aggregated and re
 <span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">):</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">explain_single</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">dataloaders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalization_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates SHAP explanations for a given test_data by computing the Shapley values for each feature using</span>
-<span class="sd">    the provided background_data. The feature importances are then aggregated and returned in a pandas dataframe.</span>
+<span class="sd">    Gathers all samples from the specified DataLoader(s),</span>
+<span class="sd">    uses them for both background and test data in SHAP,</span>
+<span class="sd">    and returns a DataFrame of explanations.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">        background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloaders : dict</span>
+<span class="sd">        A dictionary containing one or more DataLoaders, e.g. {&quot;train&quot;: train_dl, &quot;val&quot;: val_dl}.</span>
+<span class="sd">    split : str, optional</span>
+<span class="sd">        If provided, gather samples only from dataloaders[split]. If None, gather from all.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A DataFrame with columns:</span>
+<span class="sd">          [&#39;source_layer&#39;, &#39;target_layer&#39;, &#39;source_node&#39;, &#39;target_node&#39;,</span>
+<span class="sd">           &#39;class_idx&#39;, &#39;importance&#39;]</span>
+<span class="sd">        capturing the mean absolute SHAP importance for each connection in the BINN.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">shap_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_explain_layers</span><span class="p">(</span><span class="n">background_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
-    <span class="n">feature_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;source name&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;target name&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;source layer&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;target layer&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="p">}</span>
-    <span class="n">connectivity_matrices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_connectivity_matrices</span><span class="p">()</span>
-    <span class="n">feature_id_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">all_inputs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gather_all_from_dataloader</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">)</span>
+    <span class="n">all_inputs</span> <span class="o">=</span> <span class="n">all_inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="n">feature_id</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">feature_id_mapping</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
-    <span class="k">for</span> <span class="n">layer_features</span> <span class="ow">in</span> <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">layer_features</span><span class="p">:</span>
-            <span class="n">feature_id</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
-
-    <span class="n">curr_layer</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">sv</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">cm</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;shap_values&quot;</span><span class="p">],</span> <span class="n">shap_dict</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span> <span class="n">connectivity_matrices</span>
-    <span class="p">):</span>
-        <span class="n">sv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span>
-        <span class="n">sv</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span>
-        <span class="n">sv_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sv_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">n_classes</span> <span class="o">=</span> <span class="n">sv_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">connections</span> <span class="o">=</span> <span class="n">cm</span><span class="p">[</span><span class="n">cm</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">]]</span>
-            <span class="n">connections</span> <span class="o">=</span> <span class="n">connections</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-                <span class="p">:,</span> <span class="p">(</span><span class="n">connections</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="p">]</span>  <span class="c1"># get targets and append to target</span>
-            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">curr_class</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">):</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">]]</span>
-                    <span class="p">)</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature_id_mapping</span><span class="p">[</span><span class="n">target</span><span class="p">])</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">feature</span><span class="p">])</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sv_mean</span><span class="p">[</span><span class="n">curr_class</span><span class="p">][</span><span class="n">feature</span><span class="p">])</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_class</span><span class="p">)</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;source layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_layer</span><span class="p">)</span>
-                    <span class="n">feature_dict</span><span class="p">[</span><span class="s2">&quot;target layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">curr_layer</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">feature_dict</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span>
+    <span class="n">shap_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_explain_layers</span><span class="p">(</span><span class="n">all_inputs</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+    <span class="n">explanation_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shap_to_dataframe</span><span class="p">(</span><span class="n">shap_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalization_method</span><span class="p">:</span>
+        <span class="n">explanation_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_importances</span><span class="p">(</span>
+            <span class="n">explanation_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">normalization_method</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">explanation_df</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
-
-<h3 id="binn.explainer.BINNExplainer.explain_average" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">explain_average</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">background_data</span><span class="p">,</span> <span class="n">nr_iterations</span><span class="p">,</span> <span class="n">max_epochs</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">fast_train</span><span class="p">)</span></code>
+<h3 id="binn.analysis.explainer.BINNExplainer.normalize_importances" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">normalize_importances</span><span class="p">(</span><span class="n">explanation_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;subgraph&#39;</span><span class="p">)</span></code>
 
 </h3>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.
-For each iteration, the model's parameters are randomly initialized and trained on the provided data using
-the provided trainer and dataloader. The feature importances are then aggregated and returned in a pandas dataframe.</p>
+    <div class="doc doc-contents ">
 
+        <p>Normalizes the 'importance' (or 'value') column in the DataFrame
+using either 'fan' or 'subgraph' logic:</p>
+<ul>
+<li>fan:    importance / log2( fan_in + fan_out + 1 )</li>
+<li>subgraph: importance / log2( upstream_subgraph_nodes + downstream_subgraph_nodes )</li>
+</ul>
+<h5 id="binn.analysis.explainer.BINNExplainer.normalize_importances--parameters">Parameters</h5>
+<p>df : pd.DataFrame
+    Must contain at least [source_node, target_node, value_col].
+method : {"fan", "subgraph"}
+    The normalization strategy.</p>
+<h5 id="binn.analysis.explainer.BINNExplainer.normalize_importances--returns">Returns</h5>
+<p>pd.DataFrame
+    A <strong>copy</strong> of the input DataFrame with a newly normalized
+    column, <code>'normalized_value'</code>.</p>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>test_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The input data for which to generate the explanations.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>background_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The background data to use for computing the Shapley values.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>nr_iterations</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The number of iterations to use for averaging the Shapley values.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>trainer</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The PyTorch Lightning trainer to use for training the model.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dataloader</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The PyTorch DataLoader to use for loading the data.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</p>
-            </div>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-          <details class="quote">
-            <summary>Source code in <code>binn/explainer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
+            <details class="quote">
+              <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">135</span>
 <span class="normal">136</span>
 <span class="normal">137</span>
 <span class="normal">138</span>
@@ -1114,165 +1272,37 @@ the provided trainer and dataloader. The feature importances are then aggregated
 <span class="normal">155</span>
 <span class="normal">156</span>
 <span class="normal">157</span>
-<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">explain_average</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-    <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-    <span class="n">nr_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">max_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">dataloader</span><span class="p">,</span>
-    <span class="n">fast_train</span> <span class="p">:</span> <span class="nb">bool</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the SHAP explanations for the given test_data by averaging the Shapley values over multiple iterations.</span>
-<span class="sd">    For each iteration, the model&#39;s parameters are randomly initialized and trained on the provided data using</span>
-<span class="sd">    the provided trainer and dataloader. The feature importances are then aggregated and returned in a pandas dataframe.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">        background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-<span class="sd">        nr_iterations (int): The number of iterations to use for averaging the Shapley values.</span>
-<span class="sd">        trainer: The PyTorch Lightning trainer to use for training the model.</span>
-<span class="sd">        dataloader: The PyTorch DataLoader to use for loading the data.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        pd.DataFrame: A dataframe containing the aggregated SHAP feature importances.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_iterations</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_params</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">init_weights</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fast_train</span><span class="p">:</span>
-            <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">configure_optimizers</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_train</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">max_epochs</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">)</span>
-            <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span>
-        <span class="n">dfs</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
-
-    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;value_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dfs</span><span class="o">.</span><span class="n">keys</span><span class="p">())))]</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">values_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">values_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value_mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_mean</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;values_std&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_std</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values_mean</span>
-    <span class="k">return</span> <span class="n">df</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h3 id="binn.explainer.BINNExplainer.explain_input" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">explain_input</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span></code>
-
-</h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the
-Shapley values for each feature using the provided background_data. The feature importances are then returned
-in a dictionary.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>test_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The input data for which to generate the explanations.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>background_data</code></td>
-          <td>
-                <code><span title="torch.Tensor">Tensor</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The background data to use for computing the Shapley values.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>layer</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The index of the layer for which to compute the SHAP explanations.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>dict</code></td>          <td>
-                <code>dict</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>A dictionary containing the SHAP feature importances.</p>
-            </div>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-          <details class="quote">
-            <summary>Source code in <code>binn/explainer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">188</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
@@ -1294,32 +1324,127 @@ in a dictionary.</p>
 <span class="normal">207</span>
 <span class="normal">208</span>
 <span class="normal">209</span>
-<span class="normal">210</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">explain_input</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">background_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">normalize_importances</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">explanation_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the SHAP explanations for the given test_data for a specific layer in the model by computing the</span>
-<span class="sd">    Shapley values for each feature using the provided background_data. The feature importances are then returned</span>
-<span class="sd">    in a dictionary.</span>
+<span class="sd">    Normalizes the &#39;importance&#39; (or &#39;value&#39;) column in the DataFrame</span>
+<span class="sd">    using either &#39;fan&#39; or &#39;subgraph&#39; logic:</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        test_data (torch.Tensor): The input data for which to generate the explanations.</span>
-<span class="sd">        background_data (torch.Tensor): The background data to use for computing the Shapley values.</span>
-<span class="sd">        layer (int): The index of the layer for which to compute the SHAP explanations.</span>
+<span class="sd">    - fan:    importance / log2( fan_in + fan_out + 1 )</span>
+<span class="sd">    - subgraph: importance / log2( upstream_subgraph_nodes + downstream_subgraph_nodes )</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary containing the SHAP feature importances.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Must contain at least [source_node, target_node, value_col].</span>
+<span class="sd">    method : {&quot;fan&quot;, &quot;subgraph&quot;}</span>
+<span class="sd">        The normalization strategy.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A **copy** of the input DataFrame with a newly normalized</span>
+<span class="sd">        column, `&#39;normalized_value&#39;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">explanation_df</span> <span class="o">=</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">background_data</span><span class="p">)</span>
-    <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;mean_importance&quot;</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">value_col</span> <span class="o">=</span> <span class="s2">&quot;mean_importance&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value_col</span> <span class="o">=</span> <span class="s2">&quot;importance&quot;</span>
 
-    <span class="n">shap_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;shap_values&quot;</span><span class="p">:</span> <span class="n">shap_values</span><span class="p">}</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_node&quot;</span><span class="p">]</span>
+        <span class="n">tgt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;target_node&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">tgt</span><span class="p">):</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">shap_dict</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+        <span class="n">fan_in</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+        <span class="n">fan_out</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="n">fan_in</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">fan_out</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;subgraph&quot;</span><span class="p">:</span>
+        <span class="n">G_reverse</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">upstream_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">downstream_count</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="n">down_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">descendants</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">downstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">down_nodes</span><span class="p">)</span>
+            <span class="n">up_nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">descendants</span><span class="p">(</span><span class="n">G_reverse</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">upstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">up_nodes</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown normalization method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">norm_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">explanation_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_node&quot;</span><span class="p">]</span>
+        <span class="n">raw_imp</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">value_col</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fan&quot;</span><span class="p">:</span>
+            <span class="n">fi</span> <span class="o">=</span> <span class="n">fan_in</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">fo</span> <span class="o">=</span> <span class="n">fan_out</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">fi</span> <span class="o">+</span> <span class="n">fo</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">raw_imp</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># subgraph</span>
+            <span class="n">ups</span> <span class="o">=</span> <span class="n">upstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">downs</span> <span class="o">=</span> <span class="n">downstream_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">ups</span> <span class="o">+</span> <span class="n">downs</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">raw_imp</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">norm_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+
+    <span class="n">explanation_df</span><span class="p">[</span><span class="s2">&quot;normalized_importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vals</span>
+    <span class="k">return</span> <span class="n">explanation_df</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="binn.analysis.explainer.BINNExplainer.update_model" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">update_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Update the current BINN model for explanations.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>binn/analysis/explainer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BINN</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the current BINN model for explanations.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
 </div>
 
@@ -1327,7 +1452,7 @@ in a dictionary.</p>
 
   </div>
 
-  </div>
+    </div>
 
 </div>
 
@@ -1336,21 +1461,63 @@ in a dictionary.</p>
 
   </div>
 
-  </div>
+    </div>
 
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>
 
-
-</section>
-
-</div> <!-- end of page-inner -->
-</div> <!-- end of page-wrapper -->
-
-</div> <!-- end of body-inner -->
-
-</div> <!-- end of book-body -->
-<script src="../../js/main.js"></script>
-<script src="../../js/gitbook.min.js"></script>
-<script src="../../js/theme.min.js"></script>
-</body>
+    </body>
 </html>
