@@ -68,13 +68,30 @@ def _get_map_from_layer(layer_dict: dict) -> pd.DataFrame:
     (rows = pathways, columns = inputs).
     """
     pathways = list(layer_dict.keys())
-    all_inputs = list(itertools.chain.from_iterable(layer_dict.values()))
-    unique_inputs = list(np.unique(all_inputs))
 
-    df = pd.DataFrame(index=pathways, columns=unique_inputs)
-    for pathway, inputs in layer_dict.items():
-        df.loc[pathway, inputs] = 1
-    df = df.infer_objects(copy=False).fillna(0)
+    unique_inputs = set()
+    for inputs_list in layer_dict.values():
+        unique_inputs.update(inputs_list)
+
+    unique_inputs = list(unique_inputs)
+
+    # Create an empty matrix of 0's
+    mat = np.zeros((len(pathways), len(unique_inputs)), dtype=int)
+
+    # Map pathway -> row index
+    pathway_to_idx = {p: i for i, p in enumerate(pathways)}
+    # Map input -> column index
+    input_to_idx = {inp: j for j, inp in enumerate(unique_inputs)}
+
+    # Fill the matrix
+    for p, inputs_list in layer_dict.items():
+        row_idx = pathway_to_idx[p]
+        for inp in inputs_list:
+            col_idx = input_to_idx[inp]
+            mat[row_idx, col_idx] = 1
+
+    # Build DataFrame
+    df = pd.DataFrame(mat, index=pathways, columns=unique_inputs)
 
     return df.T
 
