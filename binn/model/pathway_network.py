@@ -4,6 +4,7 @@ from typing import List, Tuple
 import networkx as nx
 import numpy as np
 import pandas as pd
+from collections import defaultdict
 
 
 def _subset_mapping(
@@ -40,25 +41,43 @@ def _get_mapping_to_all_layers(
     Build a DataFrame of (input, connections) by traversing the directed graph
     from each mapped translation node.
     """
+    # Create the directed graph from pathways
     graph = nx.DiGraph()
     graph.add_edges_from(pathways)
-
-    components = {"input": [], "connections": []}
-    unique_inputs = {m[0] for m in mapping}
-
-    for inp in unique_inputs:
-        # Collect all translation nodes for this input
-        translation_nodes = [m[1] for m in mapping if m[0] == inp]
-
+    
+    # Precompute translation nodes for each input
+    translation_nodes_by_input = defaultdict(list)
+    for inp, node_id in mapping:
+        translation_nodes_by_input[inp].append(node_id)
+    
+    # Cache for storing reachable nodes of each translation node
+    reachable_cache = {}
+    
+    # Map each input to its unique connections
+    input_connections = defaultdict(set)
+    
+    # Process each input to collect connections
+    for inp, translation_nodes in translation_nodes_by_input.items():
+        connections = set()
         for node_id in translation_nodes:
-            if graph.has_node(node_id):
-                reachable_nodes = nx.single_source_shortest_path(graph, node_id).keys()
-                # Record the connections
-                for connection in reachable_nodes:
-                    components["input"].append(inp)
-                    components["connections"].append(connection)
+            # Compute or retrieve cached reachable nodes
+            if node_id not in reachable_cache:
+                if graph.has_node(node_id):
+                    reachable_cache[node_id] = nx.descendants(graph, node_id)
+                else:
+                    reachable_cache[node_id] = set()
+            connections.update(reachable_cache[node_id])
+        input_connections[inp] = connections
+    
+    # Convert to DataFrame
+    input_list = []
+    connections_list = []
+    for inp, conns in input_connections.items():
+        input_list.extend([inp] * len(conns))
+        connections_list.extend(conns)
+    
+    df_components = pd.DataFrame({"input": input_list, "connections": connections_list})
 
-    df_components = pd.DataFrame(components).drop_duplicates()
     return df_components
 
 
