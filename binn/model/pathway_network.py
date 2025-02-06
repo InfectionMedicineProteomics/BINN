@@ -63,7 +63,7 @@ def _get_mapping_to_all_layers(
             # Compute or retrieve cached reachable nodes
             if node_id not in reachable_cache:
                 if graph.has_node(node_id):
-                    reachable_cache[node_id] = nx.descendants(graph, node_id)
+                    reachable_cache[node_id] = set(nx.single_source_shortest_path(graph, node_id).keys())
                 else:
                     reachable_cache[node_id] = set()
             connections.update(reachable_cache[node_id])
