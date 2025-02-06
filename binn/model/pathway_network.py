@@ -1,13 +1,13 @@
 import itertools
 import re
-from typing import List, Tuple
+from typing import Set, Tuple
 import networkx as nx
 import numpy as np
 import pandas as pd
 
 
 def _subset_mapping(
-    input_data: List[str], mapping: List[Tuple[str, str]]
+    input_data: Set[str], mapping: List[Tuple[str, str]]
 ) -> List[Tuple[str, str]]:
     return [m for m in mapping if m[0] in input_data]
 
@@ -162,7 +162,7 @@ class PathwayNetwork:
         self.mapping = mapping 
 
         # Subset the mapping to keep only entries related to input_data
-        self.mapping = _subset_mapping(self.input_data, self.mapping)
+        self.mapping = _subset_mapping(set(self.input_data), self.mapping)
 
         # Subset the pathways by the indices derived from the mapping
         self.pathways = _subset_pathways_on_idx(self.pathways, self.mapping)
