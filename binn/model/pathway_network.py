@@ -211,15 +211,18 @@ class PathwayNetwork:
 
         # Create a final mapping of terminal pathways -> input(s)
         mapping_df = self.mapping
+        grouped_inputs = (
+            mapping_df.groupby("connections")["input"]
+            .apply(lambda x: x.unique().tolist())
+            .to_dict()
+        )
+        
         terminal_mapping = {}
         missing_pathways = []
         for term_node in terminal_nodes:
             pathway_name = re.sub(r"_copy.*", "", term_node)
-            inputs_for_pathway = (
-                mapping_df.loc[mapping_df["connections"] == pathway_name, "input"]
-                .unique()
-                .tolist()
-            )
+
+            inputs_for_pathway = grouped_inputs.get(pathway_name, [])
 
             if not inputs_for_pathway:
                 missing_pathways.append(pathway_name)
