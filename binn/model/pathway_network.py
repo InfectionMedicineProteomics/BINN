@@ -1,6 +1,6 @@
 import itertools
 import re
-from typing import Set, Tuple
+from typing import Set, List, Tuple
 import networkx as nx
 import numpy as np
 import pandas as pd
