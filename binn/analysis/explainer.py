@@ -234,13 +234,27 @@ class BINNExplainer:
         shap_results = {"features": [], "shap_values": []}
         layer_idx = 0
 
-        for name, layer in self.model.layers.named_children():
-            if isinstance(layer, nn.Linear):
-                explainer = shap.DeepExplainer((self.model, layer), background_data)
-                svals = explainer.shap_values(test_data)
-                shap_results["features"].append(self.model.layer_names[layer_idx])
-                shap_results["shap_values"].append(svals)
-                layer_idx += 1
+        # Determine the layers to iterate over based on model architecture (ensemble vs not)
+        is_ensemble = hasattr(self.model.layers, 'blocks')
+
+        layers_to_explain = []
+        if is_ensemble:  # Ensemble of heads architecture
+            for block in self.model.layers.blocks:
+                for layer in block.children():
+                    if isinstance(layer, nn.Linear):
+                        layers_to_explain.append(layer)
+        else:  # Standard sequential architecture
+            for layer in self.model.layers.children():
+                if isinstance(layer, nn.Linear):
+                    layers_to_explain.append(layer)
+
+        # Compute SHAP values for the identified linear layers
+        for layer in layers_to_explain:
+            explainer = shap.DeepExplainer((self.model, layer), background_data)
+            svals = explainer.shap_values(test_data, check_additivity=not is_ensemble)
+            shap_results["features"].append(self.model.layer_names[layer_idx])
+            shap_results["shap_values"].append(svals)
+            layer_idx += 1
 
         return shap_results
 
